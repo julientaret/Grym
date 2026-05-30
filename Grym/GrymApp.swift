@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct GrymApp: App {
+    @StateObject private var localization = LocalizationManager.shared
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootTabView()
+                .environmentObject(localization)
         }
     }
 }

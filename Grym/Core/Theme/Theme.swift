@@ -10,34 +10,9 @@ import SwiftUI
 
 enum Theme {
 
-    // MARK: - Couleurs
-    //
-    // Rôles sémantiques du design system. Les vues référencent uniquement
-    // ces valeurs, jamais les tokens bruts `Color.grym*` (cf. Color+Theme.swift).
-
-    enum Colors {
-        // Accent / marque
-        static let accent = Color.grymAccent
-        static let accentAlt = Color.grymAccentViolet
-        static let brand = Color.grymBrand
-
-        // Fonds (adaptatifs clair/sombre)
-        static let background = Color(light: .grymBgLight, dark: .grymBgDark)
-        static let backgroundDeep = Color(light: .grymBgLightAlt, dark: .grymBgDeep)
-        static let surface = Color(light: .grymCardLight, dark: .grymCardDark)
-        /// Halo violet utilisé dans les dégradés de fond.
-        static let glow = Color.grymBgGlow
-
-        // Textes (adaptatifs clair/sombre)
-        static let primaryText = Color(light: .grymTextInverse, dark: .grymTextPrimary)
-        static let secondaryText = Color(
-            light: .grymTextInverse.opacity(0.55),
-            dark: .grymTextPrimary.opacity(0.55)
-        )
-
-        /// Couleur du tier de notation (0–100), du « Naze » au « GOTY ».
-        static func tier(for note: Int) -> Color { Color.grymTier(for: note) }
-    }
+    // Les couleurs sont fournies par le thème actif (cf. AppTheme / ThemeManager),
+    // lu dans les vues via `@Environment(\.theme)`. Les constantes ci-dessous
+    // sont indépendantes du thème.
 
     // MARK: - Spacings
 

@@ -12,13 +12,10 @@ struct ProfileView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: Theme.Spacing.medium) {
-                Image(systemName: "person.crop.circle")
-                    .font(.system(size: Theme.FontSize.largeTitle))
-                    .foregroundStyle(Theme.Colors.accent)
-                Text(localization.string(.tabProfile))
-                    .font(.system(size: Theme.FontSize.title, weight: .semibold))
-                    .foregroundStyle(Theme.Colors.secondaryText)
+            Form {
+                Section(localization.string(.profileThemeLabel)) {
+                    ThemePickerComponent()
+                }
             }
             .navigationTitle(localization.string(.tabProfile))
         }
@@ -28,4 +25,6 @@ struct ProfileView: View {
 #Preview {
     ProfileView()
         .environmentObject(LocalizationManager())
+        .environmentObject(ThemeManager())
+        .environment(\.theme, GrymBlueTheme())
 }

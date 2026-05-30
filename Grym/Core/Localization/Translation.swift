@@ -14,7 +14,7 @@ enum AppLanguage: String, CaseIterable {
     case english = "en"
 
     /// Langue déduite des préférences système, anglais par défaut.
-    static var system: AppLanguage {
+    nonisolated static var system: AppLanguage {
         let code = Locale.preferredLanguages.first?.prefix(2).lowercased() ?? "en"
         return AppLanguage(rawValue: String(code)) ?? .english
     }
@@ -25,6 +25,9 @@ enum TranslationKey: String {
     case tabNotes
     case tabSearch
     case tabProfile
+    case profileThemeLabel
+    case themeGrymBlue
+    case themeGrymViolet
 }
 
 /// Accès statique aux traductions.
@@ -40,12 +43,18 @@ enum Translation {
         .french: [
             .tabNotes: "Notes",
             .tabSearch: "Rechercher",
-            .tabProfile: "Profil"
+            .tabProfile: "Profil",
+            .profileThemeLabel: "Thème",
+            .themeGrymBlue: "Bleu",
+            .themeGrymViolet: "Violet"
         ],
         .english: [
             .tabNotes: "Notes",
             .tabSearch: "Search",
-            .tabProfile: "Profile"
+            .tabProfile: "Profile",
+            .profileThemeLabel: "Theme",
+            .themeGrymBlue: "Blue",
+            .themeGrymViolet: "Violet"
         ]
     ]
 }

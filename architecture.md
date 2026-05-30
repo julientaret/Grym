@@ -10,8 +10,12 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
 
 ## Core
 
-- `Core/Theme/Theme.swift` — Rôles sémantiques du design system (couleurs adaptatives, spacings, font sizes, radius, durées) ; les vues référencent uniquement `Theme.*`.
+- `Core/Theme/Theme.swift` — Constantes du design system indépendantes du thème (spacings, font sizes, radius, durées d'animation).
 - `Core/Theme/Color+Theme.swift` — Palette brute (tokens `grym*`), helper de tier de note 0–100, init `hex` et init adaptatif clair/sombre.
+- `Core/Theme/AppTheme.swift` — Protocole `AppTheme` (rôles de couleur) avec défauts base Grym, enum `ThemeID`, et clé d'environnement `\.theme`.
+- `Core/Theme/Themes/GrymBlueTheme.swift` — Thème par défaut (accent bleu).
+- `Core/Theme/Themes/GrymVioletTheme.swift` — Variante violette ; n'écrase que ses écarts.
+- `Core/Theme/ThemeManager.swift` — `ObservableObject` détenant le thème actif, le persiste (UserDefaults) et permet le switch à chaud.
 - `Core/Localization/LocalizationManager.swift` — `ObservableObject` gérant la langue active et l'accès aux traductions ; injecté dans l'environnement.
 - `Core/Localization/Translation.swift` — Catalogue des traductions FR/EN, enum `AppLanguage` et clés `TranslationKey`.
 
@@ -29,4 +33,5 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
 
 ## Features/Profile
 
-- `ProfileView.swift` — Onglet Profil, préférences et données utilisateur (placeholder à ce stade).
+- `ProfileView.swift` — Onglet Profil, préférences utilisateur ; expose le choix du thème.
+- `Components/ThemePickerComponent.swift` — Sélecteur segmenté qui bascule le thème via le `ThemeManager`.

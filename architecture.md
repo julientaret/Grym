@@ -10,7 +10,8 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
 
 ## Core
 
-- `Core/Theme/Theme.swift` — Centralise couleurs, spacings, font sizes, radius et durées d'animation du design system.
+- `Core/Theme/Theme.swift` — Rôles sémantiques du design system (couleurs adaptatives, spacings, font sizes, radius, durées) ; les vues référencent uniquement `Theme.*`.
+- `Core/Theme/Color+Theme.swift` — Palette brute (tokens `grym*`), helper de tier de note 0–100, init `hex` et init adaptatif clair/sombre.
 - `Core/Localization/LocalizationManager.swift` — `ObservableObject` gérant la langue active et l'accès aux traductions ; injecté dans l'environnement.
 - `Core/Localization/Translation.swift` — Catalogue des traductions FR/EN, enum `AppLanguage` et clés `TranslationKey`.
 

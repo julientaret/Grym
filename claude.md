@@ -97,6 +97,8 @@
   - Impact potentiel
 - Proposer des améliorations uniquement si elles apportent une valeur claire ; ne pas sur-ingénierer.
 - En cas de choix architectural non standard, expliquer brièvement la raison.
+- **Toujours s'exprimer en français** avec l'utilisateur, quelle que soit la langue des fichiers ou du code.
+- **Ne pas surinterpréter les demandes spécifiques** : si la consigne est précise, s'y tenir strictement sans élargir le scope, sans ajouter de comportement non demandé.
 
 ## Gestion des erreurs
 

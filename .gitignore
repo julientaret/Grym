@@ -1,2 +1,5 @@
 # macOS
 .DS_Store
+
+# Xcode — état utilisateur de l'IDE
+*.xcuserstate

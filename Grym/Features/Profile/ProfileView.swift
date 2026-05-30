@@ -16,6 +16,9 @@ struct ProfileView: View {
                 Section(localization.string(.profileThemeLabel)) {
                     ThemePickerComponent()
                 }
+                Section(localization.string(.profileLanguageLabel)) {
+                    LanguagePickerComponent()
+                }
             }
             .navigationTitle(localization.string(.tabProfile))
         }

@@ -18,6 +18,13 @@ enum AppLanguage: String, CaseIterable {
         let code = Locale.preferredLanguages.first?.prefix(2).lowercased() ?? "en"
         return AppLanguage(rawValue: String(code)) ?? .english
     }
+
+    /// Nom natif de la langue (autonyme), ex. « Français », « English ».
+    var displayName: String {
+        let locale = Locale(identifier: rawValue)
+        return locale.localizedString(forLanguageCode: rawValue)?.capitalized
+            ?? rawValue.uppercased()
+    }
 }
 
 /// Clés de traduction. Aucune string en dur dans les vues.
@@ -26,6 +33,7 @@ enum TranslationKey: String {
     case tabSearch
     case tabProfile
     case profileThemeLabel
+    case profileLanguageLabel
     case themeGrymBlue
     case themeGrymViolet
 }
@@ -45,6 +53,7 @@ enum Translation {
             .tabSearch: "Rechercher",
             .tabProfile: "Profil",
             .profileThemeLabel: "Thème",
+            .profileLanguageLabel: "Langue",
             .themeGrymBlue: "Bleu",
             .themeGrymViolet: "Violet"
         ],
@@ -53,6 +62,7 @@ enum Translation {
             .tabSearch: "Search",
             .tabProfile: "Profile",
             .profileThemeLabel: "Theme",
+            .profileLanguageLabel: "Language",
             .themeGrymBlue: "Blue",
             .themeGrymViolet: "Violet"
         ]

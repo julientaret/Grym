@@ -16,7 +16,7 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
 - `Core/Theme/Themes/GrymBlueTheme.swift` — Thème par défaut (accent bleu).
 - `Core/Theme/Themes/GrymVioletTheme.swift` — Variante violette ; n'écrase que ses écarts.
 - `Core/Theme/ThemeManager.swift` — `ObservableObject` détenant le thème actif, le persiste (UserDefaults) et permet le switch à chaud.
-- `Core/Localization/LocalizationManager.swift` — `ObservableObject` gérant la langue active et l'accès aux traductions ; injecté dans l'environnement.
+- `Core/Localization/LocalizationManager.swift` — `ObservableObject` gérant la langue active (persistée en UserDefaults) et l'accès aux traductions ; injecté dans l'environnement.
 - `Core/Localization/Translation.swift` — Catalogue des traductions FR/EN, enum `AppLanguage` et clés `TranslationKey`.
 
 ## Features/Root
@@ -33,5 +33,6 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
 
 ## Features/Profile
 
-- `ProfileView.swift` — Onglet Profil, préférences utilisateur ; expose le choix du thème.
+- `ProfileView.swift` — Onglet Profil, préférences utilisateur ; expose le choix du thème et de la langue.
 - `Components/ThemePickerComponent.swift` — Sélecteur segmenté qui bascule le thème via le `ThemeManager`.
+- `Components/LanguagePickerComponent.swift` — Sélecteur segmenté qui bascule la langue via le `LocalizationManager`.

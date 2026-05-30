@@ -14,14 +14,25 @@ final class LocalizationManager: ObservableObject {
 
     static let shared = LocalizationManager()
 
-    @Published var language: AppLanguage
+    @Published private(set) var language: AppLanguage
 
-    init(language: AppLanguage = .system) {
-        self.language = language
+    private let storageKey = "selectedLanguage"
+
+    init() {
+        let saved = UserDefaults.standard.string(forKey: storageKey)
+            .flatMap(AppLanguage.init(rawValue:))
+        language = saved ?? .system
     }
 
     /// Retourne la traduction associée à une clé pour la langue active.
     func string(_ key: TranslationKey) -> String {
         Translation.value(for: key, language: language)
+    }
+
+    /// Bascule sur la langue demandée et persiste le choix (préférence scalaire).
+    func select(_ language: AppLanguage) {
+        guard language != self.language else { return }
+        self.language = language
+        UserDefaults.standard.set(language.rawValue, forKey: storageKey)
     }
 }

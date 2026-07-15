@@ -67,8 +67,10 @@ struct PageDetailView: View {
             TextBlockView(block: block)
         case .checklist:
             ChecklistBlockView(block: block)
-        case .photo, .map:
-            EmptyView() // types à venir
+        case .photo:
+            PhotoBlockView(block: block)
+        case .map:
+            EmptyView() // type à venir
         }
     }
 

@@ -25,6 +25,11 @@ struct AddBlockButton: View {
             } label: {
                 Label(localization.string(.blockTypeChecklist), systemImage: "checklist")
             }
+            Button {
+                onAdd(.photo)
+            } label: {
+                Label(localization.string(.blockTypePhoto), systemImage: "photo")
+            }
         } label: {
             HStack(spacing: Theme.Spacing.small) {
                 Image(systemName: "plus")

@@ -24,6 +24,13 @@ nonisolated struct ChecklistContent: Codable, Hashable {
     var doneCount: Int { items.filter(\.done).count }
 }
 
+// MARK: - Photo
+
+nonisolated struct PhotoContent: Codable, Hashable {
+    /// Noms de fichiers locaux (cf. `ImageStore`).
+    var fileNames: [String] = []
+}
+
 // MARK: - Accès depuis Block
 
 extension Block {
@@ -32,6 +39,18 @@ extension Block {
         get {
             (try? JSONDecoder().decode(ChecklistContent.self, from: Data(content.utf8)))
                 ?? ChecklistContent()
+        }
+        set {
+            content = (try? JSONEncoder().encode(newValue))
+                .flatMap { String(data: $0, encoding: .utf8) } ?? content
+        }
+    }
+
+    /// Contenu photo décodé/encodé depuis `content` (JSON).
+    var photos: PhotoContent {
+        get {
+            (try? JSONDecoder().decode(PhotoContent.self, from: Data(content.utf8)))
+                ?? PhotoContent()
         }
         set {
             content = (try? JSONEncoder().encode(newValue))

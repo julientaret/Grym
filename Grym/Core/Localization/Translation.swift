@@ -79,6 +79,8 @@ enum TranslationKey: String {
     case addBlock
     case blockTypeText
     case blockTypeChecklist
+    case blockTypePhoto
+    case photoAdd
     case textBlockPlaceholder
     case checklistTitlePlaceholder
     case checklistAddItem
@@ -141,6 +143,8 @@ enum Translation {
             .addBlock: "Ajouter un bloc",
             .blockTypeText: "Texte",
             .blockTypeChecklist: "Checklist",
+            .blockTypePhoto: "Photo",
+            .photoAdd: "Ajouter des photos",
             .textBlockPlaceholder: "Écris ici…",
             .checklistTitlePlaceholder: "Titre de la liste",
             .checklistAddItem: "Ajouter un élément",
@@ -192,6 +196,8 @@ enum Translation {
             .addBlock: "Add a block",
             .blockTypeText: "Text",
             .blockTypeChecklist: "Checklist",
+            .blockTypePhoto: "Photo",
+            .photoAdd: "Add photos",
             .textBlockPlaceholder: "Write here…",
             .checklistTitlePlaceholder: "List title",
             .checklistAddItem: "Add an item",

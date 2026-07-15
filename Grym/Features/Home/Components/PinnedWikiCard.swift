@@ -19,7 +19,7 @@ struct PinnedWikiCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.small) {
             WikiCoverView(
-                coverURL: wiki.coverURL,
+                imageId: wiki.coverImageId,
                 tint: wiki.coverTint,
                 cornerRadius: Theme.Radius.large
             )

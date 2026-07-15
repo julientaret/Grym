@@ -32,7 +32,7 @@ struct WikiDetailView: View {
             VStack(alignment: .leading, spacing: Theme.Spacing.large) {
                 WikiDetailHeader(
                     title: wiki.game?.title ?? "",
-                    coverURL: wiki.game?.coverURL(size: .coverBig),
+                    coverImageId: wiki.game?.coverImageId,
                     coverTint: .grymTint(for: wiki.game?.title ?? ""),
                     metaLine: metaLine,
                     blockCount: wiki.blockCount,

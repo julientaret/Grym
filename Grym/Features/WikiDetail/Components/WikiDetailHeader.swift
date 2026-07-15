@@ -10,7 +10,7 @@ import SwiftUI
 
 struct WikiDetailHeader: View {
     let title: String
-    let coverURL: URL?
+    let coverImageId: String?
     let coverTint: Color
     let metaLine: String?
     let blockCount: Int
@@ -26,7 +26,7 @@ struct WikiDetailHeader: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.medium) {
             HStack(alignment: .top, spacing: Theme.Spacing.medium) {
-                WikiCoverView(coverURL: coverURL, tint: coverTint,
+                WikiCoverView(imageId: coverImageId, tint: coverTint,
                               cornerRadius: Theme.Radius.medium)
                     .frame(width: 96, height: 128)
 
@@ -112,7 +112,7 @@ struct WikiDetailHeader: View {
 
 #Preview {
     WikiDetailHeader(
-        title: "Subnautica", coverURL: nil, coverTint: Color(hex: 0x2FA9D8),
+        title: "Subnautica", coverImageId: nil, coverTint: Color(hex: 0x2FA9D8),
         metaLine: "2018 · PC", blockCount: 47, photoCount: 24, listCount: 5,
         updatedAt: Date().addingTimeInterval(-259_200), isPinned: true, onTogglePin: {}
     )

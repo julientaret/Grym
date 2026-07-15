@@ -42,6 +42,10 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 - `IGDBError.swift` — Erreurs typées du service (`LocalizedError`).
 - `IGDBService.swift` — `actor` conforme à `IGDBServiceProtocol` : gère le token (cache + refresh auto) et la recherche de jeux (`searchGames`).
 
+## Core/Services
+
+- `CoverStore.swift` — Stockage local des jaquettes (offline-first) : téléchargement à l'ajout, rangées dans Application Support (exclu du backup), nommées par `image_id`.
+
 ## Features/Root
 
 - `RootTabView.swift` — Navigation principale : `TabView` à trois onglets (Wikis, Mes jeux, Profil).
@@ -56,7 +60,7 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 - `Components/HomeHeaderView.swift` — Titre « Grym », tagline et bouton d'ajout.
 - `Components/HomeSearchBar.swift` — Barre de recherche locale (actuellement masquée, conservée pour plus tard).
 - `Components/SectionHeaderView.swift` — En-tête de section réutilisable (icône + titre + compteur).
-- `Components/WikiCoverView.swift` — Cover d'un wiki (AsyncImage IGDB ou dégradé teinté de repli).
+- `Components/WikiCoverView.swift` — Cover d'un wiki : jaquette locale (offline) sinon CDN IGDB sinon dégradé teinté. Prend un `image_id`.
 - `Components/ScoreBadgeView.swift` — Pastille de note 0–100 colorée selon le tier du thème.
 - `Components/PinnedWikiCard.swift` — Carte d'un wiki épinglé.
 - `Components/PinnedWikisSection.swift` — Section « Épinglés » (défilement horizontal).

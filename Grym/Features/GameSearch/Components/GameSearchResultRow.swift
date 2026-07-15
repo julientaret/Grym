@@ -15,8 +15,9 @@ struct GameSearchResultRow: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.medium) {
             WikiCoverView(
-                coverURL: game.coverURL(size: .coverSmall),
+                imageId: game.cover?.imageId,
                 tint: theme.accentAlt,
+                size: .coverSmall,
                 cornerRadius: Theme.Radius.small
             )
             .frame(width: 52, height: 70)

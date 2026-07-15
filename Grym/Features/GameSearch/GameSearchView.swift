@@ -136,6 +136,10 @@ struct GameSearchView: View {
     private func addGame(_ game: IGDBGame) {
         do {
             try WikiRepository(context: modelContext).addWiki(for: game)
+            // Télécharge la jaquette pour un accès offline (jeu ajouté en ligne).
+            if let imageId = game.cover?.imageId {
+                Task { await CoverStore.downloadIfNeeded(imageId: imageId) }
+            }
             onSelect(game)
             dismiss()
         } catch {

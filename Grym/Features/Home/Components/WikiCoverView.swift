@@ -2,18 +2,26 @@
 //  WikiCoverView.swift
 //  Grym
 //
-//  Cover d'un wiki : image IGDB en lazy loading si disponible,
-//  sinon un dégradé teinté avec halo (repli visuel).
+//  Cover d'un wiki : jaquette locale (offline) en priorité, sinon CDN IGDB
+//  en lazy loading, sinon un dégradé teinté avec halo (repli visuel).
 //
 
 import SwiftUI
 
 struct WikiCoverView: View {
-    let coverURL: URL?
+    /// `image_id` IGDB de la jaquette ; `nil` = pas de cover connue.
+    let imageId: String?
     let tint: Color
+    var size: IGDBImageSize = .coverBig
     var cornerRadius: CGFloat = Theme.Radius.medium
     /// Titre optionnel imprimé sur le repli (rappelle les jaquettes maquette).
     var caption: String? = nil
+
+    /// Fichier local si présent, sinon URL CDN reconstruite.
+    private var coverURL: URL? {
+        guard let imageId else { return nil }
+        return CoverStore.existingLocalURL(for: imageId) ?? size.url(imageId: imageId)
+    }
 
     var body: some View {
         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
@@ -70,9 +78,9 @@ struct WikiCoverView: View {
 
 #Preview {
     HStack(spacing: Theme.Spacing.medium) {
-        WikiCoverView(coverURL: nil, tint: Color(hex: 0xE0A458), caption: "Elden Ring")
+        WikiCoverView(imageId: nil, tint: Color(hex: 0xE0A458), caption: "Elden Ring")
             .frame(width: 90, height: 90)
-        WikiCoverView(coverURL: nil, tint: Color(hex: 0x2FA9D8), caption: "Subnautica")
+        WikiCoverView(imageId: nil, tint: Color(hex: 0x2FA9D8), caption: "Subnautica")
             .frame(width: 130, height: 170)
     }
     .padding()

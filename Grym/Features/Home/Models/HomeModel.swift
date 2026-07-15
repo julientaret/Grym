@@ -15,8 +15,8 @@ import SwiftUI
 struct WikiSummary: Identifiable, Hashable {
     let id: String
     let title: String
-    /// Cover IGDB éventuelle ; à défaut, un dégradé teinté est affiché.
-    let coverURL: URL?
+    /// `image_id` IGDB de la jaquette ; à défaut, un dégradé teinté est affiché.
+    let coverImageId: String?
     /// Teinte de repli utilisée pour le dégradé de cover.
     let coverTint: Color
     let year: Int?
@@ -31,7 +31,7 @@ struct WikiSummary: Identifiable, Hashable {
     init(
         id: String = UUID().uuidString,
         title: String,
-        coverURL: URL? = nil,
+        coverImageId: String? = nil,
         coverTint: Color,
         year: Int?,
         platform: String?,
@@ -43,7 +43,7 @@ struct WikiSummary: Identifiable, Hashable {
     ) {
         self.id = id
         self.title = title
-        self.coverURL = coverURL
+        self.coverImageId = coverImageId
         self.coverTint = coverTint
         self.year = year
         self.platform = platform
@@ -61,7 +61,7 @@ struct WikiSummary: Identifiable, Hashable {
         self.init(
             id: "\(game.igdbId)",
             title: game.title,
-            coverURL: game.coverURL(size: .coverBig),
+            coverImageId: game.coverImageId,
             coverTint: .grymTint(for: game.title),
             year: game.releaseYear,
             platform: game.platform,

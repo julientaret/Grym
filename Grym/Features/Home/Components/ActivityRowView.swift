@@ -16,7 +16,7 @@ struct ActivityRowView: View {
     var body: some View {
         HStack(alignment: .top, spacing: Theme.Spacing.medium) {
             WikiCoverView(
-                coverURL: nil,
+                imageId: nil,
                 tint: entry.coverTint,
                 cornerRadius: Theme.Radius.small
             )

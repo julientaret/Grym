@@ -17,8 +17,9 @@ struct WikiRowView: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.medium) {
             WikiCoverView(
-                coverURL: wiki.coverURL,
+                imageId: wiki.coverImageId,
                 tint: wiki.coverTint,
+                size: .coverSmall,
                 cornerRadius: Theme.Radius.medium,
                 caption: wiki.title
             )

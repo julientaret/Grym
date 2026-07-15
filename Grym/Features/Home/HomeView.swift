@@ -10,12 +10,13 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
+    @State private var showingGameSearch = false
     @Environment(\.theme) private var theme
 
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: Theme.Spacing.large) {
-                HomeHeaderView(onAdd: {})
+                HomeHeaderView(onAdd: { showingGameSearch = true })
                     .padding(.horizontal, Theme.Spacing.large)
 
                 HomeSearchBar(text: $viewModel.searchText)
@@ -36,6 +37,12 @@ struct HomeView: View {
             .padding(.bottom, Theme.Spacing.xLarge)
         }
         .background(background)
+        .sheet(isPresented: $showingGameSearch) {
+            GameSearchView { _ in
+                // TODO: créer le wiki (SwiftData) puis ouvrir l'éditeur.
+                showingGameSearch = false
+            }
+        }
     }
 
     // MARK: Fond

@@ -47,6 +47,14 @@ enum TranslationKey: String {
     case statBlocks
     case statPhotos
     case statLists
+    // Game search
+    case gameSearchTitle
+    case gameSearchPlaceholder
+    case gameSearchPrompt
+    case gameSearchEmpty
+    case gameSearchError
+    case commonCancel
+    case commonRetry
 }
 
 /// Accès statique aux traductions.
@@ -76,7 +84,14 @@ enum Translation {
             .homeAllWikis: "Tous les wikis",
             .statBlocks: "blocs",
             .statPhotos: "photos",
-            .statLists: "listes"
+            .statLists: "listes",
+            .gameSearchTitle: "Ajouter un jeu",
+            .gameSearchPlaceholder: "Rechercher un jeu…",
+            .gameSearchPrompt: "Recherchez un jeu à ajouter à vos wikis.",
+            .gameSearchEmpty: "Aucun jeu trouvé.",
+            .gameSearchError: "Recherche impossible. Réessayez.",
+            .commonCancel: "Annuler",
+            .commonRetry: "Réessayer"
         ],
         .english: [
             .tabNotes: "Notes",
@@ -95,7 +110,14 @@ enum Translation {
             .homeAllWikis: "All wikis",
             .statBlocks: "blocks",
             .statPhotos: "photos",
-            .statLists: "lists"
+            .statLists: "lists",
+            .gameSearchTitle: "Add a game",
+            .gameSearchPlaceholder: "Search a game…",
+            .gameSearchPrompt: "Search a game to add to your wikis.",
+            .gameSearchEmpty: "No game found.",
+            .gameSearchError: "Search failed. Please try again.",
+            .commonCancel: "Cancel",
+            .commonRetry: "Retry"
         ]
     ]
 }

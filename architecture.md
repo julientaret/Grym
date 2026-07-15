@@ -52,6 +52,14 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 - `Components/WikiRowView.swift` — Ligne de la liste « Tous les wikis » (méta + stats + note).
 - `Components/AllWikisSection.swift` — Section « Tous les wikis · N ».
 
+## Features/GameSearch
+
+Ajout d'un jeu : recherche live IGDB, présentée en sheet depuis le bouton « + » de l'accueil.
+
+- `GameSearchView.swift` — Vue : champ de recherche + états (invite, chargement, résultats, vide, erreur) ; renvoie le jeu choisi via `onSelect`.
+- `GameSearchViewModel.swift` — `ObservableObject` : debounce, appel à `IGDBService`, machine à états `State`.
+- `Components/GameSearchResultRow.swift` — Ligne de résultat (cover IGDB, titre, année · plateforme).
+
 ## Features/Notes
 
 - `NotesView.swift` — Ancien onglet Notes, carnet de jeu personnel (placeholder, plus référencé par la nav).

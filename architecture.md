@@ -18,14 +18,43 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
 - `Core/Theme/ThemeManager.swift` — `ObservableObject` détenant le thème actif, le persiste (UserDefaults) et permet le switch à chaud.
 - `Core/Localization/LocalizationManager.swift` — `ObservableObject` gérant la langue active (persistée en UserDefaults) et l'accès aux traductions ; injecté dans l'environnement.
 - `Core/Localization/Translation.swift` — Catalogue des traductions FR/EN, enum `AppLanguage` et clés `TranslationKey`.
+- `Core/Extensions/Date+Relative.swift` — Formatage relatif localisé d'une date (« il y a 2 h », « hier »).
+
+## Core/Services/IGDB
+
+Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client credentials » de Twitch.
+
+- `IGDBConfig.swift` — Constantes d'accès : clés client (dev), endpoints token/API, marge d'expiration.
+- `IGDBModels.swift` — DTO de réponse (`IGDBGame`, `IGDBCover`, `IGDBPlatform`, `IGDBTokenResponse`) + helpers de présentation (année, plateforme, URL de cover, tailles d'image).
+- `IGDBError.swift` — Erreurs typées du service (`LocalizedError`).
+- `IGDBService.swift` — `actor` conforme à `IGDBServiceProtocol` : gère le token (cache + refresh auto) et la recherche de jeux (`searchGames`).
 
 ## Features/Root
 
-- `RootTabView.swift` — Navigation principale : `TabView` à trois onglets (Notes, Rechercher, Profil).
+- `RootTabView.swift` — Navigation principale : `TabView` à trois onglets (Wikis, Explorer, Profil).
+
+## Features/Home
+
+Écran d'accueil (onglet Wikis) reproduisant la maquette. Données mockées tant que SwiftData n'est pas branché.
+
+- `HomeView.swift` — Vue principale : en-tête, recherche, épinglés, activité récente, liste des wikis, sur fond dégradé.
+- `HomeViewModel.swift` — `ObservableObject` exposant épinglés, activité, wikis et filtrage par recherche locale (mock).
+- `Models/HomeModel.swift` — Modèles de présentation : `WikiSummary`, `ActivityEntry`, `ActivityKind`.
+- `Components/HomeHeaderView.swift` — Titre « Grym », tagline et bouton d'ajout.
+- `Components/HomeSearchBar.swift` — Barre de recherche locale (bind au ViewModel).
+- `Components/SectionHeaderView.swift` — En-tête de section réutilisable (icône + titre + compteur).
+- `Components/WikiCoverView.swift` — Cover d'un wiki (AsyncImage IGDB ou dégradé teinté de repli).
+- `Components/ScoreBadgeView.swift` — Pastille de note 0–100 colorée selon le tier du thème.
+- `Components/PinnedWikiCard.swift` — Carte d'un wiki épinglé.
+- `Components/PinnedWikisSection.swift` — Section « Épinglés » (défilement horizontal).
+- `Components/ActivityRowView.swift` — Ligne du flux d'activité récente.
+- `Components/RecentActivitySection.swift` — Section « Activité récente » (carte + filets).
+- `Components/WikiRowView.swift` — Ligne de la liste « Tous les wikis » (méta + stats + note).
+- `Components/AllWikisSection.swift` — Section « Tous les wikis · N ».
 
 ## Features/Notes
 
-- `NotesView.swift` — Onglet Notes, carnet de jeu personnel (placeholder à ce stade).
+- `NotesView.swift` — Ancien onglet Notes, carnet de jeu personnel (placeholder, plus référencé par la nav).
 
 ## Features/Search
 

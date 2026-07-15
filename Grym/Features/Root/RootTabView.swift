@@ -13,14 +13,14 @@ struct RootTabView: View {
 
     var body: some View {
         TabView {
-            NotesView()
+            HomeView()
                 .tabItem {
-                    Label(localization.string(.tabNotes), systemImage: "book.closed")
+                    Label(localization.string(.tabWikis), systemImage: "books.vertical.fill")
                 }
 
             SearchView()
                 .tabItem {
-                    Label(localization.string(.tabSearch), systemImage: "magnifyingglass")
+                    Label(localization.string(.tabExplorer), systemImage: "safari")
                 }
 
             ProfileView()

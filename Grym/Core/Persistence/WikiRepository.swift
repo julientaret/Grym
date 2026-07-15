@@ -65,6 +65,30 @@ struct WikiRepository {
         try? context.save()
     }
 
+    /// Ajoute un bloc à une page (ordre = fin de liste) et sauvegarde.
+    @discardableResult
+    func addBlock(to page: Page, type: BlockType, content: String = "") throws -> Block {
+        let order = (page.blocks.map(\.order).max() ?? -1) + 1
+        let block = Block(type: type, content: content, order: order)
+        block.page = page
+        context.insert(block)
+        page.wiki?.updatedAt = Date()
+        try context.save()
+        return block
+    }
+
+    /// Supprime un bloc et sauvegarde.
+    func delete(_ block: Block) throws {
+        block.page?.wiki?.updatedAt = Date()
+        context.delete(block)
+        try context.save()
+    }
+
+    /// Persiste les modifications en cours (édition inline de blocs/titres).
+    func save() {
+        try? context.save()
+    }
+
     // MARK: Privé
 
     private func makeWiki(for game: Game) throws -> Wiki {

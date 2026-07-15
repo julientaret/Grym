@@ -54,6 +54,9 @@ struct WikiDetailView: View {
         .background(background)
         .navigationTitle(wiki.game?.title ?? "")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(for: Page.self) { page in
+            PageDetailView(page: page)
+        }
     }
 
     // MARK: Pages
@@ -83,11 +86,14 @@ struct WikiDetailView: View {
             }
 
             ForEach(Array(sortedPages.enumerated()), id: \.element.persistentModelID) { index, page in
-                PageRowView(
-                    title: page.title,
-                    blockCount: page.blocks.count,
-                    accent: pageAccents[index % pageAccents.count]
-                )
+                NavigationLink(value: page) {
+                    PageRowView(
+                        title: page.title,
+                        blockCount: page.blocks.count,
+                        accent: pageAccents[index % pageAccents.count]
+                    )
+                }
+                .buttonStyle(.plain)
             }
         }
     }

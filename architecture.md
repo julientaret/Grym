@@ -17,6 +17,7 @@ Couche de données locale (SwiftData, offline-first).
 - `Page.swift` — `@Model` page nommée d'un wiki, contenant des blocs ordonnés.
 - `Block.swift` — `@Model` bloc de contenu (type persisté en `String`, exposé via `BlockType`).
 - `BlockType.swift` — Enum des types de bloc (text/photo/checklist/map).
+- `BlockContent.swift` — Encodage du contenu des blocs : texte brut (`.text`) ou JSON `ChecklistContent` (`.checklist`) ; accès via `Block.checklist`.
 - `WikiRepository.swift` — Écritures autour d'un `ModelContext` : création (dé-doublonnée) et suppression de wikis.
 - `PreviewSampleData.swift` — Conteneur SwiftData en mémoire pré-rempli (previews, DEBUG).
 
@@ -75,6 +76,15 @@ Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
 - `MyGamesView.swift` — `NavigationStack` : liste des wikis (`WikiRowView`), compteur, état vide, suppression par menu contextuel, navigation vers `WikiDetailView`.
 - `MyGamesViewModel.swift` — `ObservableObject` : charge les wikis (`load`), suppression via `WikiRepository` (`delete`).
+
+## Features/PageDetail
+
+Éditeur d'une page : titre éditable et flux de blocs (texte, checklist ; photo/carte à venir).
+
+- `PageDetailView.swift` — Assemble le titre et les blocs ; ajout (menu de type) et suppression de blocs ; sauvegarde à la sortie.
+- `Components/TextBlockView.swift` — Bloc texte libre, lié à `Block.content`.
+- `Components/ChecklistBlockView.swift` — Bloc checklist : titre, items cochables, progression.
+- `Components/AddBlockButton.swift` — Bouton + menu de choix du type de bloc.
 
 ## Features/WikiDetail
 

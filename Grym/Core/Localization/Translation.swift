@@ -73,6 +73,16 @@ enum TranslationKey: String {
     case tierMid
     case tierTopTier
     case tierGoty
+    // Éditeur de page / blocs
+    case pageTitlePlaceholder
+    case pageEmptyBlocks
+    case addBlock
+    case blockTypeText
+    case blockTypeChecklist
+    case textBlockPlaceholder
+    case checklistTitlePlaceholder
+    case checklistAddItem
+    case checklistItemPlaceholder
 }
 
 /// Accès statique aux traductions.
@@ -125,7 +135,16 @@ enum Translation {
             .tierPasOuf: "PAS OUF",
             .tierMid: "MID",
             .tierTopTier: "TOP TIER",
-            .tierGoty: "GOTY"
+            .tierGoty: "GOTY",
+            .pageTitlePlaceholder: "Titre de la page",
+            .pageEmptyBlocks: "Page vide.\nAjoute un premier bloc ci-dessous.",
+            .addBlock: "Ajouter un bloc",
+            .blockTypeText: "Texte",
+            .blockTypeChecklist: "Checklist",
+            .textBlockPlaceholder: "Écris ici…",
+            .checklistTitlePlaceholder: "Titre de la liste",
+            .checklistAddItem: "Ajouter un élément",
+            .checklistItemPlaceholder: "Élément"
         ],
         .english: [
             .tabProfile: "Profile",
@@ -167,7 +186,16 @@ enum Translation {
             .tierPasOuf: "MEH",
             .tierMid: "MID",
             .tierTopTier: "TOP TIER",
-            .tierGoty: "GOTY"
+            .tierGoty: "GOTY",
+            .pageTitlePlaceholder: "Page title",
+            .pageEmptyBlocks: "Empty page.\nAdd a first block below.",
+            .addBlock: "Add a block",
+            .blockTypeText: "Text",
+            .blockTypeChecklist: "Checklist",
+            .textBlockPlaceholder: "Write here…",
+            .checklistTitlePlaceholder: "List title",
+            .checklistAddItem: "Add an item",
+            .checklistItemPlaceholder: "Item"
         ]
     ]
 }

@@ -43,6 +43,12 @@ enum PreviewSampleData {
         return try! container.mainContext.fetch(descriptor).first!
     }
 
+    /// Première page du premier wiki (pour les previews d'éditeur).
+    static var samplePage: Page {
+        // force unwrap justifié : code de preview DEBUG uniquement.
+        sampleWiki.pages.first!
+    }
+
     private static func seed(
         _ context: ModelContext,
         igdbId: Int, title: String, cover: String,

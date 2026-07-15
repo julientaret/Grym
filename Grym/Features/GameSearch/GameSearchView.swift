@@ -6,10 +6,11 @@
 //  depuis le bouton « + » de l'accueil.
 //
 
+import SwiftData
 import SwiftUI
 
 struct GameSearchView: View {
-    /// Appelé quand l'utilisateur sélectionne un jeu à ajouter.
+    /// Appelé après l'ajout d'un jeu (le wiki est déjà persisté).
     let onSelect: (IGDBGame) -> Void
 
     @StateObject private var viewModel = GameSearchViewModel()
@@ -18,6 +19,7 @@ struct GameSearchView: View {
     @EnvironmentObject private var localization: LocalizationManager
     @Environment(\.theme) private var theme
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         NavigationStack {
@@ -98,7 +100,7 @@ struct GameSearchView: View {
                 LazyVStack(spacing: 0) {
                     ForEach(games) { game in
                         Button {
-                            onSelect(game)
+                            addGame(game)
                         } label: {
                             GameSearchResultRow(game: game)
                         }
@@ -125,6 +127,20 @@ struct GameSearchView: View {
                     .foregroundStyle(theme.accent)
                 Spacer()
             }
+        }
+    }
+
+    // MARK: Ajout
+
+    /// Persiste le wiki du jeu choisi puis referme la recherche.
+    private func addGame(_ game: IGDBGame) {
+        do {
+            try WikiRepository(context: modelContext).addWiki(for: game)
+            onSelect(game)
+            dismiss()
+        } catch {
+            // La création échoue silencieusement pour l'instant ;
+            // un retour d'erreur UI sera ajouté avec la gestion premium.
         }
     }
 
@@ -157,6 +173,7 @@ struct GameSearchView: View {
 
 #Preview {
     GameSearchView(onSelect: { _ in })
+        .modelContainer(PreviewSampleData.container)
         .environmentObject(LocalizationManager())
         .environment(\.theme, GrymBlueTheme())
 }

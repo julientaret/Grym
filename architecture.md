@@ -6,7 +6,19 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
 
 ## App
 
-- `GrymApp.swift` — Point d'entrée `@main`, injecte le `LocalizationManager` et affiche `RootTabView`.
+- `GrymApp.swift` — Point d'entrée `@main`, injecte `LocalizationManager`/`ThemeManager`, installe le `modelContainer` SwiftData (Game/Wiki/Page/Block) et affiche `RootTabView`.
+
+## Core/Persistence
+
+Couche de données locale (SwiftData, offline-first).
+
+- `Game.swift` — `@Model` métadonnées d'un jeu IGDB (dé-doublonné par `igdbId`) ; cover reconstruite depuis `coverImageId`.
+- `Wiki.swift` — `@Model` wiki d'un jeu : note privée, épinglage, pages ; expose des stats dérivées (blocs/photos/listes).
+- `Page.swift` — `@Model` page nommée d'un wiki, contenant des blocs ordonnés.
+- `Block.swift` — `@Model` bloc de contenu (type persisté en `String`, exposé via `BlockType`).
+- `BlockType.swift` — Enum des types de bloc (text/photo/checklist/map).
+- `WikiRepository.swift` — Écritures autour d'un `ModelContext` : création (dé-doublonnée) et suppression de wikis.
+- `PreviewSampleData.swift` — Conteneur SwiftData en mémoire pré-rempli (previews, DEBUG).
 
 ## Core
 
@@ -38,8 +50,8 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 Écran d'accueil (onglet Wikis) reproduisant la maquette. Données mockées tant que SwiftData n'est pas branché.
 
 - `HomeView.swift` — Vue principale : en-tête, recherche, épinglés, activité récente, liste des wikis, sur fond dégradé.
-- `HomeViewModel.swift` — `ObservableObject` exposant épinglés, activité, wikis et filtrage par recherche locale (mock).
-- `Models/HomeModel.swift` — Modèles de présentation : `WikiSummary`, `ActivityEntry`, `ActivityKind`.
+- `HomeViewModel.swift` — `ObservableObject` : charge les wikis depuis SwiftData (`load(context:)`), expose épinglés et filtrage par recherche locale.
+- `Models/HomeModel.swift` — Modèles de présentation : `WikiSummary` (avec mapping depuis `Wiki`), `ActivityEntry`, `ActivityKind`.
 - `Components/HomeHeaderView.swift` — Titre « Grym », tagline et bouton d'ajout.
 - `Components/HomeSearchBar.swift` — Barre de recherche locale (bind au ViewModel).
 - `Components/SectionHeaderView.swift` — En-tête de section réutilisable (icône + titre + compteur).
@@ -56,7 +68,7 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 
 Ajout d'un jeu : recherche live IGDB, présentée en sheet depuis le bouton « + » de l'accueil.
 
-- `GameSearchView.swift` — Vue : champ de recherche + états (invite, chargement, résultats, vide, erreur) ; renvoie le jeu choisi via `onSelect`.
+- `GameSearchView.swift` — Vue : champ de recherche + états (invite, chargement, résultats, vide, erreur) ; à la sélection, persiste le wiki via `WikiRepository` puis referme.
 - `GameSearchViewModel.swift` — `ObservableObject` : debounce, appel à `IGDBService`, machine à états `State`.
 - `Components/GameSearchResultRow.swift` — Ligne de résultat (cover IGDB, titre, année · plateforme).
 

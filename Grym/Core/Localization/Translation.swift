@@ -55,6 +55,7 @@ enum TranslationKey: String {
     case gameSearchError
     case commonCancel
     case commonRetry
+    case homeEmptyWikis
 }
 
 /// Accès statique aux traductions.
@@ -91,7 +92,8 @@ enum Translation {
             .gameSearchEmpty: "Aucun jeu trouvé.",
             .gameSearchError: "Recherche impossible. Réessayez.",
             .commonCancel: "Annuler",
-            .commonRetry: "Réessayer"
+            .commonRetry: "Réessayer",
+            .homeEmptyWikis: "Aucun wiki pour l'instant.\nAppuie sur + pour ajouter un jeu."
         ],
         .english: [
             .tabNotes: "Notes",
@@ -117,7 +119,8 @@ enum Translation {
             .gameSearchEmpty: "No game found.",
             .gameSearchError: "Search failed. Please try again.",
             .commonCancel: "Cancel",
-            .commonRetry: "Retry"
+            .commonRetry: "Retry",
+            .homeEmptyWikis: "No wiki yet.\nTap + to add a game."
         ]
     ]
 }

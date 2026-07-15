@@ -13,7 +13,7 @@ import SwiftUI
 
 /// Résumé d'un wiki tel qu'affiché dans la liste d'accueil.
 struct WikiSummary: Identifiable, Hashable {
-    let id: UUID
+    let id: String
     let title: String
     /// Cover IGDB éventuelle ; à défaut, un dégradé teinté est affiché.
     let coverURL: URL?
@@ -29,7 +29,7 @@ struct WikiSummary: Identifiable, Hashable {
     let updatedAt: Date
 
     init(
-        id: UUID = UUID(),
+        id: String = UUID().uuidString,
         title: String,
         coverURL: URL? = nil,
         coverTint: Color,
@@ -52,6 +52,25 @@ struct WikiSummary: Identifiable, Hashable {
         self.listCount = listCount
         self.score = score
         self.updatedAt = updatedAt
+    }
+
+    /// Construit un résumé à partir d'un wiki persistant (SwiftData).
+    /// Retourne `nil` si le wiki n'a pas de jeu rattaché.
+    init?(wiki: Wiki) {
+        guard let game = wiki.game else { return nil }
+        self.init(
+            id: "\(game.igdbId)",
+            title: game.title,
+            coverURL: game.coverURL(size: .coverBig),
+            coverTint: .grymTint(for: game.title),
+            year: game.releaseYear,
+            platform: game.platform,
+            blockCount: wiki.blockCount,
+            photoCount: wiki.photoCount,
+            listCount: wiki.listCount,
+            score: wiki.score,
+            updatedAt: wiki.updatedAt
+        )
     }
 }
 

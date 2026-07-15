@@ -5,6 +5,7 @@
 //  Created by Julien TARET on 30/05/2026.
 //
 
+import SwiftData
 import SwiftUI
 
 @main
@@ -20,5 +21,6 @@ struct GrymApp: App {
                 .environment(\.theme, themeManager.theme)
                 .tint(themeManager.theme.accent)
         }
+        .modelContainer(for: [Game.self, Wiki.self, Page.self, Block.self])
     }
 }

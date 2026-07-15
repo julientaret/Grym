@@ -24,13 +24,31 @@ struct AllWikisSection: View {
                     .foregroundStyle(theme.secondaryText)
             }
 
-            LazyVStack(spacing: Theme.Spacing.small) {
-                ForEach(wikis) { wiki in
-                    WikiRowView(wiki: wiki)
+            if wikis.isEmpty {
+                emptyState
+            } else {
+                LazyVStack(spacing: Theme.Spacing.small) {
+                    ForEach(wikis) { wiki in
+                        WikiRowView(wiki: wiki)
+                    }
                 }
             }
         }
         .padding(.horizontal, Theme.Spacing.large)
+    }
+
+    private var emptyState: some View {
+        VStack(spacing: Theme.Spacing.medium) {
+            Image(systemName: "gamecontroller")
+                .font(.system(size: Theme.FontSize.largeTitle))
+                .foregroundStyle(theme.secondaryText.opacity(0.7))
+            Text(localization.string(.homeEmptyWikis))
+                .font(.system(size: Theme.FontSize.body))
+                .foregroundStyle(theme.secondaryText)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, Theme.Spacing.xLarge)
     }
 }
 

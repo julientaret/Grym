@@ -6,12 +6,14 @@
 //  activité récente et liste de tous les wikis.
 //
 
+import SwiftData
 import SwiftUI
 
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @State private var showingGameSearch = false
     @Environment(\.theme) private var theme
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -23,12 +25,16 @@ struct HomeView: View {
                     .padding(.horizontal, Theme.Spacing.large)
 
                 if viewModel.searchText.isEmpty {
-                    PinnedWikisSection(
-                        wikis: viewModel.pinned,
-                        totalCount: viewModel.pinnedCount
-                    )
+                    if !viewModel.pinned.isEmpty {
+                        PinnedWikisSection(
+                            wikis: viewModel.pinned,
+                            totalCount: viewModel.pinnedCount
+                        )
+                    }
 
-                    RecentActivitySection(entries: viewModel.recentActivity)
+                    if !viewModel.recentActivity.isEmpty {
+                        RecentActivitySection(entries: viewModel.recentActivity)
+                    }
                 }
 
                 AllWikisSection(wikis: viewModel.filteredWikis)
@@ -37,11 +43,11 @@ struct HomeView: View {
             .padding(.bottom, Theme.Spacing.xLarge)
         }
         .background(background)
-        .sheet(isPresented: $showingGameSearch) {
-            GameSearchView { _ in
-                // TODO: créer le wiki (SwiftData) puis ouvrir l'éditeur.
-                showingGameSearch = false
-            }
+        .onAppear { viewModel.load(context: modelContext) }
+        .sheet(isPresented: $showingGameSearch, onDismiss: {
+            viewModel.load(context: modelContext)
+        }) {
+            GameSearchView { _ in showingGameSearch = false }
         }
     }
 
@@ -67,6 +73,7 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
+        .modelContainer(PreviewSampleData.container)
         .environmentObject(LocalizationManager())
         .environmentObject(ThemeManager())
         .environment(\.theme, GrymBlueTheme())

@@ -51,6 +51,11 @@ nonisolated enum IGDBImageSize: String {
     case cover2xBig     = "t_cover_big_2x"
     case thumb          = "t_thumb"
     case screenshotMed  = "t_screenshot_med"
+
+    /// URL CDN IGDB de l'image pour un `image_id` donné.
+    func url(imageId: String) -> URL? {
+        URL(string: "https://images.igdb.com/igdb/image/upload/\(rawValue)/\(imageId).jpg")
+    }
 }
 
 extension IGDBGame {
@@ -70,7 +75,6 @@ extension IGDBGame {
 
     /// URL de la cover pour une taille donnée, ou `nil` si le jeu n'en a pas.
     func coverURL(size: IGDBImageSize = .coverBig) -> URL? {
-        guard let imageId = cover?.imageId else { return nil }
-        return URL(string: "https://images.igdb.com/igdb/image/upload/\(size.rawValue)/\(imageId).jpg")
+        cover?.imageId.flatMap { size.url(imageId: $0) }
     }
 }

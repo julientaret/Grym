@@ -60,6 +60,17 @@ extension Color {
         default:     return .grymTierGOTY
         }
     }
+
+    /// Teinte de repli déterministe pour une jaquette absente, dérivée d'une graine
+    /// (hash stable entre lancements, contrairement à `String.hashValue`).
+    static func grymTint(for seed: String) -> Color {
+        let palette: [Color] = [
+            .grymAccent, .grymAccentViolet, .grymAccentRose,
+            .grymAccentGreen, .grymTierPasOuf, .grymTierMid
+        ]
+        let stable = seed.unicodeScalars.reduce(0) { $0 &+ Int($1.value) }
+        return palette[stable % palette.count]
+    }
 }
 
 // ───────────────────────────────────────────────────────────────

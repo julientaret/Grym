@@ -31,6 +31,22 @@ nonisolated struct PhotoContent: Codable, Hashable {
     var fileNames: [String] = []
 }
 
+// MARK: - Carte annotée
+
+nonisolated struct MapPin: Codable, Identifiable, Hashable {
+    var id: UUID = UUID()
+    /// Coordonnées relatives (0–1) sur l'image, indépendantes de l'affichage.
+    var x: Double
+    var y: Double
+    var label: String = ""
+}
+
+nonisolated struct MapContent: Codable, Hashable {
+    /// Nom de fichier local de l'image de carte (cf. `ImageStore`).
+    var imageFileName: String?
+    var pins: [MapPin] = []
+}
+
 // MARK: - Accès depuis Block
 
 extension Block {
@@ -51,6 +67,18 @@ extension Block {
         get {
             (try? JSONDecoder().decode(PhotoContent.self, from: Data(content.utf8)))
                 ?? PhotoContent()
+        }
+        set {
+            content = (try? JSONEncoder().encode(newValue))
+                .flatMap { String(data: $0, encoding: .utf8) } ?? content
+        }
+    }
+
+    /// Contenu carte décodé/encodé depuis `content` (JSON).
+    var map: MapContent {
+        get {
+            (try? JSONDecoder().decode(MapContent.self, from: Data(content.utf8)))
+                ?? MapContent()
         }
         set {
             content = (try? JSONEncoder().encode(newValue))

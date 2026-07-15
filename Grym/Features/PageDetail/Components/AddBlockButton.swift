@@ -30,6 +30,11 @@ struct AddBlockButton: View {
             } label: {
                 Label(localization.string(.blockTypePhoto), systemImage: "photo")
             }
+            Button {
+                onAdd(.map)
+            } label: {
+                Label(localization.string(.blockTypeMap), systemImage: "map")
+            }
         } label: {
             HStack(spacing: Theme.Spacing.small) {
                 Image(systemName: "plus")

@@ -80,7 +80,14 @@ enum TranslationKey: String {
     case blockTypeText
     case blockTypeChecklist
     case blockTypePhoto
+    case blockTypeMap
     case photoAdd
+    case mapAddImage
+    case mapReplaceImage
+    case mapEmptyHint
+    case mapPinLabelPlaceholder
+    case mapNoImageHint
+    case commonDone
     case textBlockPlaceholder
     case checklistTitlePlaceholder
     case checklistAddItem
@@ -144,7 +151,14 @@ enum Translation {
             .blockTypeText: "Texte",
             .blockTypeChecklist: "Checklist",
             .blockTypePhoto: "Photo",
+            .blockTypeMap: "Carte",
             .photoAdd: "Ajouter des photos",
+            .mapAddImage: "Ajouter une carte",
+            .mapReplaceImage: "Remplacer",
+            .mapEmptyHint: "Touche la carte pour ajouter un repère.",
+            .mapPinLabelPlaceholder: "Nom du repère",
+            .mapNoImageHint: "Aucune carte. Ajoute une image à annoter.",
+            .commonDone: "Terminé",
             .textBlockPlaceholder: "Écris ici…",
             .checklistTitlePlaceholder: "Titre de la liste",
             .checklistAddItem: "Ajouter un élément",
@@ -197,7 +211,14 @@ enum Translation {
             .blockTypeText: "Text",
             .blockTypeChecklist: "Checklist",
             .blockTypePhoto: "Photo",
+            .blockTypeMap: "Map",
             .photoAdd: "Add photos",
+            .mapAddImage: "Add a map",
+            .mapReplaceImage: "Replace",
+            .mapEmptyHint: "Tap the map to add a pin.",
+            .mapPinLabelPlaceholder: "Pin name",
+            .mapNoImageHint: "No map yet. Add an image to annotate.",
+            .commonDone: "Done",
             .textBlockPlaceholder: "Write here…",
             .checklistTitlePlaceholder: "List title",
             .checklistAddItem: "Add an item",

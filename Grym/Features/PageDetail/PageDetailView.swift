@@ -70,7 +70,7 @@ struct PageDetailView: View {
         case .photo:
             PhotoBlockView(block: block)
         case .map:
-            EmptyView() // type à venir
+            MapBlockView(block: block)
         }
     }
 

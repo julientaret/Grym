@@ -17,7 +17,7 @@ Couche de données locale (SwiftData, offline-first).
 - `Page.swift` — `@Model` page nommée d'un wiki, contenant des blocs ordonnés.
 - `Block.swift` — `@Model` bloc de contenu (type persisté en `String`, exposé via `BlockType`).
 - `BlockType.swift` — Enum des types de bloc (text/photo/checklist/map).
-- `BlockContent.swift` — Encodage du contenu des blocs : texte brut (`.text`), JSON `ChecklistContent` (`.checklist`) ou `PhotoContent` (`.photo`) ; accès via `Block.checklist` / `Block.photos`.
+- `BlockContent.swift` — Encodage du contenu des blocs : texte brut (`.text`), JSON `ChecklistContent` (`.checklist`), `PhotoContent` (`.photo`) ou `MapContent` (`.map`, image + pins) ; accès via `Block.checklist` / `Block.photos` / `Block.map`.
 - `WikiRepository.swift` — Écritures autour d'un `ModelContext` : création (dé-doublonnée) et suppression de wikis.
 - `PreviewSampleData.swift` — Conteneur SwiftData en mémoire pré-rempli (previews, DEBUG).
 
@@ -86,7 +86,10 @@ Onglet « Mes jeux » : liste complète des jeux ajoutés.
 - `Components/TextBlockView.swift` — Bloc texte libre, lié à `Block.content`.
 - `Components/ChecklistBlockView.swift` — Bloc checklist : titre, items cochables, progression.
 - `Components/PhotoBlockView.swift` — Bloc photo : galerie de miniatures locales, ajout via PhotosPicker, suppression, ouverture plein écran au tap via QuickLook natif (`.quickLookPreview`, zoom/pan/partage/swipe).
-- `Components/AddBlockButton.swift` — Bouton + menu de choix du type de bloc (texte / checklist / photo).
+- `MapEditorView.swift` — Éditeur plein écran d'une carte : image + pins (ajout au tap, drag, renommage/suppression).
+- `Components/MapBlockView.swift` — Bloc carte : aperçu (image + pins) ou invite d'ajout ; ouvre l'éditeur au tap.
+- `Components/AnnotatedMapView.swift` — Affichage image + pins (coordonnées relatives) ; mode lecture seule ou édition. Inclut `MapPinMarker`.
+- `Components/AddBlockButton.swift` — Bouton + menu de choix du type de bloc (texte / checklist / photo / carte).
 
 ## Features/WikiDetail
 

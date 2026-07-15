@@ -2,8 +2,8 @@
 //  HomeView.swift
 //  Grym
 //
-//  Écran d'accueil (onglet Wikis) : en-tête, recherche, wikis épinglés,
-//  activité récente et liste de tous les wikis.
+//  Écran d'accueil (onglet Wikis) — dashboard : en-tête, wikis épinglés
+//  et activité récente. La liste complète des jeux vit dans « Mes jeux ».
 //
 
 import SwiftData
@@ -12,6 +12,7 @@ import SwiftUI
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @State private var showingGameSearch = false
+    @EnvironmentObject private var localization: LocalizationManager
     @Environment(\.theme) private var theme
     @Environment(\.modelContext) private var modelContext
 
@@ -21,23 +22,20 @@ struct HomeView: View {
                 HomeHeaderView(onAdd: { showingGameSearch = true })
                     .padding(.horizontal, Theme.Spacing.large)
 
-                HomeSearchBar(text: $viewModel.searchText)
-                    .padding(.horizontal, Theme.Spacing.large)
-
-                if viewModel.searchText.isEmpty {
-                    if !viewModel.pinned.isEmpty {
-                        PinnedWikisSection(
-                            wikis: viewModel.pinned,
-                            totalCount: viewModel.pinnedCount
-                        )
-                    }
-
-                    if !viewModel.recentActivity.isEmpty {
-                        RecentActivitySection(entries: viewModel.recentActivity)
-                    }
+                if !viewModel.pinned.isEmpty {
+                    PinnedWikisSection(
+                        wikis: viewModel.pinned,
+                        totalCount: viewModel.pinnedCount
+                    )
                 }
 
-                AllWikisSection(wikis: viewModel.filteredWikis)
+                if !viewModel.recentActivity.isEmpty {
+                    RecentActivitySection(entries: viewModel.recentActivity)
+                }
+
+                if viewModel.isDashboardEmpty {
+                    dashboardEmptyState
+                }
             }
             .padding(.top, Theme.Spacing.small)
             .padding(.bottom, Theme.Spacing.xLarge)
@@ -49,6 +47,23 @@ struct HomeView: View {
         }) {
             GameSearchView { _ in showingGameSearch = false }
         }
+    }
+
+    // MARK: État vide
+
+    private var dashboardEmptyState: some View {
+        VStack(spacing: Theme.Spacing.medium) {
+            Image(systemName: "pin")
+                .font(.system(size: Theme.FontSize.largeTitle))
+                .foregroundStyle(theme.secondaryText.opacity(0.7))
+            Text(localization.string(.homeDashboardEmpty))
+                .font(.system(size: Theme.FontSize.body))
+                .foregroundStyle(theme.secondaryText)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, Theme.Spacing.large)
+        .padding(.top, Theme.Spacing.xLarge)
     }
 
     // MARK: Fond

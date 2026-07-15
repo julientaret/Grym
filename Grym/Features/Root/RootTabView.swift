@@ -18,9 +18,9 @@ struct RootTabView: View {
                     Label(localization.string(.tabWikis), systemImage: "books.vertical.fill")
                 }
 
-            SearchView()
+            MyGamesView()
                 .tabItem {
-                    Label(localization.string(.tabExplorer), systemImage: "safari")
+                    Label(localization.string(.tabMyGames), systemImage: "gamecontroller.fill")
                 }
 
             ProfileView()

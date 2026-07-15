@@ -43,17 +43,17 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 
 ## Features/Root
 
-- `RootTabView.swift` — Navigation principale : `TabView` à trois onglets (Wikis, Explorer, Profil).
+- `RootTabView.swift` — Navigation principale : `TabView` à trois onglets (Wikis, Mes jeux, Profil).
 
 ## Features/Home
 
-Écran d'accueil (onglet Wikis) reproduisant la maquette. Données mockées tant que SwiftData n'est pas branché.
+Écran d'accueil (onglet Wikis) — **dashboard** : épinglés et activité récente. La liste complète vit dans « Mes jeux ».
 
-- `HomeView.swift` — Vue principale : en-tête, recherche, épinglés, activité récente, liste des wikis, sur fond dégradé.
-- `HomeViewModel.swift` — `ObservableObject` : charge les wikis depuis SwiftData (`load(context:)`), expose épinglés et filtrage par recherche locale.
-- `Models/HomeModel.swift` — Modèles de présentation : `WikiSummary` (avec mapping depuis `Wiki`), `ActivityEntry`, `ActivityKind`.
+- `HomeView.swift` — Vue principale : en-tête, épinglés, activité récente, état vide de dashboard, sur fond dégradé. Ouvre la recherche via « + ».
+- `HomeViewModel.swift` — `ObservableObject` : charge épinglés + total depuis SwiftData (`load(context:)`) ; `isDashboardEmpty`.
+- `Models/HomeModel.swift` — Modèles de présentation : `WikiSummary` (mapping depuis `Wiki`), `ActivityEntry`, `ActivityKind`.
 - `Components/HomeHeaderView.swift` — Titre « Grym », tagline et bouton d'ajout.
-- `Components/HomeSearchBar.swift` — Barre de recherche locale (bind au ViewModel).
+- `Components/HomeSearchBar.swift` — Barre de recherche locale (actuellement masquée, conservée pour plus tard).
 - `Components/SectionHeaderView.swift` — En-tête de section réutilisable (icône + titre + compteur).
 - `Components/WikiCoverView.swift` — Cover d'un wiki (AsyncImage IGDB ou dégradé teinté de repli).
 - `Components/ScoreBadgeView.swift` — Pastille de note 0–100 colorée selon le tier du thème.
@@ -61,8 +61,15 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 - `Components/PinnedWikisSection.swift` — Section « Épinglés » (défilement horizontal).
 - `Components/ActivityRowView.swift` — Ligne du flux d'activité récente.
 - `Components/RecentActivitySection.swift` — Section « Activité récente » (carte + filets).
-- `Components/WikiRowView.swift` — Ligne de la liste « Tous les wikis » (méta + stats + note).
-- `Components/AllWikisSection.swift` — Section « Tous les wikis · N ».
+- `Components/WikiRowView.swift` — Ligne de jeu réutilisable (cover, méta, stats blocs/photos/listes, note). Utilisée aussi par « Mes jeux ».
+- `Components/AllWikisSection.swift` — Section liste de wikis avec compteur et état vide.
+
+## Features/MyGames
+
+Onglet « Mes jeux » : liste complète des jeux ajoutés.
+
+- `MyGamesView.swift` — Liste de tous les wikis (`WikiRowView`), compteur, état vide, suppression par menu contextuel.
+- `MyGamesViewModel.swift` — `ObservableObject` : charge les wikis (`load`), suppression via `WikiRepository` (`delete`).
 
 ## Features/GameSearch
 
@@ -71,14 +78,6 @@ Ajout d'un jeu : recherche live IGDB, présentée en sheet depuis le bouton « +
 - `GameSearchView.swift` — Vue : champ de recherche + états (invite, chargement, résultats, vide, erreur) ; à la sélection, persiste le wiki via `WikiRepository` puis referme.
 - `GameSearchViewModel.swift` — `ObservableObject` : debounce, appel à `IGDBService`, machine à états `State`.
 - `Components/GameSearchResultRow.swift` — Ligne de résultat (cover IGDB, titre, année · plateforme).
-
-## Features/Notes
-
-- `NotesView.swift` — Ancien onglet Notes, carnet de jeu personnel (placeholder, plus référencé par la nav).
-
-## Features/Search
-
-- `SearchView.swift` — Onglet Rechercher, recherche de jeux via IGDB (placeholder à ce stade).
 
 ## Features/Profile
 

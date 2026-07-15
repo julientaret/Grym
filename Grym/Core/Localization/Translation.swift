@@ -29,11 +29,8 @@ enum AppLanguage: String, CaseIterable {
 
 /// Clés de traduction. Aucune string en dur dans les vues.
 enum TranslationKey: String {
-    case tabNotes
-    case tabSearch
     case tabProfile
     case tabWikis
-    case tabExplorer
     case profileThemeLabel
     case profileLanguageLabel
     case themeGrymBlue
@@ -56,6 +53,10 @@ enum TranslationKey: String {
     case commonCancel
     case commonRetry
     case homeEmptyWikis
+    case homeDashboardEmpty
+    case tabMyGames
+    case myGamesTitle
+    case commonDelete
 }
 
 /// Accès statique aux traductions.
@@ -69,11 +70,8 @@ enum Translation {
 
     private static let translations: [AppLanguage: [TranslationKey: String]] = [
         .french: [
-            .tabNotes: "Notes",
-            .tabSearch: "Rechercher",
             .tabProfile: "Profil",
             .tabWikis: "Wikis",
-            .tabExplorer: "Explorer",
             .profileThemeLabel: "Thème",
             .profileLanguageLabel: "Langue",
             .themeGrymBlue: "Bleu",
@@ -93,14 +91,15 @@ enum Translation {
             .gameSearchError: "Recherche impossible. Réessayez.",
             .commonCancel: "Annuler",
             .commonRetry: "Réessayer",
-            .homeEmptyWikis: "Aucun wiki pour l'instant.\nAppuie sur + pour ajouter un jeu."
+            .homeEmptyWikis: "Aucun wiki pour l'instant.\nAppuie sur + pour ajouter un jeu.",
+            .homeDashboardEmpty: "Tes jeux épinglés et ton activité récente apparaîtront ici.",
+            .tabMyGames: "Mes jeux",
+            .myGamesTitle: "Mes jeux",
+            .commonDelete: "Supprimer"
         ],
         .english: [
-            .tabNotes: "Notes",
-            .tabSearch: "Search",
             .tabProfile: "Profile",
             .tabWikis: "Wikis",
-            .tabExplorer: "Explore",
             .profileThemeLabel: "Theme",
             .profileLanguageLabel: "Language",
             .themeGrymBlue: "Blue",
@@ -120,7 +119,11 @@ enum Translation {
             .gameSearchError: "Search failed. Please try again.",
             .commonCancel: "Cancel",
             .commonRetry: "Retry",
-            .homeEmptyWikis: "No wiki yet.\nTap + to add a game."
+            .homeEmptyWikis: "No wiki yet.\nTap + to add a game.",
+            .homeDashboardEmpty: "Your pinned games and recent activity will show up here.",
+            .tabMyGames: "My games",
+            .myGamesTitle: "My games",
+            .commonDelete: "Delete"
         ]
     ]
 }

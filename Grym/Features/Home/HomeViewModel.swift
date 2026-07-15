@@ -2,8 +2,8 @@
 //  HomeViewModel.swift
 //  Grym
 //
-//  Logique de l'écran d'accueil : expose les wikis, les épinglés et
-//  l'activité récente. Données mockées en attendant la couche SwiftData.
+//  Logique de l'écran d'accueil (dashboard) : wikis épinglés et
+//  activité récente, chargés depuis SwiftData.
 //
 
 import Combine
@@ -19,23 +19,17 @@ final class HomeViewModel: ObservableObject {
     @Published private(set) var pinnedCount: Int = 0
     /// Flux d'activité récente.
     @Published private(set) var recentActivity: [ActivityEntry] = []
-    /// Tous les wikis, triés par date de modification décroissante.
-    @Published private(set) var allWikis: [WikiSummary] = []
-    /// Texte de recherche locale.
-    @Published var searchText: String = ""
+    /// Nombre total de wikis (pour distinguer « aucun jeu » de « rien d'épinglé »).
+    @Published private(set) var totalWikiCount: Int = 0
 
-    /// Wikis filtrés par la recherche locale (titre).
-    var filteredWikis: [WikiSummary] {
-        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !query.isEmpty else { return allWikis }
-        return allWikis.filter { $0.title.localizedCaseInsensitiveContains(query) }
-    }
+    /// Vrai quand le dashboard n'a rien à afficher (ni épinglé, ni activité).
+    var isDashboardEmpty: Bool { pinned.isEmpty && recentActivity.isEmpty }
 
     init() {}
 
     // MARK: - Chargement depuis SwiftData
 
-    /// Recharge les wikis depuis le contexte (au premier affichage et après
+    /// Recharge le dashboard depuis le contexte (au premier affichage et après
     /// chaque ajout). L'activité récente reste vide tant qu'aucun journal
     /// d'événements n'existe.
     func load(context: ModelContext) {
@@ -44,17 +38,16 @@ final class HomeViewModel: ObservableObject {
         )
         do {
             let wikis = try context.fetch(descriptor)
-            allWikis = wikis.compactMap(WikiSummary.init(wiki:))
+            totalWikiCount = wikis.count
             let pinnedWikis = wikis.filter(\.isPinned)
             pinned = pinnedWikis.compactMap(WikiSummary.init(wiki:))
             pinnedCount = pinnedWikis.count
             recentActivity = []
         } catch {
-            allWikis = []
+            totalWikiCount = 0
             pinned = []
             pinnedCount = 0
             recentActivity = []
         }
     }
-
 }

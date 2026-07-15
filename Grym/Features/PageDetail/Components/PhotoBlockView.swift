@@ -7,13 +7,8 @@
 //
 
 import PhotosUI
+import QuickLook
 import SwiftUI
-
-/// Photo ouverte en plein écran (identifiée par son nom de fichier).
-nonisolated struct PhotoViewerItem: Identifiable {
-    let id: String
-    let url: URL
-}
 
 struct PhotoBlockView: View {
     @Bindable var block: Block
@@ -23,9 +18,15 @@ struct PhotoBlockView: View {
 
     @State private var content = PhotoContent()
     @State private var pickerItems: [PhotosPickerItem] = []
-    @State private var viewerItem: PhotoViewerItem?
+    /// Photo affichée en plein écran (QuickLook), parmi `photoURLs`.
+    @State private var previewURL: URL?
 
     private let columns = [GridItem(.adaptive(minimum: 90), spacing: Theme.Spacing.small)]
+
+    /// URLs locales de toutes les photos du bloc (pour le swipe QuickLook).
+    private var photoURLs: [URL] {
+        content.fileNames.map { ImageStore.url(for: $0) }
+    }
 
     var body: some View {
         // Capturée hors du closure (non-isolé) du label de PhotosPicker.
@@ -60,9 +61,7 @@ struct PhotoBlockView: View {
             guard !items.isEmpty else { return }
             importPickerItems(items)
         }
-        .fullScreenCover(item: $viewerItem) { item in
-            PhotoViewerView(url: item.url)
-        }
+        .quickLookPreview($previewURL, in: photoURLs)
     }
 
     // MARK: Miniature
@@ -79,7 +78,7 @@ struct PhotoBlockView: View {
         .frame(width: 90, height: 90)
         .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.small, style: .continuous))
         .onTapGesture {
-            viewerItem = PhotoViewerItem(id: fileName, url: ImageStore.url(for: fileName))
+            previewURL = ImageStore.url(for: fileName)
         }
         .contextMenu {
             Button(role: .destructive) {

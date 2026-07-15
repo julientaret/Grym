@@ -51,7 +51,6 @@ enum TranslationKey: String {
     case gameSearchEmpty
     case gameSearchError
     case commonCancel
-    case commonClose
     case commonRetry
     case homeEmptyWikis
     case homeDashboardEmpty
@@ -119,7 +118,6 @@ enum Translation {
             .gameSearchEmpty: "Aucun jeu trouvé.",
             .gameSearchError: "Recherche impossible. Réessayez.",
             .commonCancel: "Annuler",
-            .commonClose: "Fermer",
             .commonRetry: "Réessayer",
             .homeEmptyWikis: "Aucun wiki pour l'instant.\nAppuie sur + pour ajouter un jeu.",
             .homeDashboardEmpty: "Tes jeux épinglés et ton activité récente apparaîtront ici.",
@@ -173,7 +171,6 @@ enum Translation {
             .gameSearchEmpty: "No game found.",
             .gameSearchError: "Search failed. Please try again.",
             .commonCancel: "Cancel",
-            .commonClose: "Close",
             .commonRetry: "Retry",
             .homeEmptyWikis: "No wiki yet.\nTap + to add a game.",
             .homeDashboardEmpty: "Your pinned games and recent activity will show up here.",

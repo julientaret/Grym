@@ -23,7 +23,8 @@ Couche de données locale (SwiftData, offline-first).
 ## Core
 
 - `Core/Theme/Theme.swift` — Constantes du design system indépendantes du thème (spacings, font sizes, radius, durées d'animation).
-- `Core/Theme/Color+Theme.swift` — Palette brute (tokens `grym*`), helper de tier de note 0–100, init `hex` et init adaptatif clair/sombre.
+- `Core/Theme/Color+Theme.swift` — Palette brute (tokens `grym*`), helper de tier de note 0–100, teinte déterministe `grymTint`, init `hex` et init adaptatif clair/sombre.
+- `Core/Theme/ScoreTier.swift` — Paliers de note (Naze→GOTY) : rang, libellé localisé et couleur.
 - `Core/Theme/AppTheme.swift` — Protocole `AppTheme` (rôles de couleur) avec défauts base Grym, enum `ThemeID`, et clé d'environnement `\.theme`.
 - `Core/Theme/Themes/GrymBlueTheme.swift` — Thème par défaut (accent bleu).
 - `Core/Theme/Themes/GrymVioletTheme.swift` — Variante violette ; n'écrase que ses écarts.
@@ -68,8 +69,17 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 
 Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
-- `MyGamesView.swift` — Liste de tous les wikis (`WikiRowView`), compteur, état vide, suppression par menu contextuel.
+- `MyGamesView.swift` — `NavigationStack` : liste des wikis (`WikiRowView`), compteur, état vide, suppression par menu contextuel, navigation vers `WikiDetailView`.
 - `MyGamesViewModel.swift` — `ObservableObject` : charge les wikis (`load`), suppression via `WikiRepository` (`delete`).
+
+## Features/WikiDetail
+
+Détail d'un wiki : édition directe du modèle via `@Bindable` (écart MVVM justifié) ; mutations structurelles via `WikiRepository`.
+
+- `WikiDetailView.swift` — Assemble en-tête, note personnelle et pages ; épinglage, réglage du score, ajout de page.
+- `Components/WikiDetailHeader.swift` — Cover, titre, méta, bouton épingler et ligne de stats.
+- `Components/WikiScoreCard.swift` — Carte « Note personnelle » : score, palier et slider 0–100 à dégradé de tiers (drag par translation).
+- `Components/PageRowView.swift` — Ligne d'une page (icône, titre, nombre de blocs).
 
 ## Features/GameSearch
 

@@ -47,6 +47,24 @@ struct WikiRepository {
         try context.save()
     }
 
+    /// Ajoute une page au wiki (ordre = fin de liste) et sauvegarde.
+    @discardableResult
+    func addPage(to wiki: Wiki, title: String) throws -> Page {
+        let order = (wiki.pages.map(\.order).max() ?? -1) + 1
+        let page = Page(title: title, order: order)
+        page.wiki = wiki
+        context.insert(page)
+        wiki.updatedAt = Date()
+        try context.save()
+        return page
+    }
+
+    /// Marque le wiki comme modifié et persiste (après édition de score/épinglage).
+    func touch(_ wiki: Wiki) {
+        wiki.updatedAt = Date()
+        try? context.save()
+    }
+
     // MARK: Privé
 
     private func makeWiki(for game: Game) throws -> Wiki {

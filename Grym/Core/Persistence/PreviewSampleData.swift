@@ -34,6 +34,15 @@ enum PreviewSampleData {
         return container
     }()
 
+    /// Premier wiki du conteneur (pour les previews de détail).
+    static var sampleWiki: Wiki {
+        // force try / force unwrap justifiés : code de preview DEBUG uniquement.
+        let descriptor = FetchDescriptor<Wiki>(
+            sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
+        )
+        return try! container.mainContext.fetch(descriptor).first!
+    }
+
     private static func seed(
         _ context: ModelContext,
         igdbId: Int, title: String, cover: String,

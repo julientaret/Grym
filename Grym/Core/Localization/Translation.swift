@@ -57,6 +57,22 @@ enum TranslationKey: String {
     case tabMyGames
     case myGamesTitle
     case commonDelete
+    // Wiki detail
+    case wikiNoteTitle
+    case wikiNeverShared
+    case wikiPrivate
+    case wikiTierLabel
+    case wikiPagesTitle
+    case wikiNewPage
+    case wikiNewPageDefaultTitle
+    case wikiPin
+    case wikiUnpin
+    // Tiers de note
+    case tierNaze
+    case tierPasOuf
+    case tierMid
+    case tierTopTier
+    case tierGoty
 }
 
 /// Accès statique aux traductions.
@@ -95,7 +111,21 @@ enum Translation {
             .homeDashboardEmpty: "Tes jeux épinglés et ton activité récente apparaîtront ici.",
             .tabMyGames: "Mes jeux",
             .myGamesTitle: "Mes jeux",
-            .commonDelete: "Supprimer"
+            .commonDelete: "Supprimer",
+            .wikiNoteTitle: "NOTE PERSONNELLE",
+            .wikiNeverShared: "JAMAIS PARTAGÉ",
+            .wikiPrivate: "PRIVÉ",
+            .wikiTierLabel: "TIER",
+            .wikiPagesTitle: "Pages",
+            .wikiNewPage: "Nouvelle page",
+            .wikiNewPageDefaultTitle: "Nouvelle page",
+            .wikiPin: "Épingler",
+            .wikiUnpin: "Désépingler",
+            .tierNaze: "NAZE",
+            .tierPasOuf: "PAS OUF",
+            .tierMid: "MID",
+            .tierTopTier: "TOP TIER",
+            .tierGoty: "GOTY"
         ],
         .english: [
             .tabProfile: "Profile",
@@ -123,7 +153,21 @@ enum Translation {
             .homeDashboardEmpty: "Your pinned games and recent activity will show up here.",
             .tabMyGames: "My games",
             .myGamesTitle: "My games",
-            .commonDelete: "Delete"
+            .commonDelete: "Delete",
+            .wikiNoteTitle: "PERSONAL SCORE",
+            .wikiNeverShared: "NEVER SHARED",
+            .wikiPrivate: "PRIVATE",
+            .wikiTierLabel: "TIER",
+            .wikiPagesTitle: "Pages",
+            .wikiNewPage: "New page",
+            .wikiNewPageDefaultTitle: "New page",
+            .wikiPin: "Pin",
+            .wikiUnpin: "Unpin",
+            .tierNaze: "TRASH",
+            .tierPasOuf: "MEH",
+            .tierMid: "MID",
+            .tierTopTier: "TOP TIER",
+            .tierGoty: "GOTY"
         ]
     ]
 }

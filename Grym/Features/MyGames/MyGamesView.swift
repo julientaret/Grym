@@ -17,33 +17,43 @@ struct MyGamesView: View {
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: Theme.Spacing.large) {
-                header
+        NavigationStack {
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: Theme.Spacing.large) {
+                    header
 
-                if viewModel.games.isEmpty {
-                    emptyState
-                } else {
-                    LazyVStack(spacing: Theme.Spacing.small) {
-                        ForEach(viewModel.games) { game in
-                            WikiRowView(wiki: game)
-                                .contextMenu {
-                                    Button(role: .destructive) {
-                                        viewModel.delete(game, context: modelContext)
-                                    } label: {
-                                        Label(localization.string(.commonDelete),
-                                              systemImage: "trash")
+                    if viewModel.wikis.isEmpty {
+                        emptyState
+                    } else {
+                        LazyVStack(spacing: Theme.Spacing.small) {
+                            ForEach(viewModel.wikis) { wiki in
+                                if let summary = WikiSummary(wiki: wiki) {
+                                    NavigationLink(value: wiki) {
+                                        WikiRowView(wiki: summary)
+                                    }
+                                    .buttonStyle(.plain)
+                                    .contextMenu {
+                                        Button(role: .destructive) {
+                                            viewModel.delete(wiki, context: modelContext)
+                                        } label: {
+                                            Label(localization.string(.commonDelete),
+                                                  systemImage: "trash")
+                                        }
                                     }
                                 }
+                            }
                         }
+                        .padding(.horizontal, Theme.Spacing.large)
                     }
-                    .padding(.horizontal, Theme.Spacing.large)
                 }
+                .padding(.top, Theme.Spacing.small)
+                .padding(.bottom, Theme.Spacing.xLarge)
             }
-            .padding(.top, Theme.Spacing.small)
-            .padding(.bottom, Theme.Spacing.xLarge)
+            .background(background)
+            .navigationDestination(for: Wiki.self) { wiki in
+                WikiDetailView(wiki: wiki)
+            }
         }
-        .background(background)
         .onAppear { viewModel.load(context: modelContext) }
     }
 
@@ -54,8 +64,8 @@ struct MyGamesView: View {
             Text(localization.string(.myGamesTitle))
                 .font(.system(size: Theme.FontSize.largeTitle, weight: .bold))
                 .foregroundStyle(theme.primaryText)
-            if !viewModel.games.isEmpty {
-                Text("· \(viewModel.games.count)")
+            if !viewModel.wikis.isEmpty {
+                Text("· \(viewModel.wikis.count)")
                     .font(.system(size: Theme.FontSize.title, weight: .semibold))
                     .foregroundStyle(theme.secondaryText)
             }

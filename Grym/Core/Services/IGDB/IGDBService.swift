@@ -37,6 +37,9 @@ actor IGDBService: IGDBServiceProtocol {
     /// Token courant et sa date d'expiration effective (marge déjà appliquée).
     private var cachedToken: (value: String, expiresAt: Date)?
 
+    /// Caractères retirés de la requête pour éviter de casser le motif APICalypse.
+    private let apicalypseUnsafe = CharacterSet(charactersIn: "\"*\\;(){}[]&~")
+
     init(session: URLSession = .shared) {
         self.session = session
         let decoder = JSONDecoder()
@@ -50,14 +53,26 @@ actor IGDBService: IGDBServiceProtocol {
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return [] }
 
-        // Échappe les guillemets pour ne pas casser la requête APICalypse.
-        let sanitized = trimmed.replacingOccurrences(of: "\"", with: "")
+        // Neutralise les caractères susceptibles de casser le motif APICalypse.
+        let sanitized = trimmed.components(separatedBy: apicalypseUnsafe).joined()
+        guard !sanitized.isEmpty else { return [] }
 
+        // Fiabilité des résultats :
+        // - `name ~ *"…"*` : filtre insensible à la casse (permet le tri par popularité,
+        //   `search` étant incompatible avec `sort`).
+        // - `game_type = (0,8,9,10)` : jeu principal, remake, remaster, expanded_game —
+        //   exclut ports (11), bundles (3), packs (13), DLC (1), éditions collector…
+        // - `version_parent = null` : exclut les éditions dérivées (Deluxe, GOTY…).
+        // - `cover != null` : écarte les fiches sans jaquette (souvent du bruit).
+        // - `sort total_rating_count desc` : remonte les jeux emblématiques, coule les fan-games.
         let apicalypse = """
-        search "\(sanitized)"; \
         fields name, slug, first_release_date, cover.image_id, \
         platforms.name, platforms.abbreviation; \
-        where cover != null; \
+        where name ~ *"\(sanitized)"* \
+        & cover != null \
+        & version_parent = null \
+        & game_type = (0,8,9,10); \
+        sort total_rating_count desc; \
         limit \(max(1, limit));
         """
 

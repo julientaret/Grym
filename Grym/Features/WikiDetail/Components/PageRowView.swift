@@ -38,10 +38,6 @@ struct PageRowView: View {
             }
 
             Spacer(minLength: Theme.Spacing.small)
-
-            Image(systemName: "chevron.right")
-                .font(.system(size: Theme.FontSize.caption, weight: .semibold))
-                .foregroundStyle(theme.secondaryText)
         }
         .padding(Theme.Spacing.medium)
         .background(

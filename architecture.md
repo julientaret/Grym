@@ -33,6 +33,7 @@ Couche de données locale (SwiftData, offline-first).
 - `Core/Localization/LocalizationManager.swift` — `ObservableObject` gérant la langue active (persistée en UserDefaults) et l'accès aux traductions ; injecté dans l'environnement.
 - `Core/Localization/Translation.swift` — Catalogue des traductions FR/EN, enum `AppLanguage` et clés `TranslationKey`.
 - `Core/Extensions/Date+Relative.swift` — Formatage relatif localisé d'une date (« il y a 2 h », « hier »).
+- `Core/Extensions/View+GrymListRow.swift` — Style de ligne de `List` transparent (`grymBlockRow`) pour garder l'apparence carte avec le drag & drop natif.
 
 ## Core/Services/IGDB
 
@@ -82,7 +83,7 @@ Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
 Éditeur d'une page : titre éditable et flux de blocs (texte, checklist ; photo/carte à venir).
 
-- `PageDetailView.swift` — Assemble le titre et les blocs ; ajout (menu de type) et suppression de blocs ; sauvegarde à la sortie.
+- `PageDetailView.swift` — `List` : titre et blocs ; ajout (menu de type), réorganisation (drag & drop via EditButton) et suppression de blocs ; sauvegarde à la sortie.
 - `Components/TextBlockView.swift` — Bloc texte libre, lié à `Block.content`.
 - `Components/ChecklistBlockView.swift` — Bloc checklist : titre, items cochables, progression.
 - `Components/PhotoBlockView.swift` — Bloc photo : galerie de miniatures locales, ajout via PhotosPicker, suppression, ouverture plein écran au tap via QuickLook natif (`.quickLookPreview`, zoom/pan/partage/swipe).
@@ -95,7 +96,7 @@ Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
 Détail d'un wiki : édition directe du modèle via `@Bindable` (écart MVVM justifié) ; mutations structurelles via `WikiRepository`.
 
-- `WikiDetailView.swift` — Assemble en-tête, note personnelle et pages ; épinglage, réglage du score, ajout de page.
+- `WikiDetailView.swift` — `List` : en-tête, note personnelle et pages ; épinglage, score, ajout/réorganisation (drag & drop via EditButton)/suppression de pages.
 - `Components/WikiDetailHeader.swift` — Cover, titre, méta, bouton épingler et ligne de stats.
 - `Components/WikiScoreCard.swift` — Carte « Note personnelle » : score, palier et slider 0–100 à dégradé de tiers (drag par translation).
 - `Components/PageRowView.swift` — Ligne d'une page (icône, titre, nombre de blocs).

@@ -28,32 +28,48 @@ struct WikiDetailView: View {
     }
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: Theme.Spacing.large) {
-                WikiDetailHeader(
-                    title: wiki.game?.title ?? "",
-                    coverImageId: wiki.game?.coverImageId,
-                    coverTint: .grymTint(for: wiki.game?.title ?? ""),
-                    metaLine: metaLine,
-                    blockCount: wiki.blockCount,
-                    photoCount: wiki.photoCount,
-                    listCount: wiki.listCount,
-                    updatedAt: wiki.updatedAt,
-                    isPinned: wiki.isPinned,
-                    onTogglePin: togglePin
-                )
+        List {
+            WikiDetailHeader(
+                title: wiki.game?.title ?? "",
+                coverImageId: wiki.game?.coverImageId,
+                coverTint: .grymTint(for: wiki.game?.title ?? ""),
+                metaLine: metaLine,
+                blockCount: wiki.blockCount,
+                photoCount: wiki.photoCount,
+                listCount: wiki.listCount,
+                updatedAt: wiki.updatedAt,
+                isPinned: wiki.isPinned,
+                onTogglePin: togglePin
+            )
+            .grymBlockRow()
 
-                WikiScoreCard(score: $wiki.score, onCommit: { repository.touch(wiki) })
+            WikiScoreCard(score: $wiki.score, onCommit: { repository.touch(wiki) })
+                .grymBlockRow()
 
-                pagesSection
+            pagesHeader.grymBlockRow()
+
+            ForEach(sortedPages) { page in
+                NavigationLink(value: page) {
+                    PageRowView(
+                        title: page.title,
+                        blockCount: page.blocks.count,
+                        accent: pageAccents[abs(page.order) % pageAccents.count]
+                    )
+                }
+                .grymBlockRow()
             }
-            .padding(.horizontal, Theme.Spacing.large)
-            .padding(.top, Theme.Spacing.small)
-            .padding(.bottom, Theme.Spacing.xLarge)
+            .onMove(perform: movePages)
+            .onDelete(perform: deletePages)
         }
+        .listStyle(.plain)
+        .environment(\.defaultMinListRowHeight, 0)
+        .scrollContentBackground(.hidden)
         .background(background)
         .navigationTitle(wiki.game?.title ?? "")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) { EditButton() }
+        }
         .navigationDestination(for: Page.self) { page in
             PageDetailView(page: page)
         }
@@ -61,41 +77,43 @@ struct WikiDetailView: View {
 
     // MARK: Pages
 
-    private var pagesSection: some View {
-        VStack(alignment: .leading, spacing: Theme.Spacing.medium) {
-            HStack {
-                HStack(spacing: Theme.Spacing.xSmall + 2) {
-                    Text(localization.string(.wikiPagesTitle))
-                        .font(.system(size: Theme.FontSize.body, weight: .semibold))
-                        .foregroundStyle(theme.primaryText)
-                    Text("· \(sortedPages.count)")
-                        .font(.system(size: Theme.FontSize.body, weight: .semibold))
-                        .foregroundStyle(theme.secondaryText)
-                }
-
-                Spacer()
-
-                Button(action: addPage) {
-                    HStack(spacing: Theme.Spacing.xSmall) {
-                        Image(systemName: "plus")
-                        Text(localization.string(.wikiNewPage))
-                    }
-                    .font(.system(size: Theme.FontSize.caption, weight: .semibold))
-                    .foregroundStyle(theme.accent)
-                }
+    private var pagesHeader: some View {
+        HStack {
+            HStack(spacing: Theme.Spacing.xSmall + 2) {
+                Text(localization.string(.wikiPagesTitle))
+                    .font(.system(size: Theme.FontSize.body, weight: .semibold))
+                    .foregroundStyle(theme.primaryText)
+                Text("· \(sortedPages.count)")
+                    .font(.system(size: Theme.FontSize.body, weight: .semibold))
+                    .foregroundStyle(theme.secondaryText)
             }
 
-            ForEach(Array(sortedPages.enumerated()), id: \.element.persistentModelID) { index, page in
-                NavigationLink(value: page) {
-                    PageRowView(
-                        title: page.title,
-                        blockCount: page.blocks.count,
-                        accent: pageAccents[index % pageAccents.count]
-                    )
+            Spacer()
+
+            Button(action: addPage) {
+                HStack(spacing: Theme.Spacing.xSmall) {
+                    Image(systemName: "plus")
+                    Text(localization.string(.wikiNewPage))
                 }
-                .buttonStyle(.plain)
+                .font(.system(size: Theme.FontSize.caption, weight: .semibold))
+                .foregroundStyle(theme.accent)
             }
         }
+    }
+
+    private func movePages(from source: IndexSet, to destination: Int) {
+        var pages = sortedPages
+        pages.move(fromOffsets: source, toOffset: destination)
+        for (index, page) in pages.enumerated() { page.order = index }
+        repository.save()
+    }
+
+    private func deletePages(at offsets: IndexSet) {
+        for index in offsets {
+            let page = sortedPages[index]
+            modelContext.delete(page)
+        }
+        repository.save()
     }
 
     // MARK: Actions

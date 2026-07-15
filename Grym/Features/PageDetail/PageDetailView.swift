@@ -23,39 +23,50 @@ struct PageDetailView: View {
     }
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: Theme.Spacing.large) {
-                TextField(localization.string(.pageTitlePlaceholder), text: $page.title)
-                    .font(.system(size: Theme.FontSize.title, weight: .bold))
-                    .foregroundStyle(theme.primaryText)
+        List {
+            TextField(localization.string(.pageTitlePlaceholder), text: $page.title)
+                .font(.system(size: Theme.FontSize.title, weight: .bold))
+                .foregroundStyle(theme.primaryText)
+                .grymBlockRow()
 
-                if sortedBlocks.isEmpty {
-                    emptyState
-                } else {
-                    ForEach(sortedBlocks) { block in
-                        blockView(block)
-                            .contextMenu {
-                                Button(role: .destructive) {
-                                    try? repository.delete(block)
-                                } label: {
-                                    Label(localization.string(.commonDelete), systemImage: "trash")
-                                }
-                            }
-                    }
+            if sortedBlocks.isEmpty {
+                emptyState.grymBlockRow()
+            } else {
+                ForEach(sortedBlocks) { block in
+                    blockView(block).grymBlockRow()
                 }
-
-                AddBlockButton { type in
-                    _ = try? repository.addBlock(to: page, type: type)
-                }
+                .onMove(perform: moveBlocks)
+                .onDelete(perform: deleteBlocks)
             }
-            .padding(.horizontal, Theme.Spacing.large)
-            .padding(.top, Theme.Spacing.small)
-            .padding(.bottom, Theme.Spacing.xLarge)
+
+            AddBlockButton { type in
+                _ = try? repository.addBlock(to: page, type: type)
+            }
+            .grymBlockRow()
         }
+        .listStyle(.plain)
+        .environment(\.defaultMinListRowHeight, 0)
+        .scrollContentBackground(.hidden)
         .background(background)
         .navigationTitle(page.title)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) { EditButton() }
+        }
         .onDisappear { repository.save() }
+    }
+
+    // MARK: Réorganisation / suppression
+
+    private func moveBlocks(from source: IndexSet, to destination: Int) {
+        var blocks = sortedBlocks
+        blocks.move(fromOffsets: source, toOffset: destination)
+        for (index, block) in blocks.enumerated() { block.order = index }
+        repository.save()
+    }
+
+    private func deleteBlocks(at offsets: IndexSet) {
+        for index in offsets { try? repository.delete(sortedBlocks[index]) }
     }
 
     // MARK: Rendu d'un bloc

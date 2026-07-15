@@ -11,6 +11,7 @@ import SwiftUI
 
 struct MyGamesView: View {
     @StateObject private var viewModel = MyGamesViewModel()
+    @State private var showingGameSearch = false
 
     @EnvironmentObject private var localization: LocalizationManager
     @Environment(\.theme) private var theme
@@ -45,6 +46,10 @@ struct MyGamesView: View {
                         }
                         .padding(.horizontal, Theme.Spacing.large)
                     }
+
+                    WideAddGameButton { showingGameSearch = true }
+                        .padding(.horizontal, Theme.Spacing.large)
+                        .padding(.top, Theme.Spacing.small)
                 }
                 .padding(.top, Theme.Spacing.small)
                 .padding(.bottom, Theme.Spacing.xLarge)
@@ -55,6 +60,11 @@ struct MyGamesView: View {
             }
         }
         .onAppear { viewModel.load(context: modelContext) }
+        .sheet(isPresented: $showingGameSearch, onDismiss: {
+            viewModel.load(context: modelContext)
+        }) {
+            GameSearchView { _ in showingGameSearch = false }
+        }
     }
 
     // MARK: En-tête
@@ -70,6 +80,7 @@ struct MyGamesView: View {
                     .foregroundStyle(theme.secondaryText)
             }
             Spacer()
+            CircularAddGameButton { showingGameSearch = true }
         }
         .padding(.horizontal, Theme.Spacing.large)
     }

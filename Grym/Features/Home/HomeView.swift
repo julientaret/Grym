@@ -11,7 +11,6 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
-    @State private var showingGameSearch = false
     @EnvironmentObject private var localization: LocalizationManager
     @Environment(\.theme) private var theme
     @Environment(\.modelContext) private var modelContext
@@ -19,7 +18,7 @@ struct HomeView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: Theme.Spacing.large) {
-                HomeHeaderView(onAdd: { showingGameSearch = true })
+                HomeHeaderView()
                     .padding(.horizontal, Theme.Spacing.large)
 
                 if !viewModel.pinned.isEmpty {
@@ -42,11 +41,6 @@ struct HomeView: View {
         }
         .background(background)
         .onAppear { viewModel.load(context: modelContext) }
-        .sheet(isPresented: $showingGameSearch, onDismiss: {
-            viewModel.load(context: modelContext)
-        }) {
-            GameSearchView { _ in showingGameSearch = false }
-        }
     }
 
     // MARK: État vide

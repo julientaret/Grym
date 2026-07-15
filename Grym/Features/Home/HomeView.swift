@@ -16,30 +16,35 @@ struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: Theme.Spacing.large) {
-                HomeHeaderView()
-                    .padding(.horizontal, Theme.Spacing.large)
+        NavigationStack {
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: Theme.Spacing.large) {
+                    HomeHeaderView()
+                        .padding(.horizontal, Theme.Spacing.large)
 
-                if !viewModel.pinned.isEmpty {
-                    PinnedWikisSection(
-                        wikis: viewModel.pinned,
-                        totalCount: viewModel.pinnedCount
-                    )
-                }
+                    if !viewModel.pinnedWikis.isEmpty {
+                        PinnedWikisSection(
+                            wikis: viewModel.pinnedWikis,
+                            totalCount: viewModel.pinnedCount
+                        )
+                    }
 
-                if !viewModel.recentActivity.isEmpty {
-                    RecentActivitySection(entries: viewModel.recentActivity)
-                }
+                    if !viewModel.recentActivity.isEmpty {
+                        RecentActivitySection(entries: viewModel.recentActivity)
+                    }
 
-                if viewModel.isDashboardEmpty {
-                    dashboardEmptyState
+                    if viewModel.isDashboardEmpty {
+                        dashboardEmptyState
+                    }
                 }
+                .padding(.top, Theme.Spacing.small)
+                .padding(.bottom, Theme.Spacing.xLarge)
             }
-            .padding(.top, Theme.Spacing.small)
-            .padding(.bottom, Theme.Spacing.xLarge)
+            .background(background)
+            .navigationDestination(for: Wiki.self) { wiki in
+                WikiDetailView(wiki: wiki)
+            }
         }
-        .background(background)
         .onAppear { viewModel.load(context: modelContext) }
     }
 

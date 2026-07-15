@@ -5,10 +5,11 @@
 //  Section « Épinglés » : en-tête + défilement horizontal des cartes.
 //
 
+import SwiftData
 import SwiftUI
 
 struct PinnedWikisSection: View {
-    let wikis: [WikiSummary]
+    let wikis: [Wiki]
     let totalCount: Int
 
     @EnvironmentObject private var localization: LocalizationManager
@@ -25,7 +26,12 @@ struct PinnedWikisSection: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .top, spacing: Theme.Spacing.medium) {
                     ForEach(wikis) { wiki in
-                        PinnedWikiCard(wiki: wiki)
+                        if let summary = WikiSummary(wiki: wiki) {
+                            NavigationLink(value: wiki) {
+                                PinnedWikiCard(wiki: summary)
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
                 }
                 .padding(.horizontal, Theme.Spacing.large)
@@ -35,17 +41,10 @@ struct PinnedWikisSection: View {
 }
 
 #Preview {
-    PinnedWikisSection(
-        wikis: [
-            WikiSummary(title: "Elden Ring", coverTint: Color(hex: 0xE0A458),
-                        year: 2022, platform: "PS5", blockCount: 63, photoCount: 18,
-                        listCount: 9, score: 92, updatedAt: Date().addingTimeInterval(-7200)),
-            WikiSummary(title: "Subnautica", coverTint: Color(hex: 0x2FA9D8),
-                        year: 2018, platform: "PC", blockCount: 47, photoCount: 24,
-                        listCount: 5, score: 76, updatedAt: Date().addingTimeInterval(-259200))
-        ],
-        totalCount: 7
-    )
+    NavigationStack {
+        PinnedWikisSection(wikis: [PreviewSampleData.sampleWiki], totalCount: 7)
+    }
+    .modelContainer(PreviewSampleData.container)
     .padding(.vertical)
     .background(Color.grymBgDark)
     .environmentObject(LocalizationManager())

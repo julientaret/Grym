@@ -13,8 +13,8 @@ import SwiftUI
 @MainActor
 final class HomeViewModel: ObservableObject {
 
-    /// Wikis épinglés (défilement horizontal).
-    @Published private(set) var pinned: [WikiSummary] = []
+    /// Wikis épinglés (défilement horizontal, navigables vers le détail).
+    @Published private(set) var pinnedWikis: [Wiki] = []
     /// Nombre total d'épinglés (peut dépasser le nombre chargé/affiché).
     @Published private(set) var pinnedCount: Int = 0
     /// Flux d'activité récente.
@@ -23,7 +23,7 @@ final class HomeViewModel: ObservableObject {
     @Published private(set) var totalWikiCount: Int = 0
 
     /// Vrai quand le dashboard n'a rien à afficher (ni épinglé, ni activité).
-    var isDashboardEmpty: Bool { pinned.isEmpty && recentActivity.isEmpty }
+    var isDashboardEmpty: Bool { pinnedWikis.isEmpty && recentActivity.isEmpty }
 
     init() {}
 
@@ -39,13 +39,12 @@ final class HomeViewModel: ObservableObject {
         do {
             let wikis = try context.fetch(descriptor)
             totalWikiCount = wikis.count
-            let pinnedWikis = wikis.filter(\.isPinned)
-            pinned = pinnedWikis.compactMap(WikiSummary.init(wiki:))
+            pinnedWikis = wikis.filter(\.isPinned)
             pinnedCount = pinnedWikis.count
             recentActivity = []
         } catch {
             totalWikiCount = 0
-            pinned = []
+            pinnedWikis = []
             pinnedCount = 0
             recentActivity = []
         }

@@ -9,6 +9,12 @@
 import PhotosUI
 import SwiftUI
 
+/// Photo ouverte en plein écran (identifiée par son nom de fichier).
+nonisolated struct PhotoViewerItem: Identifiable {
+    let id: String
+    let url: URL
+}
+
 struct PhotoBlockView: View {
     @Bindable var block: Block
 
@@ -17,6 +23,7 @@ struct PhotoBlockView: View {
 
     @State private var content = PhotoContent()
     @State private var pickerItems: [PhotosPickerItem] = []
+    @State private var viewerItem: PhotoViewerItem?
 
     private let columns = [GridItem(.adaptive(minimum: 90), spacing: Theme.Spacing.small)]
 
@@ -53,6 +60,9 @@ struct PhotoBlockView: View {
             guard !items.isEmpty else { return }
             importPickerItems(items)
         }
+        .fullScreenCover(item: $viewerItem) { item in
+            PhotoViewerView(url: item.url)
+        }
     }
 
     // MARK: Miniature
@@ -68,6 +78,9 @@ struct PhotoBlockView: View {
         }
         .frame(width: 90, height: 90)
         .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.small, style: .continuous))
+        .onTapGesture {
+            viewerItem = PhotoViewerItem(id: fileName, url: ImageStore.url(for: fileName))
+        }
         .contextMenu {
             Button(role: .destructive) {
                 remove(fileName)

@@ -85,7 +85,8 @@ Onglet « Mes jeux » : liste complète des jeux ajoutés.
 - `PageDetailView.swift` — Assemble le titre et les blocs ; ajout (menu de type) et suppression de blocs ; sauvegarde à la sortie.
 - `Components/TextBlockView.swift` — Bloc texte libre, lié à `Block.content`.
 - `Components/ChecklistBlockView.swift` — Bloc checklist : titre, items cochables, progression.
-- `Components/PhotoBlockView.swift` — Bloc photo : galerie de miniatures locales, ajout via PhotosPicker, suppression.
+- `Components/PhotoBlockView.swift` — Bloc photo : galerie de miniatures locales, ajout via PhotosPicker, suppression, ouverture plein écran au tap.
+- `Components/PhotoViewerView.swift` — Visionneuse plein écran d'une photo : pinch-to-zoom, double-tap et pan.
 - `Components/AddBlockButton.swift` — Bouton + menu de choix du type de bloc (texte / checklist / photo).
 
 ## Features/WikiDetail

@@ -64,6 +64,10 @@ enum TranslationKey: String {
     case wikiTierLabel
     case wikiPagesTitle
     case wikiNewPage
+    case wikiModeList
+    case wikiModeTabs
+    case wikiModeCards
+    case wikiOpenEditor
     case wikiNewPageDefaultTitle
     case wikiPin
     case wikiUnpin
@@ -137,6 +141,10 @@ enum Translation {
             .wikiTierLabel: "TIER",
             .wikiPagesTitle: "Pages",
             .wikiNewPage: "Nouvelle page",
+            .wikiModeList: "Liste",
+            .wikiModeTabs: "Onglets",
+            .wikiModeCards: "Cartes",
+            .wikiOpenEditor: "Ouvrir l'éditeur",
             .wikiNewPageDefaultTitle: "Nouvelle page",
             .wikiPin: "Épingler",
             .wikiUnpin: "Désépingler",
@@ -197,6 +205,10 @@ enum Translation {
             .wikiTierLabel: "TIER",
             .wikiPagesTitle: "Pages",
             .wikiNewPage: "New page",
+            .wikiModeList: "List",
+            .wikiModeTabs: "Tabs",
+            .wikiModeCards: "Cards",
+            .wikiOpenEditor: "Open editor",
             .wikiNewPageDefaultTitle: "New page",
             .wikiPin: "Pin",
             .wikiUnpin: "Unpin",

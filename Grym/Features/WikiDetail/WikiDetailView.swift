@@ -11,6 +11,20 @@
 import SwiftData
 import SwiftUI
 
+/// Mode d'affichage des pages dans le détail wiki.
+enum WikiPagesMode: CaseIterable, Identifiable {
+    case list, tabs, cards
+    var id: Self { self }
+
+    var nameKey: TranslationKey {
+        switch self {
+        case .list:  .wikiModeList
+        case .tabs:  .wikiModeTabs
+        case .cards: .wikiModeCards
+        }
+    }
+}
+
 struct WikiDetailView: View {
     @Bindable var wiki: Wiki
 
@@ -18,7 +32,16 @@ struct WikiDetailView: View {
     @Environment(\.theme) private var theme
     @Environment(\.modelContext) private var modelContext
 
+    @State private var pagesMode: WikiPagesMode = .list
+    @State private var selectedPageID: PersistentIdentifier?
+    @State private var openPage: Page?
+
     private var repository: WikiRepository { WikiRepository(context: modelContext) }
+
+    private let gridColumns = [
+        GridItem(.flexible(), spacing: Theme.Spacing.medium),
+        GridItem(.flexible(), spacing: Theme.Spacing.medium)
+    ]
 
     /// Palette d'accents cyclée pour différencier visuellement les pages.
     private let pageAccents: [Color] = [.grymAccent, .grymAccentViolet, .grymAccentRose, .grymAccentGreen]
@@ -46,20 +69,11 @@ struct WikiDetailView: View {
             WikiScoreCard(score: $wiki.score, onCommit: { repository.touch(wiki) })
                 .grymBlockRow()
 
+            modePicker.grymBlockRow()
+
             pagesHeader.grymBlockRow()
 
-            ForEach(sortedPages) { page in
-                NavigationLink(value: page) {
-                    PageRowView(
-                        title: page.title,
-                        blockCount: page.blocks.count,
-                        accent: pageAccents[abs(page.order) % pageAccents.count]
-                    )
-                }
-                .grymBlockRow()
-            }
-            .onMove(perform: movePages)
-            .onDelete(perform: deletePages)
+            pagesContent
         }
         .listStyle(.plain)
         .environment(\.defaultMinListRowHeight, 0)
@@ -68,14 +82,68 @@ struct WikiDetailView: View {
         .navigationTitle(wiki.game?.title ?? "")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) { EditButton() }
+            if pagesMode == .list {
+                ToolbarItem(placement: .topBarTrailing) { EditButton() }
+            }
         }
-        .navigationDestination(for: Page.self) { page in
+        .navigationDestination(item: $openPage) { page in
             PageDetailView(page: page)
         }
     }
 
     // MARK: Pages
+
+    private var modePicker: some View {
+        Picker("", selection: $pagesMode) {
+            ForEach(WikiPagesMode.allCases) { mode in
+                Text(localization.string(mode.nameKey)).tag(mode)
+            }
+        }
+        .pickerStyle(.segmented)
+    }
+
+    @ViewBuilder
+    private var pagesContent: some View {
+        switch pagesMode {
+        case .list:
+            ForEach(sortedPages) { page in
+                Button { openPage = page } label: {
+                    PageRowView(
+                        title: page.title,
+                        blockCount: page.blocks.count,
+                        accent: accent(for: page)
+                    )
+                }
+                .buttonStyle(.plain)
+                .grymBlockRow()
+            }
+            .onMove(perform: movePages)
+            .onDelete(perform: deletePages)
+
+        case .cards:
+            LazyVGrid(columns: gridColumns, spacing: Theme.Spacing.medium) {
+                ForEach(sortedPages) { page in
+                    Button { openPage = page } label: {
+                        PageCardView(
+                            title: page.title,
+                            blockCount: page.blocks.count,
+                            accent: accent(for: page)
+                        )
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .grymBlockRow()
+
+        case .tabs:
+            PageTabsView(pages: sortedPages, selectedID: $selectedPageID, onOpen: { openPage = $0 })
+                .grymBlockRow()
+        }
+    }
+
+    private func accent(for page: Page) -> Color {
+        pageAccents[abs(page.order) % pageAccents.count]
+    }
 
     private var pagesHeader: some View {
         HStack {

@@ -12,4 +12,14 @@ nonisolated enum BlockType: String, Codable, CaseIterable {
     case photo
     case checklist
     case map
+
+    /// Symbole SF représentant le type de bloc.
+    var systemImage: String {
+        switch self {
+        case .text:      "text.alignleft"
+        case .photo:     "photo"
+        case .checklist: "checklist"
+        case .map:       "map"
+        }
+    }
 }

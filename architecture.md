@@ -96,8 +96,10 @@ Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
 Détail d'un wiki : édition directe du modèle via `@Bindable` (écart MVVM justifié) ; mutations structurelles via `WikiRepository`.
 
-- `WikiDetailView.swift` — `List` : en-tête, note personnelle et pages ; épinglage, score, ajout/réorganisation (drag & drop via EditButton)/suppression de pages.
+- `WikiDetailView.swift` — `List` : en-tête, note personnelle et pages avec 3 modes d'affichage (Liste/Onglets/Cartes) ; épinglage, score, ajout/réorganisation (drag & drop en mode Liste)/suppression de pages.
 - `Components/WikiDetailHeader.swift` — Cover, titre, méta, bouton épingler et ligne de stats.
+- `Components/PageCardView.swift` — Carte de page (mode Cartes).
+- `Components/PageTabsView.swift` — Mode Onglets : chips de pages + aperçu léger (résumé des blocs) de la page sélectionnée.
 - `Components/WikiScoreCard.swift` — Carte « Note personnelle » : score, palier et slider 0–100 à dégradé de tiers (drag par translation).
 - `Components/PageRowView.swift` — Ligne d'une page (icône, titre, nombre de blocs).
 

@@ -2,15 +2,15 @@
 //  WikiMediaGallery.swift
 //  Grym
 //
-//  Galerie horizontale des médias IGDB d'un jeu (captures + illustrations).
-//  Vignettes en lazy loading depuis le CDN ; l'appui ouvre la visionneuse.
+//  Galerie horizontale des photos ajoutées par l'utilisateur dans les blocs
+//  photo du wiki. Vignettes locales (`ImageStore`) ; l'appui ouvre l'aperçu.
 //
 
 import SwiftUI
 
 struct WikiMediaGallery: View {
-    let imageIds: [String]
-    let tint: Color
+    /// Fichiers locaux des photos (cf. `ImageStore`).
+    let fileNames: [String]
     let onOpen: (String) -> Void
 
     @EnvironmentObject private var localization: LocalizationManager
@@ -26,9 +26,9 @@ struct WikiMediaGallery: View {
 
             ScrollView(.horizontal) {
                 LazyHStack(spacing: Theme.Spacing.small + 2) {
-                    ForEach(imageIds, id: \.self) { imageId in
-                        Button { onOpen(imageId) } label: {
-                            thumbnail(imageId)
+                    ForEach(fileNames, id: \.self) { fileName in
+                        Button { onOpen(fileName) } label: {
+                            thumbnail(fileName)
                         }
                         .buttonStyle(.plain)
                     }
@@ -50,7 +50,7 @@ struct WikiMediaGallery: View {
             Text(localization.string(.wikiMediaTitle))
                 .font(.system(size: Theme.FontSize.body, weight: .semibold))
                 .foregroundStyle(theme.primaryText)
-            Text("· \(imageIds.count)")
+            Text("· \(fileNames.count)")
                 .font(.system(size: Theme.FontSize.body, weight: .semibold))
                 .foregroundStyle(theme.secondaryText)
         }
@@ -58,17 +58,13 @@ struct WikiMediaGallery: View {
 
     // MARK: Vignette
 
-    private func thumbnail(_ imageId: String) -> some View {
-        AsyncImage(url: IGDBImageSize.screenshotMed.url(imageId: imageId)) { phase in
+    private func thumbnail(_ fileName: String) -> some View {
+        AsyncImage(url: ImageStore.url(for: fileName)) { phase in
             switch phase {
             case .success(let image):
                 image.resizable().scaledToFill()
             default:
-                LinearGradient(
-                    colors: [tint.opacity(0.3), .black.opacity(0.35)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+                Rectangle().fill(theme.surface.opacity(0.6))
             }
         }
         .frame(width: thumbnailWidth, height: thumbnailHeight)
@@ -81,13 +77,9 @@ struct WikiMediaGallery: View {
 }
 
 #Preview {
-    WikiMediaGallery(
-        imageIds: ["scagdm", "scagdn", "scagdo", "ar3m1p"],
-        tint: Color(hex: 0xE0A458),
-        onOpen: { _ in }
-    )
-    .padding(.vertical)
-    .background(Color.grymBgDark)
-    .environmentObject(LocalizationManager())
-    .environment(\.theme, GrymBlueTheme())
+    WikiMediaGallery(fileNames: [], onOpen: { _ in })
+        .padding(.vertical)
+        .background(Color.grymBgDark)
+        .environmentObject(LocalizationManager())
+        .environment(\.theme, GrymBlueTheme())
 }

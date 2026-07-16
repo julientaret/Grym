@@ -64,13 +64,6 @@ final class Game {
         screenshotImageIds.first ?? artworkImageIds.first
     }
 
-    /// Médias de la galerie : tout sauf celle déjà affichée en bandeau.
-    var galleryImageIds: [String] {
-        let all = screenshotImageIds + artworkImageIds
-        guard let heroImageId else { return all }
-        return all.filter { $0 != heroImageId }
-    }
-
     /// Remplace les médias du jeu et date la récupération.
     func apply(_ media: IGDBGameMedia) {
         screenshotImageIds = media.screenshotImageIds

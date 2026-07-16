@@ -51,9 +51,17 @@ extension Wiki {
     var allBlocks: [Block] { pages.flatMap(\.blocks) }
 
     var blockCount: Int { allBlocks.count }
-    /// Nombre total d'images (un bloc photo peut en contenir plusieurs).
-    var photoCount: Int {
-        allBlocks.filter { $0.type == .photo }.reduce(0) { $0 + $1.photos.fileNames.count }
+
+    /// Fichiers de toutes les photos du wiki (cf. `ImageStore`), dans l'ordre de
+    /// lecture : pages puis blocs. Alimente la galerie du détail.
+    var photoFileNames: [String] {
+        pages.sorted { $0.order < $1.order }
+            .flatMap { $0.blocks.sorted { $0.order < $1.order } }
+            .filter { $0.type == .photo }
+            .flatMap { $0.photos.fileNames }
     }
+
+    /// Nombre total d'images (un bloc photo peut en contenir plusieurs).
+    var photoCount: Int { photoFileNames.count }
     var listCount: Int { allBlocks.filter { $0.type == .checklist }.count }
 }

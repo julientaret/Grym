@@ -2,12 +2,14 @@
 //  WikiDetailView.swift
 //  Grym
 //
-//  Détail d'un wiki : en-tête, note personnelle (slider) et pages.
+//  Détail d'un wiki : bandeau illustré, en-tête, note personnelle (slider),
+//  galerie des photos de l'utilisateur et pages.
 //  Utilise `@Bindable` sur le modèle SwiftData (idiome recommandé pour
 //  l'édition directe : écart MVVM justifié). Les mutations structurelles
 //  passent par `WikiRepository`.
 //
 
+import QuickLook
 import SwiftData
 import SwiftUI
 
@@ -37,7 +39,8 @@ struct WikiDetailView: View {
     @State private var pagesMode: WikiPagesMode = .list
     @State private var selectedPageID: PersistentIdentifier?
     @State private var openPage: Page?
-    @State private var viewerItem: MediaViewerItem?
+    /// Photo affichée en plein écran (QuickLook), parmi `photoURLs`.
+    @State private var previewURL: URL?
 
     private var repository: WikiRepository { WikiRepository(context: modelContext) }
 
@@ -77,13 +80,9 @@ struct WikiDetailView: View {
             WikiScoreCard(score: $wiki.score, onCommit: { repository.updateScore(wiki) })
                 .grymBlockRow()
 
-            if !galleryImageIds.isEmpty {
-                WikiMediaGallery(
-                    imageIds: galleryImageIds,
-                    tint: coverTint,
-                    onOpen: openViewer
-                )
-                .grymFullWidthRow()
+            if !photoFileNames.isEmpty {
+                WikiMediaGallery(fileNames: photoFileNames, onOpen: { previewURL = ImageStore.url(for: $0) })
+                    .grymFullWidthRow()
             }
 
             modePicker.grymBlockRow()
@@ -109,9 +108,7 @@ struct WikiDetailView: View {
         .navigationDestination(item: $openPage) { page in
             PageDetailView(page: page)
         }
-        .fullScreenCover(item: $viewerItem) { item in
-            MediaViewerView(item: item)
-        }
+        .quickLookPreview($previewURL, in: photoURLs)
         .task(id: wiki.game?.igdbId) {
             await mediaViewModel.loadIfNeeded(for: wiki.game, context: modelContext)
         }
@@ -123,16 +120,18 @@ struct WikiDetailView: View {
         .grymTint(for: wiki.game?.title ?? "")
     }
 
-    private var galleryImageIds: [String] {
-        wiki.game?.galleryImageIds ?? []
+    /// Photos ajoutées par l'utilisateur dans les blocs photo du wiki.
+    private var photoFileNames: [String] {
+        wiki.photoFileNames
+    }
+
+    /// URLs locales de toutes les photos (pour le swipe QuickLook).
+    private var photoURLs: [URL] {
+        photoFileNames.map { ImageStore.url(for: $0) }
     }
 
     private var hasHero: Bool {
         wiki.game?.heroImageId != nil
-    }
-
-    private func openViewer(_ imageId: String) {
-        viewerItem = MediaViewerItem(imageIds: galleryImageIds, startId: imageId)
     }
 
     // MARK: Pages

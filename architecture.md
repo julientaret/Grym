@@ -21,8 +21,8 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
 
 Couche de données locale (SwiftData, offline-first).
 
-- `Game.swift` — `@Model` métadonnées d'un jeu IGDB (dé-doublonné par `igdbId`) ; cover reconstruite depuis `coverImageId`. Porte aussi les médias IGDB (`screenshotImageIds`, `artworkImageIds`, `mediaFetchedAt`) et en dérive le bandeau (`heroImageId`) et la galerie (`galleryImageIds`).
-- `Wiki.swift` — `@Model` wiki d'un jeu : note privée (datée par `scoreUpdatedAt`), épinglage, pages ; expose des stats dérivées (blocs/photos/listes).
+- `Game.swift` — `@Model` métadonnées d'un jeu IGDB (dé-doublonné par `igdbId`) ; cover reconstruite depuis `coverImageId`. Porte aussi les médias IGDB (`screenshotImageIds`, `artworkImageIds`, `mediaFetchedAt`) et en dérive l'image du bandeau (`heroImageId`).
+- `Wiki.swift` — `@Model` wiki d'un jeu : note privée (datée par `scoreUpdatedAt`), épinglage, pages ; expose des stats dérivées (blocs/photos/listes) et `photoFileNames` (toutes les photos du wiki, pour la galerie du détail).
 - `Page.swift` — `@Model` page nommée d'un wiki (« wiki » côté UI), contenant des blocs ordonnés ; `createdAt` alimente le flux d'activité de l'accueil.
 - `Block.swift` — `@Model` bloc de contenu (type persisté en `String`, exposé via `BlockType`).
 - `BlockType.swift` — Enum des types de bloc (text/photo/checklist/map).
@@ -105,12 +105,11 @@ Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
 Détail d'un wiki : édition directe du modèle via `@Bindable` (écart MVVM justifié) ; mutations structurelles via `WikiRepository`.
 
-- `WikiDetailView.swift` — `List` : bandeau illustré, en-tête, note personnelle, galerie de médias et pages avec 3 modes d'affichage (Liste/Onglets/Cartes) ; épinglage, score, ajout/réorganisation (drag & drop en mode Liste)/suppression de pages.
-- `WikiMediaViewModel.swift` — Charge les médias IGDB du jeu à l'ouverture du wiki (si jamais récupérés) et les persiste sur `Game` ; erreurs silencieuses (médias décoratifs, réessai à la prochaine ouverture).
+- `WikiDetailView.swift` — `List` : bandeau illustré, en-tête, note personnelle, galerie des photos de l'utilisateur (aperçu QuickLook) et pages avec 3 modes d'affichage (Liste/Onglets/Cartes) ; épinglage, score, ajout/réorganisation (drag & drop en mode Liste)/suppression de pages.
+- `WikiMediaViewModel.swift` — Charge les médias IGDB du jeu à l'ouverture du wiki (si jamais récupérés) et les persiste sur `Game` ; alimente le bandeau. Erreurs silencieuses (décoratif, réessai à la prochaine ouverture).
 - `Components/WikiDetailHeader.swift` — Cover, titre, méta, bouton épingler et ligne de stats.
 - `Components/WikiHeroBanner.swift` — Bandeau illustré pleine largeur en tête du wiki : file jusqu'au haut de l'écran (la barre de navigation se pose dessus), fondu vers le bas par un masque (se raccorde à n'importe quel thème).
-- `Components/WikiMediaGallery.swift` — Galerie horizontale des captures/illustrations IGDB ; vignettes en lazy loading, appui pour ouvrir la visionneuse.
-- `Components/MediaViewerView.swift` — Visionneuse plein écran paginée des médias (1080p sur fond noir). Écart MVVM justifié : aucune logique métier.
+- `Components/WikiMediaGallery.swift` — Galerie horizontale des photos ajoutées par l'utilisateur (blocs photo du wiki) ; vignettes locales (`ImageStore`), appui pour ouvrir l'aperçu. Masquée si aucune photo.
 - `Components/PageCardView.swift` — Carte de page (mode Cartes).
 - `Components/PageTabsView.swift` — Mode Onglets : chips de pages + aperçu léger (résumé des blocs) de la page sélectionnée.
 - `Components/WikiScoreCard.swift` — Carte « Note personnelle » : score, palier et slider 0–100 à dégradé de tiers (drag par translation).

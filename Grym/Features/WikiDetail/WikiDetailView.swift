@@ -32,9 +32,12 @@ struct WikiDetailView: View {
     @Environment(\.theme) private var theme
     @Environment(\.modelContext) private var modelContext
 
+    @StateObject private var mediaViewModel = WikiMediaViewModel()
+
     @State private var pagesMode: WikiPagesMode = .list
     @State private var selectedPageID: PersistentIdentifier?
     @State private var openPage: Page?
+    @State private var viewerItem: MediaViewerItem?
 
     private var repository: WikiRepository { WikiRepository(context: modelContext) }
 
@@ -52,10 +55,15 @@ struct WikiDetailView: View {
 
     var body: some View {
         List {
+            if let heroImageId = wiki.game?.heroImageId {
+                WikiHeroBanner(imageId: heroImageId, tint: coverTint)
+                    .grymFullWidthRow()
+            }
+
             WikiDetailHeader(
                 title: wiki.game?.title ?? "",
                 coverImageId: wiki.game?.coverImageId,
-                coverTint: .grymTint(for: wiki.game?.title ?? ""),
+                coverTint: coverTint,
                 metaLine: metaLine,
                 blockCount: wiki.blockCount,
                 photoCount: wiki.photoCount,
@@ -66,8 +74,17 @@ struct WikiDetailView: View {
             )
             .grymBlockRow()
 
-            WikiScoreCard(score: $wiki.score, onCommit: { repository.touch(wiki) })
+            WikiScoreCard(score: $wiki.score, onCommit: { repository.updateScore(wiki) })
                 .grymBlockRow()
+
+            if !galleryImageIds.isEmpty {
+                WikiMediaGallery(
+                    imageIds: galleryImageIds,
+                    tint: coverTint,
+                    onOpen: openViewer
+                )
+                .grymFullWidthRow()
+            }
 
             modePicker.grymBlockRow()
 
@@ -79,6 +96,9 @@ struct WikiDetailView: View {
         .environment(\.defaultMinListRowHeight, 0)
         .scrollContentBackground(.hidden)
         .background(background)
+        // Le bandeau doit filer jusqu'au haut de l'écran, la barre de navigation
+        // se posant par-dessus. Sans bandeau, la liste garde sa marge normale.
+        .ignoresSafeArea(edges: hasHero ? .top : [])
         .navigationTitle(wiki.game?.title ?? "")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -89,6 +109,30 @@ struct WikiDetailView: View {
         .navigationDestination(item: $openPage) { page in
             PageDetailView(page: page)
         }
+        .fullScreenCover(item: $viewerItem) { item in
+            MediaViewerView(item: item)
+        }
+        .task(id: wiki.game?.igdbId) {
+            await mediaViewModel.loadIfNeeded(for: wiki.game, context: modelContext)
+        }
+    }
+
+    // MARK: Médias
+
+    private var coverTint: Color {
+        .grymTint(for: wiki.game?.title ?? "")
+    }
+
+    private var galleryImageIds: [String] {
+        wiki.game?.galleryImageIds ?? []
+    }
+
+    private var hasHero: Bool {
+        wiki.game?.heroImageId != nil
+    }
+
+    private func openViewer(_ imageId: String) {
+        viewerItem = MediaViewerItem(imageIds: galleryImageIds, startId: imageId)
     }
 
     // MARK: Pages

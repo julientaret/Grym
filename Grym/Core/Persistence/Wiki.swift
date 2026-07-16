@@ -18,6 +18,9 @@ final class Wiki {
     var isPinned: Bool
     var createdAt: Date
     var updatedAt: Date
+    /// Dernier changement de note personnelle ; `nil` tant qu'aucune note n'a
+    /// été donnée (alimente le flux d'activité de l'accueil).
+    var scoreUpdatedAt: Date?
 
     /// Pages du wiki (supprimées en cascade).
     @Relationship(deleteRule: .cascade, inverse: \Page.wiki)

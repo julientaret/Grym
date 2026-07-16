@@ -15,7 +15,7 @@ struct RootTabView: View {
         TabView {
             HomeView()
                 .tabItem {
-                    Label(localization.string(.tabWikis), systemImage: "books.vertical.fill")
+                    Label(localization.string(.tabHome), systemImage: "house.fill")
                 }
 
             MyGamesView()

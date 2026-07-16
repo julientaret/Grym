@@ -45,7 +45,7 @@ struct HomeView: View {
                 WikiDetailView(wiki: wiki)
             }
         }
-        .onAppear { viewModel.load(context: modelContext) }
+        .onAppear { viewModel.load(context: modelContext, localization: localization) }
     }
 
     // MARK: État vide

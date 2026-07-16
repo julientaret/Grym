@@ -17,6 +17,10 @@ import Foundation
 protocol IGDBServiceProtocol: Sendable {
     /// Recherche de jeux par titre. Retourne au plus `limit` résultats.
     func searchGames(matching query: String, limit: Int) async throws -> [IGDBGame]
+
+    /// Screenshots et artworks d'un jeu. Appel séparé de la recherche : ces champs
+    /// alourdissent nettement la réponse et ne servent qu'au détail d'un wiki.
+    func gameMedia(id: Int) async throws -> IGDBGameMedia
 }
 
 extension IGDBServiceProtocol {
@@ -80,6 +84,30 @@ actor IGDBService: IGDBServiceProtocol {
 
         do {
             return try decoder.decode([IGDBGame].self, from: data)
+        } catch {
+            throw IGDBError.decodingFailed(underlying: error)
+        }
+    }
+
+    // MARK: Médias
+
+    func gameMedia(id: Int) async throws -> IGDBGameMedia {
+        // `limit 1` : `where id = …` ne peut renvoyer qu'un jeu, mais IGDB
+        // répond toujours par un tableau.
+        //
+        // IGDB plafonne les champs imbriqués à 10 éléments : la galerie reçoit
+        // donc au plus 10 captures + 10 illustrations, ce qui suffit largement.
+        let apicalypse = """
+        fields screenshots.image_id, artworks.image_id; \
+        where id = \(id); \
+        limit 1;
+        """
+
+        let data = try await performRequest(path: "games", body: apicalypse)
+
+        do {
+            let response = try decoder.decode([IGDBGameMediaResponse].self, from: data)
+            return response.first?.media ?? .empty
         } catch {
             throw IGDBError.decodingFailed(underlying: error)
         }

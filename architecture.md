@@ -1,7 +1,7 @@
 # Architecture — Grym
 
 Carnet de jeu personnel pour gamers (iOS / macOS, SwiftUI, offline-first).
-Chaque jeu possède un wiki personnel composé de pages et de blocs (texte, photos,
+Chaque jeu possède un carnet composé de pages — nommées « wikis » côté UI — et de blocs (texte, photos,
 checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
 
 ## App
@@ -21,13 +21,13 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
 
 Couche de données locale (SwiftData, offline-first).
 
-- `Game.swift` — `@Model` métadonnées d'un jeu IGDB (dé-doublonné par `igdbId`) ; cover reconstruite depuis `coverImageId`.
-- `Wiki.swift` — `@Model` wiki d'un jeu : note privée, épinglage, pages ; expose des stats dérivées (blocs/photos/listes).
-- `Page.swift` — `@Model` page nommée d'un wiki, contenant des blocs ordonnés.
+- `Game.swift` — `@Model` métadonnées d'un jeu IGDB (dé-doublonné par `igdbId`) ; cover reconstruite depuis `coverImageId`. Porte aussi les médias IGDB (`screenshotImageIds`, `artworkImageIds`, `mediaFetchedAt`) et en dérive le bandeau (`heroImageId`) et la galerie (`galleryImageIds`).
+- `Wiki.swift` — `@Model` wiki d'un jeu : note privée (datée par `scoreUpdatedAt`), épinglage, pages ; expose des stats dérivées (blocs/photos/listes).
+- `Page.swift` — `@Model` page nommée d'un wiki (« wiki » côté UI), contenant des blocs ordonnés ; `createdAt` alimente le flux d'activité de l'accueil.
 - `Block.swift` — `@Model` bloc de contenu (type persisté en `String`, exposé via `BlockType`).
 - `BlockType.swift` — Enum des types de bloc (text/photo/checklist/map).
 - `BlockContent.swift` — Encodage du contenu des blocs : texte brut (`.text`), JSON `ChecklistContent` (`.checklist`), `PhotoContent` (`.photo`) ou `MapContent` (`.map`, image + pins) ; accès via `Block.checklist` / `Block.photos` / `Block.map`.
-- `WikiRepository.swift` — Écritures autour d'un `ModelContext` : création (dé-doublonnée) et suppression de wikis.
+- `WikiRepository.swift` — Écritures autour d'un `ModelContext` : création (dé-doublonnée) et suppression de wikis ; `updateScore` date les changements de note, `touch` marque une simple modification.
 - `PreviewSampleData.swift` — Conteneur SwiftData en mémoire pré-rempli (previews, DEBUG).
 
 ## Core
@@ -42,16 +42,16 @@ Couche de données locale (SwiftData, offline-first).
 - `Core/Localization/LocalizationManager.swift` — `ObservableObject` gérant la langue active (persistée en UserDefaults) et l'accès aux traductions ; injecté dans l'environnement.
 - `Core/Localization/Translation.swift` — Catalogue des traductions FR/EN, enum `AppLanguage` et clés `TranslationKey`.
 - `Core/Extensions/Date+Relative.swift` — Formatage relatif localisé d'une date (« il y a 2 h », « hier »).
-- `Core/Extensions/View+GrymListRow.swift` — Style de ligne de `List` transparent (`grymBlockRow`) pour garder l'apparence carte avec le drag & drop natif.
+- `Core/Extensions/View+GrymListRow.swift` — Style de ligne de `List` transparent (`grymBlockRow`, et `grymFullWidthRow` pour les contenus bord à bord) pour garder l'apparence carte avec le drag & drop natif.
 
 ## Core/Services/IGDB
 
 Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client credentials » de Twitch.
 
 - `IGDBConfig.swift` — Constantes d'accès : clés client (dev), endpoints token/API, marge d'expiration.
-- `IGDBModels.swift` — DTO de réponse (`IGDBGame`, `IGDBCover`, `IGDBPlatform`, `IGDBTokenResponse`) + helpers de présentation (année, plateforme, URL de cover, tailles d'image).
+- `IGDBModels.swift` — DTO de réponse (`IGDBGame`, `IGDBImage`, `IGDBPlatform`, `IGDBTokenResponse`, `IGDBGameMediaResponse`/`IGDBGameMedia`) + helpers de présentation (année, plateforme, URL de cover, tailles d'image).
 - `IGDBError.swift` — Erreurs typées du service (`LocalizedError`).
-- `IGDBService.swift` — `actor` conforme à `IGDBServiceProtocol` : gère le token (cache + refresh auto) et la recherche de jeux (`searchGames`).
+- `IGDBService.swift` — `actor` conforme à `IGDBServiceProtocol` : gère le token (cache + refresh auto), la recherche de jeux (`searchGames`) et les médias d'un jeu (`gameMedia`, appel séparé car les images alourdissent la réponse).
 
 ## Core/Services
 
@@ -60,15 +60,15 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 
 ## Features/Root
 
-- `RootTabView.swift` — Navigation principale : `TabView` à trois onglets (Wikis, Mes jeux, Profil).
+- `RootTabView.swift` — Navigation principale : `TabView` à trois onglets (Accueil, Mes jeux, Profil).
 
 ## Features/Home
 
 Écran d'accueil (onglet Wikis) — **dashboard** : épinglés et activité récente. La liste complète vit dans « Mes jeux ».
 
 - `HomeView.swift` — Vue principale : en-tête, épinglés, activité récente, état vide de dashboard, sur fond dégradé. Ouvre la recherche via « + ».
-- `HomeViewModel.swift` — `ObservableObject` : charge épinglés + total depuis SwiftData (`load(context:)`) ; `isDashboardEmpty`.
-- `Models/HomeModel.swift` — Modèles de présentation : `WikiSummary` (mapping depuis `Wiki`), `ActivityEntry`, `ActivityKind`.
+- `HomeViewModel.swift` — `ObservableObject` : charge épinglés + total depuis SwiftData (`load(context:localization:)`) et construit le flux d'activité récente (wikis créés + notes modifiées, fusionnés et triés, 8 max) ; `isDashboardEmpty`.
+- `Models/HomeModel.swift` — Modèles de présentation : `WikiSummary` (mapping depuis `Wiki`), `ActivityEntry` (jaquette incluse), `ActivityKind`.
 - `Components/HomeHeaderView.swift` — Titre « Grym », tagline et bouton d'ajout.
 - `Components/HomeSearchBar.swift` — Barre de recherche locale (actuellement masquée, conservée pour plus tard).
 - `Components/SectionHeaderView.swift` — En-tête de section réutilisable (icône + titre + compteur).
@@ -105,8 +105,12 @@ Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
 Détail d'un wiki : édition directe du modèle via `@Bindable` (écart MVVM justifié) ; mutations structurelles via `WikiRepository`.
 
-- `WikiDetailView.swift` — `List` : en-tête, note personnelle et pages avec 3 modes d'affichage (Liste/Onglets/Cartes) ; épinglage, score, ajout/réorganisation (drag & drop en mode Liste)/suppression de pages.
+- `WikiDetailView.swift` — `List` : bandeau illustré, en-tête, note personnelle, galerie de médias et pages avec 3 modes d'affichage (Liste/Onglets/Cartes) ; épinglage, score, ajout/réorganisation (drag & drop en mode Liste)/suppression de pages.
+- `WikiMediaViewModel.swift` — Charge les médias IGDB du jeu à l'ouverture du wiki (si jamais récupérés) et les persiste sur `Game` ; erreurs silencieuses (médias décoratifs, réessai à la prochaine ouverture).
 - `Components/WikiDetailHeader.swift` — Cover, titre, méta, bouton épingler et ligne de stats.
+- `Components/WikiHeroBanner.swift` — Bandeau illustré pleine largeur en tête du wiki : file jusqu'au haut de l'écran (la barre de navigation se pose dessus), fondu vers le bas par un masque (se raccorde à n'importe quel thème).
+- `Components/WikiMediaGallery.swift` — Galerie horizontale des captures/illustrations IGDB ; vignettes en lazy loading, appui pour ouvrir la visionneuse.
+- `Components/MediaViewerView.swift` — Visionneuse plein écran paginée des médias (1080p sur fond noir). Écart MVVM justifié : aucune logique métier.
 - `Components/PageCardView.swift` — Carte de page (mode Cartes).
 - `Components/PageTabsView.swift` — Mode Onglets : chips de pages + aperçu léger (résumé des blocs) de la page sélectionnée.
 - `Components/WikiScoreCard.swift` — Carte « Note personnelle » : score, palier et slider 0–100 à dégradé de tiers (drag par translation).

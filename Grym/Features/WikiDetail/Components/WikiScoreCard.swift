@@ -44,17 +44,10 @@ struct WikiScoreCard: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.small) {
-            HStack {
-                Text(localization.string(.wikiNoteTitle))
-                    .font(.system(size: Theme.FontSize.caption, weight: .semibold))
-                    .foregroundStyle(theme.secondaryText)
-                    .tracking(1)
-                Spacer()
-                Text(localization.string(.wikiNeverShared))
-                    .font(.system(size: Theme.FontSize.caption, weight: .semibold))
-                    .foregroundStyle(theme.secondaryText)
-                    .tracking(1)
-            }
+            Text(localization.string(.wikiNoteTitle))
+                .font(.system(size: Theme.FontSize.caption, weight: .semibold))
+                .foregroundStyle(theme.secondaryText)
+                .tracking(1)
 
             HStack(alignment: .firstTextBaseline) {
                 Text("\(score)")

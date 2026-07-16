@@ -2,9 +2,8 @@
 //  HomeModel.swift
 //  Grym
 //
-//  Modèles de présentation de l'écran d'accueil (Wikis).
-//  Temporaire : alimentés par des données mockées tant que la couche
-//  SwiftData (Game / Wiki / Page / Block) n'est pas branchée.
+//  Modèles de présentation de l'écran d'accueil, construits à partir de
+//  la couche SwiftData (Game / Wiki / Page / Block).
 //
 
 import SwiftUI
@@ -102,6 +101,8 @@ struct ActivityEntry: Identifiable, Hashable {
     let title: String
     /// Sous-titre contextuel (ex. « Elden Ring · Remembrance Bosses »).
     let subtitle: String
+    /// `image_id` IGDB de la jaquette du jeu concerné ; à défaut, dégradé teinté.
+    let coverImageId: String?
     let coverTint: Color
     let date: Date
 
@@ -110,6 +111,7 @@ struct ActivityEntry: Identifiable, Hashable {
         kind: ActivityKind,
         title: String,
         subtitle: String,
+        coverImageId: String? = nil,
         coverTint: Color,
         date: Date
     ) {
@@ -117,6 +119,7 @@ struct ActivityEntry: Identifiable, Hashable {
         self.kind = kind
         self.title = title
         self.subtitle = subtitle
+        self.coverImageId = coverImageId
         self.coverTint = coverTint
         self.date = date
     }

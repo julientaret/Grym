@@ -19,6 +19,14 @@ final class Game {
     var platform: String?
     var releaseYear: Int?
 
+    /// `image_id` IGDB des captures d'écran du jeu.
+    var screenshotImageIds: [String] = []
+    /// `image_id` IGDB des illustrations (key art) du jeu.
+    var artworkImageIds: [String] = []
+    /// Date du dernier appel média abouti. `nil` = jamais récupérés, à charger
+    /// à la prochaine ouverture du wiki (couvre les jeux ajoutés avant la feature).
+    var mediaFetchedAt: Date?
+
     /// Wikis rattachés à ce jeu (supprimés en cascade avec le jeu).
     @Relationship(deleteRule: .cascade, inverse: \Wiki.game)
     var wikis: [Wiki] = []
@@ -42,5 +50,31 @@ final class Game {
     /// URL de la jaquette pour une taille donnée, ou `nil` si absente.
     func coverURL(size: IGDBImageSize = .coverBig) -> URL? {
         coverImageId.flatMap { size.url(imageId: $0) }
+    }
+
+    // MARK: Médias
+
+    /// Image du bandeau d'en-tête : une capture en priorité, à défaut une
+    /// illustration.
+    ///
+    /// Les captures IGDB sont toujours en 16:9 et montrent le jeu ; les
+    /// illustrations ont des ratios variables et sont souvent un logo sur fond
+    /// clair, qui jure avec les thèmes sombres de l'app.
+    var heroImageId: String? {
+        screenshotImageIds.first ?? artworkImageIds.first
+    }
+
+    /// Médias de la galerie : tout sauf celle déjà affichée en bandeau.
+    var galleryImageIds: [String] {
+        let all = screenshotImageIds + artworkImageIds
+        guard let heroImageId else { return all }
+        return all.filter { $0 != heroImageId }
+    }
+
+    /// Remplace les médias du jeu et date la récupération.
+    func apply(_ media: IGDBGameMedia) {
+        screenshotImageIds = media.screenshotImageIds
+        artworkImageIds = media.artworkImageIds
+        mediaFetchedAt = Date()
     }
 }

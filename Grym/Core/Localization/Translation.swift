@@ -30,7 +30,7 @@ enum AppLanguage: String, CaseIterable {
 /// Clés de traduction. Aucune string en dur dans les vues.
 enum TranslationKey: String {
     case tabProfile
-    case tabWikis
+    case tabHome
     case profileThemeLabel
     case profileLanguageLabel
     case themeGrymBlue
@@ -40,6 +40,8 @@ enum TranslationKey: String {
     case homeSearchPlaceholder
     case homePinned
     case homeRecentActivity
+    case homeActivityNewWiki
+    case homeActivityScore
     case homeAllWikis
     case statBlocks
     case statPhotos
@@ -72,7 +74,6 @@ enum TranslationKey: String {
     case commonDelete
     // Wiki detail
     case wikiNoteTitle
-    case wikiNeverShared
     case wikiPrivate
     case wikiTierLabel
     case wikiPagesTitle
@@ -84,6 +85,7 @@ enum TranslationKey: String {
     case wikiNewPageDefaultTitle
     case wikiPin
     case wikiUnpin
+    case wikiMediaTitle
     // Tiers de note
     case tierNaze
     case tierPasOuf
@@ -123,7 +125,7 @@ enum Translation {
     private static let translations: [AppLanguage: [TranslationKey: String]] = [
         .french: [
             .tabProfile: "Profil",
-            .tabWikis: "Wikis",
+            .tabHome: "Accueil",
             .profileThemeLabel: "Thème",
             .profileLanguageLabel: "Langue",
             .themeGrymBlue: "Bleu",
@@ -132,6 +134,8 @@ enum Translation {
             .homeSearchPlaceholder: "Rechercher un wiki ou un jeu…",
             .homePinned: "Épinglés",
             .homeRecentActivity: "Activité récente",
+            .homeActivityNewWiki: "Nouveau wiki",
+            .homeActivityScore: "Note mise à jour",
             .homeAllWikis: "Tous les wikis",
             .statBlocks: "blocs",
             .statPhotos: "photos",
@@ -161,25 +165,25 @@ enum Translation {
             .myGamesTitle: "Mes jeux",
             .commonDelete: "Supprimer",
             .wikiNoteTitle: "NOTE PERSONNELLE",
-            .wikiNeverShared: "JAMAIS PARTAGÉ",
             .wikiPrivate: "PRIVÉ",
             .wikiTierLabel: "TIER",
-            .wikiPagesTitle: "Pages",
-            .wikiNewPage: "Nouvelle page",
+            .wikiPagesTitle: "Wikis",
+            .wikiNewPage: "Nouveau wiki",
             .wikiModeList: "Liste",
             .wikiModeTabs: "Onglets",
             .wikiModeCards: "Cartes",
             .wikiOpenEditor: "Ouvrir l'éditeur",
-            .wikiNewPageDefaultTitle: "Nouvelle page",
+            .wikiNewPageDefaultTitle: "Nouveau wiki",
             .wikiPin: "Épingler",
             .wikiUnpin: "Désépingler",
+            .wikiMediaTitle: "Médias",
             .tierNaze: "NAZE",
             .tierPasOuf: "PAS OUF",
             .tierMid: "MID",
             .tierTopTier: "TOP TIER",
             .tierGoty: "GOTY",
-            .pageTitlePlaceholder: "Titre de la page",
-            .pageEmptyBlocks: "Page vide.\nAjoute un premier bloc ci-dessous.",
+            .pageTitlePlaceholder: "Titre du wiki",
+            .pageEmptyBlocks: "Wiki vide.\nAjoute un premier bloc ci-dessous.",
             .addBlock: "Ajouter un bloc",
             .blockTypeText: "Texte",
             .blockTypeChecklist: "Checklist",
@@ -199,7 +203,7 @@ enum Translation {
         ],
         .english: [
             .tabProfile: "Profile",
-            .tabWikis: "Wikis",
+            .tabHome: "Home",
             .profileThemeLabel: "Theme",
             .profileLanguageLabel: "Language",
             .themeGrymBlue: "Blue",
@@ -208,6 +212,8 @@ enum Translation {
             .homeSearchPlaceholder: "Search a wiki or a game…",
             .homePinned: "Pinned",
             .homeRecentActivity: "Recent activity",
+            .homeActivityNewWiki: "New wiki",
+            .homeActivityScore: "Score updated",
             .homeAllWikis: "All wikis",
             .statBlocks: "blocks",
             .statPhotos: "photos",
@@ -237,25 +243,25 @@ enum Translation {
             .myGamesTitle: "My games",
             .commonDelete: "Delete",
             .wikiNoteTitle: "PERSONAL SCORE",
-            .wikiNeverShared: "NEVER SHARED",
             .wikiPrivate: "PRIVATE",
             .wikiTierLabel: "TIER",
-            .wikiPagesTitle: "Pages",
-            .wikiNewPage: "New page",
+            .wikiPagesTitle: "Wikis",
+            .wikiNewPage: "New wiki",
             .wikiModeList: "List",
             .wikiModeTabs: "Tabs",
             .wikiModeCards: "Cards",
             .wikiOpenEditor: "Open editor",
-            .wikiNewPageDefaultTitle: "New page",
+            .wikiNewPageDefaultTitle: "New wiki",
             .wikiPin: "Pin",
             .wikiUnpin: "Unpin",
+            .wikiMediaTitle: "Media",
             .tierNaze: "TRASH",
             .tierPasOuf: "MEH",
             .tierMid: "MID",
             .tierTopTier: "TOP TIER",
             .tierGoty: "GOTY",
-            .pageTitlePlaceholder: "Page title",
-            .pageEmptyBlocks: "Empty page.\nAdd a first block below.",
+            .pageTitlePlaceholder: "Wiki title",
+            .pageEmptyBlocks: "Empty wiki.\nAdd a first block below.",
             .addBlock: "Add a block",
             .blockTypeText: "Text",
             .blockTypeChecklist: "Checklist",

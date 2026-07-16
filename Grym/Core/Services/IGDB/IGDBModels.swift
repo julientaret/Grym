@@ -25,14 +25,40 @@ nonisolated struct IGDBGame: Decodable, Identifiable, Sendable, Hashable {
     let name: String
     let slug: String?
     let firstReleaseDate: Int?
-    let cover: IGDBCover?
+    let cover: IGDBImage?
     let platforms: [IGDBPlatform]?
 }
 
-/// Cover d'un jeu (image hébergée sur le CDN IGDB).
-nonisolated struct IGDBCover: Decodable, Sendable, Hashable {
+/// Image hébergée sur le CDN IGDB (cover, screenshot ou artwork).
+/// Seul `image_id` sert : il suffit à reconstruire l'URL à n'importe quelle taille.
+nonisolated struct IGDBImage: Decodable, Sendable, Hashable {
     let id: Int?
     let imageId: String?
+}
+
+/// Réponse de `gameMedia(id:)`.
+///
+/// DTO distinct d'`IGDBGame` : la requête média ne demande que les images, et
+/// ne renvoie donc pas les champs obligatoires du jeu (`name`…). La décoder en
+/// `IGDBGame` échouerait.
+nonisolated struct IGDBGameMediaResponse: Decodable, Sendable {
+    let screenshots: [IGDBImage]?
+    let artworks: [IGDBImage]?
+
+    var media: IGDBGameMedia {
+        IGDBGameMedia(
+            screenshotImageIds: screenshots?.compactMap(\.imageId) ?? [],
+            artworkImageIds: artworks?.compactMap(\.imageId) ?? []
+        )
+    }
+}
+
+/// Médias d'un jeu, tels que persistés sur `Game`.
+nonisolated struct IGDBGameMedia: Sendable, Equatable {
+    let screenshotImageIds: [String]
+    let artworkImageIds: [String]
+
+    static let empty = IGDBGameMedia(screenshotImageIds: [], artworkImageIds: [])
 }
 
 /// Plateforme d'un jeu (PS5, PC, Switch…).
@@ -50,7 +76,9 @@ nonisolated enum IGDBImageSize: String {
     case coverBig       = "t_cover_big"
     case cover2xBig     = "t_cover_big_2x"
     case thumb          = "t_thumb"
-    case screenshotMed  = "t_screenshot_med"
+    case screenshotMed  = "t_screenshot_med"    // 569 × 320 — vignettes de galerie
+    case screenshotBig  = "t_screenshot_big"    // 889 × 500 — bandeau d'en-tête
+    case fullHD         = "t_1080p"             // 1920 × 1080 — visionneuse plein écran
 
     /// URL CDN IGDB de l'image pour un `image_id` donné.
     func url(imageId: String) -> URL? {

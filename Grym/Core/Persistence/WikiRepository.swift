@@ -59,9 +59,18 @@ struct WikiRepository {
         return page
     }
 
-    /// Marque le wiki comme modifié et persiste (après édition de score/épinglage).
+    /// Marque le wiki comme modifié et persiste (après épinglage).
     func touch(_ wiki: Wiki) {
         wiki.updatedAt = Date()
+        try? context.save()
+    }
+
+    /// Enregistre un changement de note : date l'événement pour le flux
+    /// d'activité, puis persiste.
+    func updateScore(_ wiki: Wiki) {
+        let now = Date()
+        wiki.scoreUpdatedAt = now
+        wiki.updatedAt = now
         try? context.save()
     }
 

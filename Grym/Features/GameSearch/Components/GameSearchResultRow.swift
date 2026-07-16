@@ -56,7 +56,7 @@ struct GameSearchResultRow: View {
         game: IGDBGame(
             id: 1, name: "Elden Ring", slug: "elden-ring",
             firstReleaseDate: 1_645_747_200,
-            cover: IGDBCover(id: nil, imageId: "co4jni"),
+            cover: IGDBImage(id: nil, imageId: "co4jni"),
             platforms: [IGDBPlatform(id: 167, name: "PlayStation 5", abbreviation: "PS5")]
         )
     )

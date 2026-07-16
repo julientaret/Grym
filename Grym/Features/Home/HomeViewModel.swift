@@ -30,9 +30,8 @@ final class HomeViewModel: ObservableObject {
     // MARK: - Chargement depuis SwiftData
 
     /// Recharge le dashboard depuis le contexte (au premier affichage et après
-    /// chaque ajout). L'activité récente reste vide tant qu'aucun journal
-    /// d'événements n'existe.
-    func load(context: ModelContext) {
+    /// chaque ajout).
+    func load(context: ModelContext, localization: LocalizationManager) {
         let descriptor = FetchDescriptor<Wiki>(
             sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
         )
@@ -41,7 +40,7 @@ final class HomeViewModel: ObservableObject {
             totalWikiCount = wikis.count
             pinnedWikis = wikis.filter(\.isPinned)
             pinnedCount = pinnedWikis.count
-            recentActivity = []
+            recentActivity = Self.makeActivity(from: wikis, localization: localization)
         } catch {
             totalWikiCount = 0
             pinnedWikis = []
@@ -49,4 +48,48 @@ final class HomeViewModel: ObservableObject {
             recentActivity = []
         }
     }
+
+    // MARK: - Activité récente
+
+    /// Construit le flux d'activité : wikis (pages) créés et notes attribuées
+    /// ou modifiées, fusionnés puis triés du plus récent au plus ancien.
+    private static func makeActivity(
+        from wikis: [Wiki],
+        localization: LocalizationManager
+    ) -> [ActivityEntry] {
+        let entries = wikis.flatMap { wiki -> [ActivityEntry] in
+            guard let game = wiki.game else { return [] }
+            let tint = Color.grymTint(for: game.title)
+
+            let created = wiki.pages.map { page in
+                ActivityEntry(
+                    kind: .page,
+                    title: localization.string(.homeActivityNewWiki),
+                    subtitle: "\(game.title) · \(page.title)",
+                    coverImageId: game.coverImageId,
+                    coverTint: tint,
+                    date: page.createdAt
+                )
+            }
+
+            // Une seule entrée par jeu : le dernier changement de note connu.
+            let scored = wiki.scoreUpdatedAt.map { date in
+                [ActivityEntry(
+                    kind: .note,
+                    title: localization.string(.homeActivityScore),
+                    subtitle: "\(game.title) · \(wiki.score)/100",
+                    coverImageId: game.coverImageId,
+                    coverTint: tint,
+                    date: date
+                )]
+            } ?? []
+
+            return created + scored
+        }
+
+        return Array(entries.sorted { $0.date > $1.date }.prefix(activityLimit))
+    }
+
+    /// Nombre maximal d'entrées affichées dans le flux.
+    private static let activityLimit = 8
 }

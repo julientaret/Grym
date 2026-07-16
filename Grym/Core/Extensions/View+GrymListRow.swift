@@ -21,4 +21,18 @@ extension View {
                 trailing: Theme.Spacing.large
             ))
     }
+
+    /// Variante sans marge horizontale, pour les contenus qui vont d'un bord à
+    /// l'autre (bandeau illustré, galerie défilante) et gèrent leurs propres marges.
+    func grymFullWidthRow() -> some View {
+        self
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets(
+                top: Theme.Spacing.small,
+                leading: 0,
+                bottom: Theme.Spacing.small,
+                trailing: 0
+            ))
+    }
 }

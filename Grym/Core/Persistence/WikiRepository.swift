@@ -89,6 +89,17 @@ struct WikiRepository {
         try? context.save()
     }
 
+    /// Nombre de jeux distincts enregistrés (pour la limite du palier gratuit).
+    func gameCount() -> Int {
+        (try? context.fetchCount(FetchDescriptor<Game>())) ?? 0
+    }
+
+    /// Vrai si un jeu de cet `igdbId` est déjà enregistré.
+    func gameExists(igdbId: Int) -> Bool {
+        let descriptor = FetchDescriptor<Game>(predicate: #Predicate { $0.igdbId == igdbId })
+        return ((try? context.fetchCount(descriptor)) ?? 0) > 0
+    }
+
     // MARK: Privé
 
     private func makeWiki(for game: Game) throws -> Wiki {

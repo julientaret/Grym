@@ -14,6 +14,7 @@ struct MyGamesView: View {
     @State private var showingGameSearch = false
 
     @EnvironmentObject private var localization: LocalizationManager
+    @EnvironmentObject private var premium: PremiumManager
     @Environment(\.theme) private var theme
     @Environment(\.modelContext) private var modelContext
 
@@ -75,7 +76,7 @@ struct MyGamesView: View {
                 .font(.system(size: Theme.FontSize.largeTitle, weight: .bold))
                 .foregroundStyle(theme.primaryText)
             if !viewModel.wikis.isEmpty {
-                Text("· \(viewModel.wikis.count)")
+                Text(countLabel)
                     .font(.system(size: Theme.FontSize.title, weight: .semibold))
                     .foregroundStyle(theme.secondaryText)
             }
@@ -83,6 +84,13 @@ struct MyGamesView: View {
             CircularAddGameButton { showingGameSearch = true }
         }
         .padding(.horizontal, Theme.Spacing.large)
+    }
+
+    /// « · N » en premium, « · N / 10 » au palier gratuit.
+    private var countLabel: String {
+        premium.isPremium
+            ? "· \(viewModel.wikis.count)"
+            : "· \(viewModel.wikis.count) / \(PremiumManager.freeGameLimit)"
     }
 
     // MARK: État vide
@@ -118,5 +126,6 @@ struct MyGamesView: View {
     MyGamesView()
         .modelContainer(PreviewSampleData.container)
         .environmentObject(LocalizationManager())
+        .environmentObject(PremiumManager())
         .environment(\.theme, GrymBlueTheme())
 }

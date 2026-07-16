@@ -8,6 +8,10 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
 
 - `GrymApp.swift` — Point d'entrée `@main`, injecte `LocalizationManager`/`ThemeManager`, installe le `modelContainer` SwiftData (Game/Wiki/Page/Block) et affiche `RootTabView`.
 
+## Core/Premium
+
+- `PremiumManager.swift` — `ObservableObject` : statut premium (persisté UserDefaults) et limite du palier gratuit (`freeGameLimit = 10`). StoreKit pilotera l'achat plus tard.
+
 ## Core/Persistence
 
 Couche de données locale (SwiftData, offline-first).
@@ -102,6 +106,10 @@ Détail d'un wiki : édition directe du modèle via `@Bindable` (écart MVVM jus
 - `Components/PageTabsView.swift` — Mode Onglets : chips de pages + aperçu léger (résumé des blocs) de la page sélectionnée.
 - `Components/WikiScoreCard.swift` — Carte « Note personnelle » : score, palier et slider 0–100 à dégradé de tiers (drag par translation).
 - `Components/PageRowView.swift` — Ligne d'une page (icône, titre, nombre de blocs).
+
+## Features/Premium
+
+- `PremiumUpgradeView.swift` — Prompt d'upgrade (avantages + prix) présenté à l'atteinte de la limite gratuite. Achat StoreKit à brancher (placeholder actuel).
 
 ## Features/GameSearch
 

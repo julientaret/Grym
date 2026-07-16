@@ -53,6 +53,18 @@ enum TranslationKey: String {
     case commonCancel
     case commonRetry
     case homeEmptyWikis
+    // Premium
+    case premiumTitle
+    case premiumLimitReached
+    case premiumFreeHint
+    case premiumBenefitUnlimited
+    case premiumBenefitSync
+    case premiumBenefitThemes
+    case premiumBenefitExport
+    case premiumBenefitWidgets
+    case premiumBenefitStats
+    case premiumPurchase
+    case premiumLater
     case homeDashboardEmpty
     case tabMyGames
     case myGamesTitle
@@ -131,6 +143,17 @@ enum Translation {
             .commonCancel: "Annuler",
             .commonRetry: "Réessayer",
             .homeEmptyWikis: "Aucun wiki pour l'instant.\nAppuie sur + pour ajouter un jeu.",
+            .premiumTitle: "Passez Premium",
+            .premiumLimitReached: "Limite gratuite atteinte (10 jeux).",
+            .premiumFreeHint: "Supprime un jeu pour en ajouter un autre gratuitement.",
+            .premiumBenefitUnlimited: "Jeux illimités",
+            .premiumBenefitSync: "Synchronisation iCloud",
+            .premiumBenefitThemes: "Thèmes visuels",
+            .premiumBenefitExport: "Export PDF / Markdown",
+            .premiumBenefitWidgets: "Widgets iOS",
+            .premiumBenefitStats: "Statistiques personnelles",
+            .premiumPurchase: "Débloquer — 4,99 €",
+            .premiumLater: "Plus tard",
             .homeDashboardEmpty: "Tes jeux épinglés et ton activité récente apparaîtront ici.",
             .tabMyGames: "Mes jeux",
             .myGamesTitle: "Mes jeux",
@@ -195,6 +218,17 @@ enum Translation {
             .commonCancel: "Cancel",
             .commonRetry: "Retry",
             .homeEmptyWikis: "No wiki yet.\nTap + to add a game.",
+            .premiumTitle: "Go Premium",
+            .premiumLimitReached: "Free limit reached (10 games).",
+            .premiumFreeHint: "Delete a game to add another one for free.",
+            .premiumBenefitUnlimited: "Unlimited games",
+            .premiumBenefitSync: "iCloud sync",
+            .premiumBenefitThemes: "Visual themes",
+            .premiumBenefitExport: "PDF / Markdown export",
+            .premiumBenefitWidgets: "iOS widgets",
+            .premiumBenefitStats: "Personal stats",
+            .premiumPurchase: "Unlock — €4.99",
+            .premiumLater: "Later",
             .homeDashboardEmpty: "Your pinned games and recent activity will show up here.",
             .tabMyGames: "My games",
             .myGamesTitle: "My games",

@@ -12,12 +12,14 @@ import SwiftUI
 struct GrymApp: App {
     @StateObject private var localization = LocalizationManager.shared
     @StateObject private var themeManager = ThemeManager()
+    @StateObject private var premium = PremiumManager()
 
     var body: some Scene {
         WindowGroup {
             RootTabView()
                 .environmentObject(localization)
                 .environmentObject(themeManager)
+                .environmentObject(premium)
                 .environment(\.theme, themeManager.theme)
                 .tint(themeManager.theme.accent)
         }

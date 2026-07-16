@@ -15,8 +15,10 @@ struct GameSearchView: View {
 
     @StateObject private var viewModel = GameSearchViewModel()
     @State private var text: String = ""
+    @State private var showingUpgrade = false
 
     @EnvironmentObject private var localization: LocalizationManager
+    @EnvironmentObject private var premium: PremiumManager
     @Environment(\.theme) private var theme
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
@@ -41,6 +43,9 @@ struct GameSearchView: View {
                     Button(localization.string(.commonCancel)) { dismiss() }
                 }
             }
+        }
+        .sheet(isPresented: $showingUpgrade) {
+            PremiumUpgradeView()
         }
     }
 
@@ -134,8 +139,19 @@ struct GameSearchView: View {
 
     /// Persiste le wiki du jeu choisi puis referme la recherche.
     private func addGame(_ game: IGDBGame) {
+        let repository = WikiRepository(context: modelContext)
+
+        // Limite du palier gratuit : bloque uniquement l'ajout d'un NOUVEAU jeu
+        // au-delà de la limite (réajouter un jeu existant reste permis).
+        if !premium.isPremium,
+           !repository.gameExists(igdbId: game.id),
+           repository.gameCount() >= PremiumManager.freeGameLimit {
+            showingUpgrade = true
+            return
+        }
+
         do {
-            try WikiRepository(context: modelContext).addWiki(for: game)
+            try repository.addWiki(for: game)
             // Télécharge la jaquette pour un accès offline (jeu ajouté en ligne).
             if let imageId = game.cover?.imageId {
                 Task { await CoverStore.downloadIfNeeded(imageId: imageId) }
@@ -143,8 +159,7 @@ struct GameSearchView: View {
             onSelect(game)
             dismiss()
         } catch {
-            // La création échoue silencieusement pour l'instant ;
-            // un retour d'erreur UI sera ajouté avec la gestion premium.
+            // La création échoue silencieusement pour l'instant.
         }
     }
 
@@ -179,5 +194,6 @@ struct GameSearchView: View {
     GameSearchView(onSelect: { _ in })
         .modelContainer(PreviewSampleData.container)
         .environmentObject(LocalizationManager())
+        .environmentObject(PremiumManager())
         .environment(\.theme, GrymBlueTheme())
 }

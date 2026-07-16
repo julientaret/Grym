@@ -10,7 +10,12 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
 
 ## Core/Premium
 
-- `PremiumManager.swift` — `ObservableObject` : statut premium (persisté UserDefaults) et limite du palier gratuit (`freeGameLimit = 10`). StoreKit pilotera l'achat plus tard.
+- `PremiumManager.swift` — `ObservableObject` StoreKit 2 : charge le produit (`com.applemousse.grym.premium`, achat unique), achat/restauration, observe les transactions et expose `isPremium` (droit StoreKit mis en cache UserDefaults) + limite gratuite (`freeGameLimit = 10`).
+
+## Configuration (hors Swift)
+
+- `StoreKit/Grym.storekit` — Configuration StoreKit locale (produit premium, prix) pour tester l'achat en simulateur via le scheme.
+- `Grym.xcodeproj/xcshareddata/xcschemes/Grym.xcscheme` — Scheme partagé référençant la config StoreKit (l'achat local ne s'active qu'au lancement via Xcode/scheme).
 
 ## Core/Persistence
 
@@ -109,7 +114,7 @@ Détail d'un wiki : édition directe du modèle via `@Bindable` (écart MVVM jus
 
 ## Features/Premium
 
-- `PremiumUpgradeView.swift` — Prompt d'upgrade (avantages + prix) présenté à l'atteinte de la limite gratuite. Achat StoreKit à brancher (placeholder actuel).
+- `PremiumUpgradeView.swift` — Prompt d'upgrade (avantages + prix localisé StoreKit) : achat et restauration via `PremiumManager`, présenté à l'atteinte de la limite gratuite.
 
 ## Features/GameSearch
 

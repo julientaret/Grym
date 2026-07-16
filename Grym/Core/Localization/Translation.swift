@@ -63,7 +63,8 @@ enum TranslationKey: String {
     case premiumBenefitExport
     case premiumBenefitWidgets
     case premiumBenefitStats
-    case premiumPurchase
+    case premiumUnlock
+    case premiumRestore
     case premiumLater
     case homeDashboardEmpty
     case tabMyGames
@@ -152,7 +153,8 @@ enum Translation {
             .premiumBenefitExport: "Export PDF / Markdown",
             .premiumBenefitWidgets: "Widgets iOS",
             .premiumBenefitStats: "Statistiques personnelles",
-            .premiumPurchase: "Débloquer — 4,99 €",
+            .premiumUnlock: "Débloquer",
+            .premiumRestore: "Restaurer l'achat",
             .premiumLater: "Plus tard",
             .homeDashboardEmpty: "Tes jeux épinglés et ton activité récente apparaîtront ici.",
             .tabMyGames: "Mes jeux",
@@ -227,7 +229,8 @@ enum Translation {
             .premiumBenefitExport: "PDF / Markdown export",
             .premiumBenefitWidgets: "iOS widgets",
             .premiumBenefitStats: "Personal stats",
-            .premiumPurchase: "Unlock — €4.99",
+            .premiumUnlock: "Unlock",
+            .premiumRestore: "Restore purchase",
             .premiumLater: "Later",
             .homeDashboardEmpty: "Your pinned games and recent activity will show up here.",
             .tabMyGames: "My games",

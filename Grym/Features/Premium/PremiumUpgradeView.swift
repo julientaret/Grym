@@ -49,6 +49,16 @@ struct PremiumUpgradeView: View {
                 purchaseButton
 
                 Button {
+                    Task { await premium.restore(); dismissIfPremium() }
+                } label: {
+                    Text(localization.string(.premiumRestore))
+                        .font(.system(size: Theme.FontSize.caption, weight: .medium))
+                        .foregroundStyle(theme.secondaryText)
+                        .frame(maxWidth: .infinity)
+                }
+                .disabled(premium.isPurchasing)
+
+                Button {
                     dismiss()
                 } label: {
                     Text(localization.string(.premiumLater))
@@ -59,6 +69,10 @@ struct PremiumUpgradeView: View {
             }
             .padding(Theme.Spacing.xLarge)
         }
+    }
+
+    private func dismissIfPremium() {
+        if premium.isPremium { dismiss() }
     }
 
     // MARK: En-tête
@@ -94,21 +108,36 @@ struct PremiumUpgradeView: View {
 
     private var purchaseButton: some View {
         Button {
-            // TODO: brancher l'achat StoreKit 2. Placeholder : débloque directement.
-            premium.setPremium(true)
-            dismiss()
+            Task {
+                if await premium.purchase() { dismiss() }
+            }
         } label: {
-            Text(localization.string(.premiumPurchase))
-                .font(.system(size: Theme.FontSize.body, weight: .bold))
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, Theme.Spacing.medium)
-                .background(
-                    RoundedRectangle(cornerRadius: Theme.Radius.medium, style: .continuous)
-                        .fill(LinearGradient(colors: [theme.accentAlt, theme.brand],
-                                             startPoint: .topLeading, endPoint: .bottomTrailing))
-                )
+            Group {
+                if premium.isPurchasing {
+                    ProgressView().tint(.white)
+                } else {
+                    Text(purchaseLabel)
+                }
+            }
+            .font(.system(size: Theme.FontSize.body, weight: .bold))
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, Theme.Spacing.medium)
+            .background(
+                RoundedRectangle(cornerRadius: Theme.Radius.medium, style: .continuous)
+                    .fill(LinearGradient(colors: [theme.accentAlt, theme.brand],
+                                         startPoint: .topLeading, endPoint: .bottomTrailing))
+            )
         }
+        .disabled(premium.isPurchasing || premium.product == nil)
+    }
+
+    /// « Débloquer — 4,99 € » avec le prix localisé StoreKit, sinon « Débloquer ».
+    private var purchaseLabel: String {
+        if let price = premium.displayPrice {
+            return "\(localization.string(.premiumUnlock)) — \(price)"
+        }
+        return localization.string(.premiumUnlock)
     }
 
     private var background: some View {

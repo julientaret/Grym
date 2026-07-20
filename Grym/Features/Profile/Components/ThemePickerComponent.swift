@@ -12,12 +12,13 @@ struct ThemePickerComponent: View {
     @EnvironmentObject private var themeManager: ThemeManager
 
     var body: some View {
-        Picker(localization.string(.profileThemeLabel), selection: selection) {
+        Picker("", selection: selection) {
             ForEach(ThemeID.allCases) { id in
                 Text(localization.string(id.nameKey)).tag(id)
             }
         }
         .pickerStyle(.segmented)
+        .labelsHidden()
     }
 
     /// Lie la sélection du picker au thème actif du manager.

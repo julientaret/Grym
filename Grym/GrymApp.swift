@@ -13,6 +13,7 @@ struct GrymApp: App {
     @StateObject private var localization = LocalizationManager.shared
     @StateObject private var themeManager = ThemeManager()
     @StateObject private var premium = PremiumManager()
+    @StateObject private var preferences = PreferencesManager()
 
     var body: some Scene {
         WindowGroup {
@@ -20,6 +21,7 @@ struct GrymApp: App {
                 .environmentObject(localization)
                 .environmentObject(themeManager)
                 .environmentObject(premium)
+                .environmentObject(preferences)
                 .environment(\.theme, themeManager.theme)
                 .tint(themeManager.theme.accent)
         }

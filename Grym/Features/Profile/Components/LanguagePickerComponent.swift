@@ -11,12 +11,13 @@ struct LanguagePickerComponent: View {
     @EnvironmentObject private var localization: LocalizationManager
 
     var body: some View {
-        Picker(localization.string(.profileLanguageLabel), selection: selection) {
+        Picker("", selection: selection) {
             ForEach(AppLanguage.allCases, id: \.self) { language in
                 Text(language.displayName).tag(language)
             }
         }
         .pickerStyle(.segmented)
+        .labelsHidden()
     }
 
     /// Lie la sélection du picker à la langue active du manager.

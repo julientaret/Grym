@@ -35,5 +35,6 @@ struct RootTabView: View {
     RootTabView()
         .environmentObject(LocalizationManager())
         .environmentObject(ThemeManager())
+        .environmentObject(PreferencesManager())
         .environment(\.theme, GrymBlueTheme())
 }

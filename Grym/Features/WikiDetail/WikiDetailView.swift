@@ -13,30 +13,16 @@ import QuickLook
 import SwiftData
 import SwiftUI
 
-/// Mode d'affichage des pages dans le détail wiki.
-enum WikiPagesMode: CaseIterable, Identifiable {
-    case list, tabs, cards
-    var id: Self { self }
-
-    var nameKey: TranslationKey {
-        switch self {
-        case .list:  .wikiModeList
-        case .tabs:  .wikiModeTabs
-        case .cards: .wikiModeCards
-        }
-    }
-}
-
 struct WikiDetailView: View {
     @Bindable var wiki: Wiki
 
     @EnvironmentObject private var localization: LocalizationManager
+    @EnvironmentObject private var preferences: PreferencesManager
     @Environment(\.theme) private var theme
     @Environment(\.modelContext) private var modelContext
 
     @StateObject private var mediaViewModel = WikiMediaViewModel()
 
-    @State private var pagesMode: WikiPagesMode = .list
     @State private var selectedPageID: PersistentIdentifier?
     @State private var openPage: Page?
     /// Photo affichée en plein écran (QuickLook), parmi `photoURLs`.
@@ -85,8 +71,6 @@ struct WikiDetailView: View {
                     .grymFullWidthRow()
             }
 
-            modePicker.grymBlockRow()
-
             pagesHeader.grymBlockRow()
 
             pagesContent
@@ -101,7 +85,7 @@ struct WikiDetailView: View {
         .navigationTitle(wiki.game?.title ?? "")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            if pagesMode == .list {
+            if preferences.wikiPagesMode == .list {
                 ToolbarItem(placement: .topBarTrailing) { EditButton() }
             }
         }
@@ -136,18 +120,9 @@ struct WikiDetailView: View {
 
     // MARK: Pages
 
-    private var modePicker: some View {
-        Picker("", selection: $pagesMode) {
-            ForEach(WikiPagesMode.allCases) { mode in
-                Text(localization.string(mode.nameKey)).tag(mode)
-            }
-        }
-        .pickerStyle(.segmented)
-    }
-
     @ViewBuilder
     private var pagesContent: some View {
-        switch pagesMode {
+        switch preferences.wikiPagesMode {
         case .list:
             ForEach(sortedPages) { page in
                 Button { openPage = page } label: {
@@ -268,5 +243,6 @@ struct WikiDetailView: View {
     }
     .modelContainer(PreviewSampleData.container)
     .environmentObject(LocalizationManager())
+    .environmentObject(PreferencesManager())
     .environment(\.theme, GrymBlueTheme())
 }

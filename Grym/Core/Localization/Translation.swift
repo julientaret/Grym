@@ -33,6 +33,13 @@ enum TranslationKey: String {
     case tabHome
     case profileThemeLabel
     case profileLanguageLabel
+    case profileSubtitle
+    case profileAppearanceSection
+    case profileDisplaySection
+    case profileWikiModeLabel
+    case profileWikiModeHint
+    case profileWikiModeSampleFirst
+    case profileWikiModeSampleSecond
     case themeGrymBlue
     case themeGrymViolet
     // Home
@@ -128,6 +135,13 @@ enum Translation {
             .tabHome: "Accueil",
             .profileThemeLabel: "Thème",
             .profileLanguageLabel: "Langue",
+            .profileSubtitle: "Personnalisez votre expérience",
+            .profileAppearanceSection: "Apparence",
+            .profileDisplaySection: "Affichage",
+            .profileWikiModeLabel: "Affichage des wikis",
+            .profileWikiModeHint: "Le même réglage s'applique à tous vos jeux.",
+            .profileWikiModeSampleFirst: "Quêtes",
+            .profileWikiModeSampleSecond: "Builds",
             .themeGrymBlue: "Bleu",
             .themeGrymViolet: "Violet",
             .appTagline: "Votre pense-bête vidéoludique",
@@ -206,6 +220,13 @@ enum Translation {
             .tabHome: "Home",
             .profileThemeLabel: "Theme",
             .profileLanguageLabel: "Language",
+            .profileSubtitle: "Make the app yours",
+            .profileAppearanceSection: "Appearance",
+            .profileDisplaySection: "Display",
+            .profileWikiModeLabel: "Wikis display",
+            .profileWikiModeHint: "The same setting applies to all your games.",
+            .profileWikiModeSampleFirst: "Quests",
+            .profileWikiModeSampleSecond: "Builds",
             .themeGrymBlue: "Blue",
             .themeGrymViolet: "Violet",
             .appTagline: "Your video game notebook",

@@ -6,7 +6,12 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
 
 ## App
 
-- `GrymApp.swift` — Point d'entrée `@main`, injecte `LocalizationManager`/`ThemeManager`, installe le `modelContainer` SwiftData (Game/Wiki/Page/Block) et affiche `RootTabView`.
+- `GrymApp.swift` — Point d'entrée `@main`, injecte `LocalizationManager`/`ThemeManager`/`PremiumManager`/`PreferencesManager`, installe le `modelContainer` SwiftData (Game/Wiki/Page/Block) et affiche `RootTabView`.
+
+## Core/Preferences
+
+- `WikiPagesMode.swift` — Mode d'affichage des pages d'un wiki (liste / onglets / cartes) : clé de traduction et icône.
+- `PreferencesManager.swift` — `ObservableObject` détenant les préférences d'affichage globales (mode des pages de wiki), persistées en UserDefaults.
 
 ## Core/Premium
 
@@ -105,7 +110,7 @@ Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
 Détail d'un wiki : édition directe du modèle via `@Bindable` (écart MVVM justifié) ; mutations structurelles via `WikiRepository`.
 
-- `WikiDetailView.swift` — `List` : bandeau illustré, en-tête, note personnelle, galerie des photos de l'utilisateur (aperçu QuickLook) et pages avec 3 modes d'affichage (Liste/Onglets/Cartes) ; épinglage, score, ajout/réorganisation (drag & drop en mode Liste)/suppression de pages.
+- `WikiDetailView.swift` — `List` : bandeau illustré, en-tête, note personnelle, galerie des photos de l'utilisateur (aperçu QuickLook) et pages selon le mode d'affichage global choisi dans le Profil (Liste/Onglets/Cartes) ; épinglage, score, ajout/réorganisation (drag & drop en mode Liste)/suppression de pages.
 - `WikiMediaViewModel.swift` — Charge les médias IGDB du jeu à l'ouverture du wiki (si jamais récupérés) et les persiste sur `Game` ; alimente le bandeau. Erreurs silencieuses (décoratif, réessai à la prochaine ouverture).
 - `Components/WikiDetailHeader.swift` — Cover, titre, méta, bouton épingler et ligne de stats.
 - `Components/WikiHeroBanner.swift` — Bandeau illustré pleine largeur en tête du wiki : file jusqu'au haut de l'écran (la barre de navigation se pose dessus), fondu vers le bas par un masque (se raccorde à n'importe quel thème).
@@ -129,6 +134,11 @@ Ajout d'un jeu : recherche live IGDB, présentée en sheet depuis le bouton « +
 
 ## Features/Profile
 
-- `ProfileView.swift` — Onglet Profil, préférences utilisateur ; expose le choix du thème et de la langue.
+- `ProfileView.swift` — Onglet Profil : fond dégradé Grym et cartes de réglages (Apparence : thème + langue ; Affichage : mode des pages de wiki).
+- `Components/ProfileHeaderView.swift` — En-tête du profil (titre + sous-titre), aligné sur le style de l'accueil.
+- `Components/ProfileSectionCard.swift` — Carte de section générique : `SectionHeaderView` + contenu sur surface translucide.
+- `Components/ProfileSettingRow.swift` — Ligne de réglage : intitulé, contrôle et texte d'aide optionnel.
 - `Components/ThemePickerComponent.swift` — Sélecteur segmenté qui bascule le thème via le `ThemeManager`.
 - `Components/LanguagePickerComponent.swift` — Sélecteur segmenté qui bascule la langue via le `LocalizationManager`.
+- `Components/WikiModePickerComponent.swift` — Sélecteur segmenté du mode d'affichage des wikis via le `PreferencesManager`, suivi de l'aperçu du rendu.
+- `Components/WikiModePreviewComponent.swift` — Aperçu miniature schématique du mode choisi (deux wikis factices), en Liste / Onglets / Cartes.

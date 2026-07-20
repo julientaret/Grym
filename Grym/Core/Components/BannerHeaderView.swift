@@ -11,6 +11,7 @@ import SwiftUI
 struct BannerHeaderView<Content: View>: View {
     /// Nom de l'image dans le catalogue d'assets.
     let imageName: String
+    var height: CGFloat = Theme.Size.bannerHeight
     @ViewBuilder let content: () -> Content
 
     @Environment(\.theme) private var theme
@@ -20,7 +21,7 @@ struct BannerHeaderView<Content: View>: View {
             banner
             overlayContent
         }
-        .frame(height: Theme.Size.bannerHeight)
+        .frame(height: height)
         .frame(maxWidth: .infinity)
     }
 

@@ -82,7 +82,10 @@ struct MyGamesView: View {
     // MARK: En-tête
 
     private var header: some View {
-        BannerHeaderView(imageName: "banner-my-games") {
+        BannerHeaderView(
+            imageName: "banner-my-games",
+            height: Theme.Size.bannerHeightCompact
+        ) {
             HStack(spacing: Theme.Spacing.xSmall + 2) {
                 Text(localization.string(.myGamesTitle))
                     .font(.system(size: Theme.FontSize.largeTitle, weight: .bold))

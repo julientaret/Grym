@@ -17,7 +17,6 @@ struct ProfileView: View {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Theme.Spacing.large) {
                     ProfileHeaderView()
-                        .padding(.horizontal, Theme.Spacing.large)
 
                     StudioCreditComponent()
 
@@ -31,9 +30,9 @@ struct ProfileView: View {
                     debugSection
 #endif
                 }
-                .padding(.top, Theme.Spacing.small)
                 .padding(.bottom, Theme.Spacing.xLarge)
             }
+            .ignoresSafeArea(edges: .top)
             .background(background)
             .navigationBarHidden(true)
         }

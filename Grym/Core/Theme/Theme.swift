@@ -46,6 +46,8 @@ enum Theme {
     enum Size {
         /// Hauteur des bannières illustrées d'en-tête d'onglet.
         static let bannerHeight: CGFloat = 260
+        /// Variante réduite, pour les écrans dont le contenu prime sur l'illustration.
+        static let bannerHeightCompact: CGFloat = 180
     }
 
     // MARK: - Durées d'animation

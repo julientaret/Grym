@@ -26,7 +26,6 @@ nonisolated struct IGDBGame: Decodable, Identifiable, Sendable, Hashable {
     let slug: String?
     let firstReleaseDate: Int?
     let cover: IGDBImage?
-    let platforms: [IGDBPlatform]?
 }
 
 /// Image hébergée sur le CDN IGDB (cover, screenshot ou artwork).
@@ -61,13 +60,6 @@ nonisolated struct IGDBGameMedia: Sendable, Equatable {
     static let empty = IGDBGameMedia(screenshotImageIds: [], artworkImageIds: [])
 }
 
-/// Plateforme d'un jeu (PS5, PC, Switch…).
-nonisolated struct IGDBPlatform: Decodable, Sendable, Hashable {
-    let id: Int
-    let name: String?
-    let abbreviation: String?
-}
-
 // MARK: - Présentation
 
 /// Tailles d'image disponibles sur le CDN IGDB.
@@ -93,12 +85,6 @@ extension IGDBGame {
         guard let firstReleaseDate else { return nil }
         let date = Date(timeIntervalSince1970: TimeInterval(firstReleaseDate))
         return Calendar(identifier: .gregorian).component(.year, from: date)
-    }
-
-    /// Libellé plateforme le plus court disponible (abréviation en priorité).
-    var primaryPlatform: String? {
-        guard let platform = platforms?.first else { return nil }
-        return platform.abbreviation ?? platform.name
     }
 
     /// URL de la cover pour une taille donnée, ou `nil` si le jeu n'en a pas.

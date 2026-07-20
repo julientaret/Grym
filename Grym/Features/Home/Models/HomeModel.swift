@@ -19,7 +19,6 @@ struct WikiSummary: Identifiable, Hashable {
     /// Teinte de repli utilisée pour le dégradé de cover.
     let coverTint: Color
     let year: Int?
-    let platform: String?
     let blockCount: Int
     let photoCount: Int
     let listCount: Int
@@ -33,7 +32,6 @@ struct WikiSummary: Identifiable, Hashable {
         coverImageId: String? = nil,
         coverTint: Color,
         year: Int?,
-        platform: String?,
         blockCount: Int,
         photoCount: Int,
         listCount: Int,
@@ -45,7 +43,6 @@ struct WikiSummary: Identifiable, Hashable {
         self.coverImageId = coverImageId
         self.coverTint = coverTint
         self.year = year
-        self.platform = platform
         self.blockCount = blockCount
         self.photoCount = photoCount
         self.listCount = listCount
@@ -63,7 +60,6 @@ struct WikiSummary: Identifiable, Hashable {
             coverImageId: game.coverImageId,
             coverTint: .grymTint(for: game.title),
             year: game.releaseYear,
-            platform: game.platform,
             blockCount: wiki.blockCount,
             photoCount: wiki.photoCount,
             listCount: wiki.listCount,

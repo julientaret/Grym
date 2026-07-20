@@ -34,7 +34,6 @@ struct WikiRepository {
             title: igdbGame.name,
             coverImageId: igdbGame.cover?.imageId,
             slug: igdbGame.slug,
-            platform: igdbGame.primaryPlatform,
             releaseYear: igdbGame.releaseYear
         )
         context.insert(game)

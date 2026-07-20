@@ -70,8 +70,7 @@ actor IGDBService: IGDBServiceProtocol {
         // - `cover != null` : écarte les fiches sans jaquette (souvent du bruit).
         // - `sort total_rating_count desc` : remonte les jeux emblématiques, coule les fan-games.
         let apicalypse = """
-        fields name, slug, first_release_date, cover.image_id, \
-        platforms.name, platforms.abbreviation; \
+        fields name, slug, first_release_date, cover.image_id; \
         where name ~ *"\(sanitized)"* \
         & cover != null \
         & version_parent = null \

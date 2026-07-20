@@ -28,15 +28,15 @@ enum PreviewSampleData {
         // de la galerie chargent de vraies images. Les deux autres jeux sont
         // volontairement laissés sans médias (état « jeu sans illustration »).
         seed(context, igdbId: 1, title: "Elden Ring", cover: "co4jni",
-             platform: "PS5", year: 2022, score: 92, pinned: true,
+             year: 2022, score: 92, pinned: true,
              photos: 18, lists: 9, texts: 36, age: 2 * hour,
              artworks: ["ar3m1o", "ar3m1p", "ar1481"],
              screenshots: ["scagdm", "scagdn", "scagdo", "scagdp", "scagdq"])
         seed(context, igdbId: 2, title: "Baldur's Gate 3", cover: "co670h",
-             platform: "PC", year: 2023, score: 88, pinned: true,
+             year: 2023, score: 88, pinned: true,
              photos: 11, lists: 7, texts: 24, age: day)
         seed(context, igdbId: 3, title: "Subnautica", cover: "co1o6r",
-             platform: "PC", year: 2018, score: 76, pinned: false,
+             year: 2018, score: 76, pinned: false,
              photos: 24, lists: 5, texts: 18, age: 3 * day)
 
         return container
@@ -62,13 +62,13 @@ enum PreviewSampleData {
     private static func seed(
         _ context: ModelContext,
         igdbId: Int, title: String, cover: String,
-        platform: String, year: Int, score: Int, pinned: Bool,
+        year: Int, score: Int, pinned: Bool,
         photos: Int, lists: Int, texts: Int, age: TimeInterval,
         artworks: [String] = [], screenshots: [String] = []
     ) {
         let date = Date().addingTimeInterval(-age)
         let game = Game(igdbId: igdbId, title: title, coverImageId: cover,
-                        platform: platform, releaseYear: year)
+                        releaseYear: year)
         if !artworks.isEmpty || !screenshots.isEmpty {
             game.apply(IGDBGameMedia(screenshotImageIds: screenshots, artworkImageIds: artworks))
         }

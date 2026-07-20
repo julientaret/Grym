@@ -2,7 +2,7 @@
 //  GameSearchResultRow.swift
 //  Grym
 //
-//  Ligne de résultat de recherche IGDB : cover, titre, année · plateforme.
+//  Ligne de résultat de recherche IGDB : cover, titre, année de sortie.
 //
 
 import SwiftUI
@@ -46,8 +46,7 @@ struct GameSearchResultRow: View {
     }
 
     private var metaLine: String? {
-        let parts = [game.releaseYear.map(String.init), game.primaryPlatform].compactMap { $0 }
-        return parts.isEmpty ? nil : parts.joined(separator: " · ")
+        game.releaseYear.map(String.init)
     }
 }
 
@@ -56,8 +55,7 @@ struct GameSearchResultRow: View {
         game: IGDBGame(
             id: 1, name: "Elden Ring", slug: "elden-ring",
             firstReleaseDate: 1_645_747_200,
-            cover: IGDBImage(id: nil, imageId: "co4jni"),
-            platforms: [IGDBPlatform(id: 167, name: "PlayStation 5", abbreviation: "PS5")]
+            cover: IGDBImage(id: nil, imageId: "co4jni")
         )
     )
     .padding()

@@ -67,9 +67,7 @@ struct WikiRowView: View {
     }
 
     private var metaLine: String {
-        [wiki.year.map(String.init), wiki.platform]
-            .compactMap { $0 }
-            .joined(separator: " · ")
+        wiki.year.map(String.init) ?? ""
     }
 }
 
@@ -77,7 +75,7 @@ struct WikiRowView: View {
     WikiRowView(
         wiki: WikiSummary(
             title: "Elden Ring", coverTint: Color(hex: 0xE0A458),
-            year: 2022, platform: "PS5",
+            year: 2022,
             blockCount: 63, photoCount: 18, listCount: 9,
             score: 92, updatedAt: Date()
         )

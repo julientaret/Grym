@@ -61,7 +61,7 @@ Couche de données locale (SwiftData, offline-first).
 Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client credentials » de Twitch.
 
 - `IGDBConfig.swift` — Constantes d'accès : clés client (dev), endpoints token/API, marge d'expiration.
-- `IGDBModels.swift` — DTO de réponse (`IGDBGame`, `IGDBImage`, `IGDBPlatform`, `IGDBTokenResponse`, `IGDBGameMediaResponse`/`IGDBGameMedia`) + helpers de présentation (année, plateforme, URL de cover, tailles d'image).
+- `IGDBModels.swift` — DTO de réponse (`IGDBGame`, `IGDBImage`, `IGDBTokenResponse`, `IGDBGameMediaResponse`/`IGDBGameMedia`) + helpers de présentation (année, URL de cover, tailles d'image).
 - `IGDBError.swift` — Erreurs typées du service (`LocalizedError`).
 - `IGDBService.swift` — `actor` conforme à `IGDBServiceProtocol` : gère le token (cache + refresh auto), la recherche de jeux (`searchGames`) et les médias d'un jeu (`gameMedia`, appel séparé car les images alourdissent la réponse).
 
@@ -137,7 +137,7 @@ Ajout d'un jeu : recherche live IGDB, présentée en sheet depuis le bouton « +
 
 - `GameSearchView.swift` — Vue : champ de recherche + états (invite, chargement, résultats, vide, erreur) ; à la sélection, persiste le wiki via `WikiRepository`, le remonte via `onSelect(Wiki)` puis referme.
 - `GameSearchViewModel.swift` — `ObservableObject` : debounce, appel à `IGDBService`, machine à états `State`.
-- `Components/GameSearchResultRow.swift` — Ligne de résultat (cover IGDB, titre, année · plateforme).
+- `Components/GameSearchResultRow.swift` — Ligne de résultat (cover IGDB, titre, année de sortie).
 
 ## Features/Profile
 

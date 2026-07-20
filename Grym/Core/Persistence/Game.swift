@@ -16,7 +16,6 @@ final class Game {
     /// `image_id` IGDB de la jaquette ; l'URL est reconstruite à la demande.
     var coverImageId: String?
     var slug: String?
-    var platform: String?
     var releaseYear: Int?
 
     /// `image_id` IGDB des captures d'écran du jeu.
@@ -36,14 +35,12 @@ final class Game {
         title: String,
         coverImageId: String? = nil,
         slug: String? = nil,
-        platform: String? = nil,
         releaseYear: Int? = nil
     ) {
         self.igdbId = igdbId
         self.title = title
         self.coverImageId = coverImageId
         self.slug = slug
-        self.platform = platform
         self.releaseYear = releaseYear
     }
 

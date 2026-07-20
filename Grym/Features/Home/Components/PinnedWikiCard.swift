@@ -51,7 +51,7 @@ struct PinnedWikiCard: View {
     PinnedWikiCard(
         wiki: WikiSummary(
             title: "Elden Ring", coverTint: Color(hex: 0xE0A458),
-            year: 2022, platform: "PS5",
+            year: 2022,
             blockCount: 63, photoCount: 18, listCount: 9,
             score: 92, updatedAt: Date().addingTimeInterval(-7200)
         )

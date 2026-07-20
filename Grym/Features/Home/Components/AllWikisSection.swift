@@ -56,10 +56,10 @@ struct AllWikisSection: View {
     AllWikisSection(
         wikis: [
             WikiSummary(title: "Elden Ring", coverTint: Color(hex: 0xE0A458),
-                        year: 2022, platform: "PS5", blockCount: 63, photoCount: 18,
+                        year: 2022, blockCount: 63, photoCount: 18,
                         listCount: 9, score: 92, updatedAt: Date()),
             WikiSummary(title: "Subnautica", coverTint: Color(hex: 0x2FA9D8),
-                        year: 2018, platform: "PC", blockCount: 47, photoCount: 24,
+                        year: 2018, blockCount: 47, photoCount: 24,
                         listCount: 5, score: 76, updatedAt: Date())
         ]
     )

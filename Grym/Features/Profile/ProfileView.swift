@@ -21,6 +21,8 @@ struct ProfileView: View {
 
                     appearanceSection
 
+                    languageSection
+
                     displaySection
 
 #if DEBUG
@@ -48,7 +50,16 @@ struct ProfileView: View {
             ) {
                 ThemePickerComponent()
             }
-            ProfileSettingRow(title: localization.string(.profileLanguageLabel)) {
+        }
+    }
+
+    private var languageSection: some View {
+        ProfileSectionCard(
+            systemImage: "globe",
+            title: localization.string(.profileLanguageSection)
+        ) {
+            // Le sélecteur suffit : le titre de section porte déjà le libellé.
+            ProfileSettingRow(hint: localization.string(.profileLanguageHint)) {
                 LanguagePickerComponent()
             }
         }

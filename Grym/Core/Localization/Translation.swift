@@ -32,9 +32,10 @@ enum TranslationKey: String {
     case tabProfile
     case tabHome
     case profileThemeLabel
-    case profileLanguageLabel
     case profileSubtitle
     case profileAppearanceSection
+    case profileLanguageSection
+    case profileLanguageHint
     case profileDisplaySection
     case profileWikiModeLabel
     case profileWikiModeHint
@@ -153,9 +154,10 @@ enum Translation {
             .tabProfile: "Profil",
             .tabHome: "Accueil",
             .profileThemeLabel: "Thème",
-            .profileLanguageLabel: "Langue",
             .profileSubtitle: "Personnalisez votre expérience",
             .profileAppearanceSection: "Apparence",
+            .profileLanguageSection: "Langue",
+            .profileLanguageHint: "S'applique aux textes de l'app, pas à vos contenus.",
             .profileDisplaySection: "Affichage",
             .profileWikiModeLabel: "Affichage des wikis",
             .profileWikiModeHint: "Le même réglage s'applique à tous vos jeux.",
@@ -257,9 +259,10 @@ enum Translation {
             .tabProfile: "Profile",
             .tabHome: "Home",
             .profileThemeLabel: "Theme",
-            .profileLanguageLabel: "Language",
             .profileSubtitle: "Make the app yours",
             .profileAppearanceSection: "Appearance",
+            .profileLanguageSection: "Language",
+            .profileLanguageHint: "Applies to the app's own text, not to your content.",
             .profileDisplaySection: "Display",
             .profileWikiModeLabel: "Wikis display",
             .profileWikiModeHint: "The same setting applies to all your games.",

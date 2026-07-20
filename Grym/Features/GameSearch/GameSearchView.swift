@@ -10,8 +10,8 @@ import SwiftData
 import SwiftUI
 
 struct GameSearchView: View {
-    /// Appelé après l'ajout d'un jeu (le wiki est déjà persisté).
-    let onSelect: (IGDBGame) -> Void
+    /// Appelé après l'ajout d'un jeu, avec le wiki déjà persisté.
+    let onSelect: (Wiki) -> Void
 
     @StateObject private var viewModel = GameSearchViewModel()
     @State private var text: String = ""
@@ -151,12 +151,12 @@ struct GameSearchView: View {
         }
 
         do {
-            try repository.addWiki(for: game)
+            let wiki = try repository.addWiki(for: game)
             // Télécharge la jaquette pour un accès offline (jeu ajouté en ligne).
             if let imageId = game.cover?.imageId {
                 Task { await CoverStore.downloadIfNeeded(imageId: imageId) }
             }
-            onSelect(game)
+            onSelect(wiki)
             dismiss()
         } catch {
             // La création échoue silencieusement pour l'instant.

@@ -19,15 +19,26 @@ struct WikiScoreCard: View {
     /// Score au début du drag, pour ajuster par translation (robuste aux
     /// événements de geste fantômes émis pendant les transitions).
     @State private var dragStartScore: Int?
+    /// Le slider est replié par défaut : évite de modifier la note
+    /// accidentellement en faisant défiler la vue.
+    @State private var isExpanded = false
 
     private var tier: ScoreTier { ScoreTier.tier(for: score) }
     private let thumbSize: CGFloat = 26
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.medium) {
-            header
-            slider
-            tierLabels
+            Button {
+                withAnimation(.snappy) { isExpanded.toggle() }
+            } label: {
+                header
+            }
+            .buttonStyle(.plain)
+
+            if isExpanded {
+                slider
+                tierLabels
+            }
         }
         .padding(Theme.Spacing.large)
         .background(
@@ -69,10 +80,10 @@ struct WikiScoreCard: View {
 
                 Spacer()
 
-                Text(localization.string(.wikiPrivate))
-                    .font(.system(size: Theme.FontSize.caption, weight: .semibold))
+                Image(systemName: "chevron.down")
+                    .font(.system(size: Theme.FontSize.caption, weight: .bold))
                     .foregroundStyle(theme.secondaryText)
-                    .tracking(1)
+                    .rotationEffect(.degrees(isExpanded ? 180 : 0))
             }
         }
     }

@@ -12,6 +12,9 @@ import SwiftUI
 struct MyGamesView: View {
     @StateObject private var viewModel = MyGamesViewModel()
     @State private var showingGameSearch = false
+    @State private var path: [Wiki] = []
+    /// Wiki créé depuis la recherche, poussé une fois la sheet refermée.
+    @State private var pendingWiki: Wiki?
 
     @EnvironmentObject private var localization: LocalizationManager
     @EnvironmentObject private var premium: PremiumManager
@@ -19,7 +22,7 @@ struct MyGamesView: View {
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Theme.Spacing.large) {
                     header
@@ -64,8 +67,15 @@ struct MyGamesView: View {
         .onAppear { viewModel.load(context: modelContext) }
         .sheet(isPresented: $showingGameSearch, onDismiss: {
             viewModel.load(context: modelContext)
+            if let wiki = pendingWiki {
+                pendingWiki = nil
+                path.append(wiki)
+            }
         }) {
-            GameSearchView { _ in showingGameSearch = false }
+            GameSearchView { wiki in
+                pendingWiki = wiki
+                showingGameSearch = false
+            }
         }
     }
 

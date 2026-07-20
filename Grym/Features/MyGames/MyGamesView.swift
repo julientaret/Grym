@@ -56,9 +56,9 @@ struct MyGamesView: View {
                             .padding(.top, Theme.Spacing.small)
                     }
                 }
-                .padding(.top, Theme.Spacing.small)
                 .padding(.bottom, Theme.Spacing.xLarge)
             }
+            .ignoresSafeArea(edges: .top)
             .background(background)
             .navigationDestination(for: Wiki.self) { wiki in
                 WikiDetailView(wiki: wiki)
@@ -82,19 +82,20 @@ struct MyGamesView: View {
     // MARK: En-tête
 
     private var header: some View {
-        HStack(spacing: Theme.Spacing.xSmall + 2) {
-            Text(localization.string(.myGamesTitle))
-                .font(.system(size: Theme.FontSize.largeTitle, weight: .bold))
-                .foregroundStyle(theme.primaryText)
-            if !viewModel.wikis.isEmpty {
-                Text(countLabel)
-                    .font(.system(size: Theme.FontSize.title, weight: .semibold))
-                    .foregroundStyle(theme.secondaryText)
+        BannerHeaderView(imageName: "banner-my-games") {
+            HStack(spacing: Theme.Spacing.xSmall + 2) {
+                Text(localization.string(.myGamesTitle))
+                    .font(.system(size: Theme.FontSize.largeTitle, weight: .bold))
+                    .foregroundStyle(theme.primaryText)
+                if !viewModel.wikis.isEmpty {
+                    Text(countLabel)
+                        .font(.system(size: Theme.FontSize.title, weight: .semibold))
+                        .foregroundStyle(theme.secondaryText)
+                }
+                Spacer()
+                CircularAddGameButton { showingGameSearch = true }
             }
-            Spacer()
-            CircularAddGameButton { showingGameSearch = true }
         }
-        .padding(.horizontal, Theme.Spacing.large)
     }
 
     /// « · N » en premium, « · N / 10 » au palier gratuit.

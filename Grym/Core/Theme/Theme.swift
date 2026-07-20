@@ -41,6 +41,13 @@ enum Theme {
         static let large: CGFloat = 20
     }
 
+    // MARK: - Dimensions
+
+    enum Size {
+        /// Hauteur des bannières illustrées d'en-tête d'onglet.
+        static let bannerHeight: CGFloat = 260
+    }
+
     // MARK: - Durées d'animation
 
     enum AnimationDuration {

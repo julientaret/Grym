@@ -50,6 +50,27 @@ struct WideAddGameButton: View {
     }
 }
 
+/// Bouton capsule « Ajouter un jeu » (superposé à la bannière d'accueil).
+struct CompactAddGameButton: View {
+    let action: () -> Void
+    @EnvironmentObject private var localization: LocalizationManager
+    @Environment(\.theme) private var theme
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: Theme.Spacing.small) {
+                Image(systemName: "plus")
+                Text(localization.string(.gameSearchTitle))
+            }
+            .font(.system(size: Theme.FontSize.body, weight: .semibold))
+            .foregroundStyle(.white)
+            .padding(.horizontal, Theme.Spacing.medium)
+            .padding(.vertical, Theme.Spacing.small)
+            .background(Capsule().fill(addGradient(theme)))
+        }
+    }
+}
+
 private func addGradient(_ theme: any AppTheme) -> LinearGradient {
     LinearGradient(
         colors: [theme.accentAlt, theme.brand],
@@ -61,6 +82,7 @@ private func addGradient(_ theme: any AppTheme) -> LinearGradient {
 #Preview {
     VStack(spacing: Theme.Spacing.large) {
         CircularAddGameButton(action: {})
+        CompactAddGameButton(action: {})
         WideAddGameButton(action: {})
     }
     .padding()

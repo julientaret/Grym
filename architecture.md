@@ -10,6 +10,7 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
 
 ## Core/Components
 
+- `BannerHeaderView.swift` — Bannière illustrée d'en-tête d'onglet (Accueil, Mes jeux) : image rognée à la largeur de la vue, assombrie et fondue en alpha vers le bas, avec contenu libre superposé.
 - `EmptyStateView.swift` — État vide réutilisable (Accueil, Mes jeux) : badge illustré, titre, message, étapes « quoi faire » et appel à l'action optionnel.
 
 ## Core/Preferences
@@ -41,7 +42,7 @@ Couche de données locale (SwiftData, offline-first).
 
 ## Core
 
-- `Core/Theme/Theme.swift` — Constantes du design system indépendantes du thème (spacings, font sizes, radius, durées d'animation).
+- `Core/Theme/Theme.swift` — Constantes du design system indépendantes du thème (spacings, font sizes, radius, dimensions, durées d'animation).
 - `Core/Theme/Color+Theme.swift` — Palette brute (tokens `grym*`), helper de tier de note 0–100, teinte déterministe `grymTint`, init `hex` et init adaptatif clair/sombre.
 - `Core/Theme/ScoreTier.swift` — Paliers de note (Naze→GOTY) : rang, libellé localisé et couleur.
 - `Core/Theme/AppTheme.swift` — Protocole `AppTheme` (rôles de couleur, dont `pageAccents`) avec défauts base Grym, enum `ThemeID` (+ `requiresPremium`, thème gratuit), et clé d'environnement `\.theme`.
@@ -81,7 +82,7 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 - `HomeView.swift` — Vue principale : en-tête, épinglés, activité récente, sur fond dégradé. Deux états vides via `EmptyStateView` (onboarding + ajout de jeu si aucun jeu, explication de l'épinglage sinon).
 - `HomeViewModel.swift` — `ObservableObject` : charge épinglés + total depuis SwiftData (`load(context:localization:)`) et construit le flux d'activité récente (wikis créés + notes modifiées, fusionnés et triés, 10 max) ; `isDashboardEmpty` ; `target(for:context:)` résout la destination d'une entrée d'activité.
 - `Models/HomeModel.swift` — Modèles de présentation : `WikiSummary` (mapping depuis `Wiki`), `ActivityEntry` (jaquette + identifiants wiki/page cibles), `ActivityKind`, `ActivityTarget` (destination de navigation).
-- `Components/HomeHeaderView.swift` — Titre « Grym », tagline et bouton d'ajout.
+- `Components/HomeHeaderView.swift` — Bannière illustrée (`banner-home`) avec overlay dégradé, titre « Grym », tagline et bouton d'ajout superposés.
 - `Components/HomeSearchBar.swift` — Barre de recherche locale (actuellement masquée, conservée pour plus tard).
 - `Components/SectionHeaderView.swift` — En-tête de section réutilisable (icône + titre + compteur).
 - `Components/WikiCoverView.swift` — Cover d'un wiki : jaquette locale (offline) sinon CDN IGDB sinon dégradé teinté. Prend un `image_id`.
@@ -97,7 +98,7 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 
 Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
-- `MyGamesView.swift` — `NavigationStack` : liste des wikis (`WikiRowView`), compteur, état vide illustré (`EmptyStateView` + CTA d'ajout, mention du palier gratuit hors premium), suppression par menu contextuel, navigation vers `WikiDetailView` (le wiki créé depuis la recherche est poussé automatiquement à la fermeture de la sheet).
+- `MyGamesView.swift` — `NavigationStack` : bannière d'en-tête (`BannerHeaderView`, `banner-my-games`), liste des wikis (`WikiRowView`), compteur, état vide illustré (`EmptyStateView` + CTA d'ajout, mention du palier gratuit hors premium), suppression par menu contextuel, navigation vers `WikiDetailView` (le wiki créé depuis la recherche est poussé automatiquement à la fermeture de la sheet).
 - `MyGamesViewModel.swift` — `ObservableObject` : charge les wikis (`load`), suppression via `WikiRepository` (`delete`).
 
 ## Features/PageDetail

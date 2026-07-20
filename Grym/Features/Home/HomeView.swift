@@ -22,8 +22,7 @@ struct HomeView: View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Theme.Spacing.large) {
-                    HomeHeaderView()
-                        .padding(.horizontal, Theme.Spacing.large)
+                    HomeHeaderView(onAddGame: { showingGameSearch = true })
 
                     if !viewModel.pinnedWikis.isEmpty {
                         PinnedWikisSection(
@@ -45,9 +44,9 @@ struct HomeView: View {
                         dashboardEmptyState
                     }
                 }
-                .padding(.top, Theme.Spacing.small)
                 .padding(.bottom, Theme.Spacing.xLarge)
             }
+            .ignoresSafeArea(edges: .top)
             .background(background)
             .navigationDestination(for: Wiki.self) { wiki in
                 WikiDetailView(wiki: wiki)

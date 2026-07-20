@@ -19,7 +19,7 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
 
 ## Core/Premium
 
-- `PremiumManager.swift` — `ObservableObject` StoreKit 2 : charge le produit (`com.applemousse.grym.premium`, achat unique), achat/restauration, observe les transactions et expose `isPremium` (droit StoreKit mis en cache UserDefaults) + limite gratuite (`freeGameLimit = 10`).
+- `PremiumManager.swift` — `ObservableObject` StoreKit 2 : charge le produit (`com.applemousse.grym.premium`, achat unique), achat/restauration, observe les transactions et expose `hasStoreEntitlement` (mis en cache UserDefaults) + `isPremium` effectif (en DEBUG, `debugPremiumOverride` le force) et la limite gratuite (`freeGameLimit = 10`).
 
 ## Configuration (hors Swift)
 
@@ -44,10 +44,12 @@ Couche de données locale (SwiftData, offline-first).
 - `Core/Theme/Theme.swift` — Constantes du design system indépendantes du thème (spacings, font sizes, radius, durées d'animation).
 - `Core/Theme/Color+Theme.swift` — Palette brute (tokens `grym*`), helper de tier de note 0–100, teinte déterministe `grymTint`, init `hex` et init adaptatif clair/sombre.
 - `Core/Theme/ScoreTier.swift` — Paliers de note (Naze→GOTY) : rang, libellé localisé et couleur.
-- `Core/Theme/AppTheme.swift` — Protocole `AppTheme` (rôles de couleur) avec défauts base Grym, enum `ThemeID`, et clé d'environnement `\.theme`.
-- `Core/Theme/Themes/GrymBlueTheme.swift` — Thème par défaut (accent bleu).
-- `Core/Theme/Themes/GrymVioletTheme.swift` — Variante violette ; n'écrase que ses écarts.
-- `Core/Theme/ThemeManager.swift` — `ObservableObject` détenant le thème actif, le persiste (UserDefaults) et permet le switch à chaud.
+- `Core/Theme/AppTheme.swift` — Protocole `AppTheme` (rôles de couleur, dont `pageAccents`) avec défauts base Grym, enum `ThemeID` (+ `requiresPremium`, thème gratuit), et clé d'environnement `\.theme`.
+- `Core/Theme/Themes/GrymBlueTheme.swift` — Thème par défaut et gratuit : accent cyan sur base bleu nuit (fonds, surface et halo propres).
+- `Core/Theme/Themes/GrymVioletTheme.swift` — Variante violette (premium) sur la base violette historique.
+- `Core/Theme/Themes/GrymEmeraldTheme.swift` — Variante émeraude (premium) : accent #2CD4A0 sur base vert profond.
+- `Core/Theme/Themes/GrymMagentaTheme.swift` — Variante magenta (premium) : accent #E85C9E sur base prune.
+- `Core/Theme/ThemeManager.swift` — `ObservableObject` détenant le thème actif, le persiste (UserDefaults), permet le switch à chaud et repasse au thème gratuit si le droit premium est perdu (`enforceEntitlement`).
 - `Core/Localization/LocalizationManager.swift` — `ObservableObject` gérant la langue active (persistée en UserDefaults) et l'accès aux traductions ; injecté dans l'environnement.
 - `Core/Localization/Translation.swift` — Catalogue des traductions FR/EN, enum `AppLanguage` et clés `TranslationKey`.
 - `Core/Extensions/Date+Relative.swift` — Formatage relatif localisé d'une date (« il y a 2 h », « hier »).
@@ -94,7 +96,7 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 
 Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
-- `MyGamesView.swift` — `NavigationStack` : liste des wikis (`WikiRowView`), compteur, état vide illustré (`EmptyStateView` + CTA d'ajout, mention du palier gratuit hors premium), suppression par menu contextuel, navigation vers `WikiDetailView`.
+- `MyGamesView.swift` — `NavigationStack` : liste des wikis (`WikiRowView`), compteur, état vide illustré (`EmptyStateView` + CTA d'ajout, mention du palier gratuit hors premium), suppression par menu contextuel, navigation vers `WikiDetailView` (le wiki créé depuis la recherche est poussé automatiquement à la fermeture de la sheet).
 - `MyGamesViewModel.swift` — `ObservableObject` : charge les wikis (`load`), suppression via `WikiRepository` (`delete`).
 
 ## Features/PageDetail
@@ -121,7 +123,7 @@ Détail d'un wiki : édition directe du modèle via `@Bindable` (écart MVVM jus
 - `Components/WikiMediaGallery.swift` — Galerie horizontale des photos ajoutées par l'utilisateur (blocs photo du wiki) ; vignettes locales (`ImageStore`), appui pour ouvrir l'aperçu. Masquée si aucune photo.
 - `Components/PageCardView.swift` — Carte de page (mode Cartes).
 - `Components/PageTabsView.swift` — Mode Onglets : chips de pages + aperçu léger (résumé des blocs) de la page sélectionnée.
-- `Components/WikiScoreCard.swift` — Carte « Note personnelle » : score, palier et slider 0–100 à dégradé de tiers (drag par translation).
+- `Components/WikiScoreCard.swift` — Carte « Note personnelle » : score, palier et slider 0–100 à dégradé de tiers (drag par translation), replié par défaut derrière un en-tête cliquable.
 - `Components/PageRowView.swift` — Ligne d'une page (icône, titre, nombre de blocs).
 
 ## Features/Premium
@@ -132,17 +134,19 @@ Détail d'un wiki : édition directe du modèle via `@Bindable` (écart MVVM jus
 
 Ajout d'un jeu : recherche live IGDB, présentée en sheet depuis le bouton « + » de l'accueil.
 
-- `GameSearchView.swift` — Vue : champ de recherche + états (invite, chargement, résultats, vide, erreur) ; à la sélection, persiste le wiki via `WikiRepository` puis referme.
+- `GameSearchView.swift` — Vue : champ de recherche + états (invite, chargement, résultats, vide, erreur) ; à la sélection, persiste le wiki via `WikiRepository`, le remonte via `onSelect(Wiki)` puis referme.
 - `GameSearchViewModel.swift` — `ObservableObject` : debounce, appel à `IGDBService`, machine à états `State`.
 - `Components/GameSearchResultRow.swift` — Ligne de résultat (cover IGDB, titre, année · plateforme).
 
 ## Features/Profile
 
-- `ProfileView.swift` — Onglet Profil : fond dégradé Grym et cartes de réglages (Apparence : thème + langue ; Affichage : mode des pages de wiki).
+- `ProfileView.swift` — Onglet Profil : fond dégradé Grym et cartes de réglages (Apparence : thème + langue ; Affichage : mode des wikis ; Développement : simulation du premium, DEBUG seulement).
 - `Components/ProfileHeaderView.swift` — En-tête du profil (titre + sous-titre), aligné sur le style de l'accueil.
 - `Components/ProfileSectionCard.swift` — Carte de section générique : `SectionHeaderView` + contenu sur surface translucide.
 - `Components/ProfileSettingRow.swift` — Ligne de réglage : intitulé, contrôle et texte d'aide optionnel.
-- `Components/ThemePickerComponent.swift` — Sélecteur segmenté qui bascule le thème via le `ThemeManager`.
+- `Components/ThemePickerComponent.swift` — Grille de vignettes de thèmes ; applique le thème via le `ThemeManager`, ou ouvre `PremiumUpgradeView` si le thème est verrouillé.
+- `Components/ThemeSwatchView.swift` — Vignette d'aperçu d'un thème (dégradé, halo, surface, accents) avec états sélectionné / verrouillé.
+- `Components/DebugPremiumToggle.swift` — Interrupteur de simulation du premium, compilé uniquement en DEBUG (`#if DEBUG`).
 - `Components/LanguagePickerComponent.swift` — Sélecteur segmenté qui bascule la langue via le `LocalizationManager`.
 - `Components/WikiModePickerComponent.swift` — Sélecteur segmenté du mode d'affichage des wikis via le `PreferencesManager`, suivi de l'aperçu du rendu.
 - `Components/WikiModePreviewComponent.swift` — Aperçu miniature schématique du mode choisi (deux wikis factices), en Liste / Onglets / Cartes.

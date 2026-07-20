@@ -28,4 +28,11 @@ final class ThemeManager: ObservableObject {
         theme = id.makeTheme()
         UserDefaults.standard.set(id.rawValue, forKey: storageKey)
     }
+
+    /// Repasse au thème gratuit si un thème premium est actif sans droit
+    /// (premium expiré, restauration sur un autre appareil, etc.).
+    func enforceEntitlement(isPremium: Bool) {
+        guard !isPremium, theme.id.requiresPremium else { return }
+        select(.free)
+    }
 }

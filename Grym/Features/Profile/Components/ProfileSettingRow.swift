@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ProfileSettingRow<Content: View>: View {
-    let title: String
+    /// Vide quand le contrôle porte déjà son propre libellé (ex. `Toggle`).
+    var title: String = ""
     var hint: String? = nil
     @ViewBuilder var content: Content
 
@@ -16,9 +17,11 @@ struct ProfileSettingRow<Content: View>: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.small) {
-            Text(title)
-                .font(.system(size: Theme.FontSize.body - 1, weight: .semibold))
-                .foregroundStyle(theme.primaryText)
+            if !title.isEmpty {
+                Text(title)
+                    .font(.system(size: Theme.FontSize.body - 1, weight: .semibold))
+                    .foregroundStyle(theme.primaryText)
+            }
 
             content
 

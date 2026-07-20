@@ -38,7 +38,7 @@ struct WikiRowView: View {
                 HStack(spacing: Theme.Spacing.small) {
                     stat(wiki.blockCount, localization.string(.statBlocks), theme.accent)
                     stat(wiki.photoCount, localization.string(.statPhotos), theme.accentAlt)
-                    stat(wiki.listCount, localization.string(.statLists), .grymAccentRose)
+                    stat(wiki.listCount, localization.string(.statLists), theme.brand)
                 }
             }
 

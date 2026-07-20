@@ -27,16 +27,50 @@ extension Color {
     /// Violet de marque historique (spec d'origine)
     static let grymBrand        = Color(hex: 0x534AB7)
 
-    // MARK: - Fond (Dark)
+    // MARK: - Fond (Dark) — base violette, thème par défaut
     static let grymBgDark       = Color(hex: 0x0D0524)   // Fond principal sombre
     static let grymBgDeep       = Color(hex: 0x050113)   // Fond le plus sombre (dégradé)
     static let grymBgGlow       = Color(hex: 0x2A1560)   // Halo violet du dégradé
     static let grymCardDark     = Color(hex: 0x1A0E3A)   // Surface carte / élévation
 
-    // MARK: - Fond (Light)
+    // MARK: - Fond (Light) — base violette
     static let grymBgLight      = Color(hex: 0xF4F3F8)
     static let grymBgLightAlt   = Color(hex: 0xF7F6FB)
     static let grymCardLight    = Color(hex: 0xFFFFFF)
+
+    // Chaque thème teinte sa propre base : le changement se voit sur les fonds,
+    // le halo et les surfaces, pas seulement sur la couleur d'accent.
+
+    // MARK: - Fond Bleu nuit
+    static let grymBlueBgDark     = Color(hex: 0x061826)
+    static let grymBlueBgDeep     = Color(hex: 0x020A12)
+    static let grymBlueBgGlow     = Color(hex: 0x0E4A6B)
+    static let grymBlueCardDark   = Color(hex: 0x0E2C42)
+    static let grymBlueBgLight    = Color(hex: 0xEFF4F9)
+    static let grymBlueBgLightAlt = Color(hex: 0xF6FAFD)
+
+    // MARK: - Fond Émeraude
+    static let grymEmeraldBgDark     = Color(hex: 0x04201A)
+    static let grymEmeraldBgDeep     = Color(hex: 0x010F0B)
+    static let grymEmeraldBgGlow     = Color(hex: 0x0B5B44)
+    static let grymEmeraldCardDark   = Color(hex: 0x0A3329)
+    static let grymEmeraldBgLight    = Color(hex: 0xEFF6F2)
+    static let grymEmeraldBgLightAlt = Color(hex: 0xF6FBF8)
+
+    // MARK: - Fond Magenta
+    static let grymMagentaBgDark     = Color(hex: 0x21071A)
+    static let grymMagentaBgDeep     = Color(hex: 0x11030D)
+    static let grymMagentaBgGlow     = Color(hex: 0x66134A)
+    static let grymMagentaCardDark   = Color(hex: 0x361029)
+    static let grymMagentaBgLight    = Color(hex: 0xFAF0F6)
+    static let grymMagentaBgLightAlt = Color(hex: 0xFDF7FA)
+
+    // MARK: - Accents secondaires par famille
+    static let grymAccentEmerald = Color(hex: 0x2CD4A0)
+    static let grymAccentTeal    = Color(hex: 0x33B6C9)
+    static let grymAccentSky     = Color(hex: 0x5B9DF5)
+    static let grymAccentAmber   = Color(hex: 0xF5A65B)
+    static let grymAccentLilac   = Color(hex: 0xB07CF0)
 
     // MARK: - Texte
     static let grymTextPrimary  = Color(hex: 0xE9E8F5)   // Texte clair (dark mode)

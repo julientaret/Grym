@@ -20,7 +20,30 @@ final class PremiumManager: ObservableObject {
     /// Identifiant produit (cf. StoreKit/Grym.storekit et App Store Connect).
     static let productID = "com.applemousse.grym.premium"
 
-    @Published private(set) var isPremium: Bool
+    /// Droit réellement accordé par StoreKit (mis en cache en UserDefaults).
+    @Published private(set) var hasStoreEntitlement: Bool
+
+#if DEBUG
+    /// Simulation du premium en développement, réglable depuis le Profil.
+    /// N'existe pas en Release : `isPremium` s'y réduit au droit StoreKit.
+    @Published var debugPremiumOverride: Bool =
+        UserDefaults.standard.bool(forKey: PremiumManager.debugOverrideKey) {
+        didSet {
+            UserDefaults.standard.set(debugPremiumOverride, forKey: PremiumManager.debugOverrideKey)
+        }
+    }
+
+    private static let debugOverrideKey = "debugPremiumOverride"
+#endif
+
+    /// Droit premium effectif, consommé par toute l'app.
+    var isPremium: Bool {
+#if DEBUG
+        hasStoreEntitlement || debugPremiumOverride
+#else
+        hasStoreEntitlement
+#endif
+    }
     /// Produit premium chargé depuis StoreKit (pour prix localisé + achat).
     @Published private(set) var product: Product?
     /// Achat/restauration en cours.
@@ -30,7 +53,7 @@ final class PremiumManager: ObservableObject {
     private var updatesTask: Task<Void, Never>?
 
     init() {
-        isPremium = UserDefaults.standard.bool(forKey: storageKey)
+        hasStoreEntitlement = UserDefaults.standard.bool(forKey: storageKey)
         updatesTask = observeTransactionUpdates()
         Task {
             await loadProduct()
@@ -119,8 +142,8 @@ final class PremiumManager: ObservableObject {
     // MARK: - Cache
 
     private func setPremium(_ value: Bool) {
-        guard value != isPremium else { return }
-        isPremium = value
+        guard value != hasStoreEntitlement else { return }
+        hasStoreEntitlement = value
         UserDefaults.standard.set(value, forKey: storageKey)
     }
 }

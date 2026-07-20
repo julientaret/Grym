@@ -35,8 +35,6 @@ struct WikiDetailView: View {
         GridItem(.flexible(), spacing: Theme.Spacing.medium)
     ]
 
-    /// Palette d'accents cyclée pour différencier visuellement les pages.
-    private let pageAccents: [Color] = [.grymAccent, .grymAccentViolet, .grymAccentRose, .grymAccentGreen]
 
     private var sortedPages: [Page] {
         wiki.pages.sorted { $0.order < $1.order }
@@ -159,8 +157,10 @@ struct WikiDetailView: View {
         }
     }
 
+    /// Palette d'accents du thème, cyclée pour différencier les pages.
     private func accent(for page: Page) -> Color {
-        pageAccents[abs(page.order) % pageAccents.count]
+        let accents = theme.pageAccents
+        return accents[abs(page.order) % accents.count]
     }
 
     private var pagesHeader: some View {

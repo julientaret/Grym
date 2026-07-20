@@ -15,11 +15,13 @@ struct WikiModePreviewComponent: View {
     @EnvironmentObject private var localization: LocalizationManager
     @Environment(\.theme) private var theme
 
-    /// Wikis factices : titre + accent, alignés sur la palette du détail wiki.
+    /// Wikis factices : titre + accent, repris de la palette du thème actif
+    /// pour que l'aperçu suive le thème choisi juste au-dessus.
     private var samples: [(title: String, accent: Color)] {
-        [
-            (localization.string(.profileWikiModeSampleFirst), .grymAccent),
-            (localization.string(.profileWikiModeSampleSecond), .grymAccentViolet)
+        let accents = theme.pageAccents
+        return [
+            (localization.string(.profileWikiModeSampleFirst), accents[0]),
+            (localization.string(.profileWikiModeSampleSecond), accents[min(1, accents.count - 1)])
         ]
     }
 

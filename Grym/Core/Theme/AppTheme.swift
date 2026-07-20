@@ -15,22 +15,34 @@ import SwiftUI
 enum ThemeID: String, CaseIterable, Identifiable {
     case grymBlue
     case grymViolet
+    case grymEmerald
+    case grymMagenta
+
+    /// Thème disponible au palier gratuit ; les autres sont premium.
+    static let free: ThemeID = .grymBlue
 
     var id: String { rawValue }
+
+    /// Vrai si le thème nécessite le premium.
+    var requiresPremium: Bool { self != Self.free }
 
     /// Clé de traduction du nom affiché.
     var nameKey: TranslationKey {
         switch self {
-        case .grymBlue:   .themeGrymBlue
-        case .grymViolet: .themeGrymViolet
+        case .grymBlue:    .themeGrymBlue
+        case .grymViolet:  .themeGrymViolet
+        case .grymEmerald: .themeGrymEmerald
+        case .grymMagenta: .themeGrymMagenta
         }
     }
 
     /// Instancie le thème correspondant.
     func makeTheme() -> any AppTheme {
         switch self {
-        case .grymBlue:   GrymBlueTheme()
-        case .grymViolet: GrymVioletTheme()
+        case .grymBlue:    GrymBlueTheme()
+        case .grymViolet:  GrymVioletTheme()
+        case .grymEmerald: GrymEmeraldTheme()
+        case .grymMagenta: GrymMagentaTheme()
         }
     }
 }
@@ -53,6 +65,9 @@ protocol AppTheme: Identifiable {
     var primaryText: Color { get }
     var secondaryText: Color { get }
 
+    /// Palette cyclée pour différencier les wikis d'un jeu (lignes, cartes).
+    var pageAccents: [Color] { get }
+
     /// Couleur du tier de notation (0–100), du « Naze » au « GOTY ».
     func tier(for note: Int) -> Color
 }
@@ -73,6 +88,9 @@ extension AppTheme {
     }
 
     func tier(for note: Int) -> Color { Color.grymTier(for: note) }
+
+    /// Par défaut, la palette des wikis tourne autour des accents du thème.
+    var pageAccents: [Color] { [accent, accentAlt, brand, accent.opacity(0.7)] }
 }
 
 // MARK: - Environnement

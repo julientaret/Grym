@@ -22,6 +22,10 @@ struct ProfileView: View {
                     appearanceSection
 
                     displaySection
+
+#if DEBUG
+                    debugSection
+#endif
                 }
                 .padding(.top, Theme.Spacing.small)
                 .padding(.bottom, Theme.Spacing.xLarge)
@@ -38,7 +42,10 @@ struct ProfileView: View {
             systemImage: "paintbrush.fill",
             title: localization.string(.profileAppearanceSection)
         ) {
-            ProfileSettingRow(title: localization.string(.profileThemeLabel)) {
+            ProfileSettingRow(
+                title: localization.string(.profileThemeLabel),
+                hint: localization.string(.profileThemeHint)
+            ) {
                 ThemePickerComponent()
             }
             ProfileSettingRow(title: localization.string(.profileLanguageLabel)) {
@@ -60,6 +67,21 @@ struct ProfileView: View {
             }
         }
     }
+
+#if DEBUG
+    /// Réglages de développement, compilés hors des builds Release.
+    private var debugSection: some View {
+        ProfileSectionCard(
+            systemImage: "hammer.fill",
+            title: localization.string(.profileDebugSection)
+        ) {
+            // Le toggle porte son propre libellé.
+            ProfileSettingRow(hint: localization.string(.profileDebugHint)) {
+                DebugPremiumToggle()
+            }
+        }
+    }
+#endif
 
     // MARK: Fond
 
@@ -86,5 +108,6 @@ struct ProfileView: View {
         .environmentObject(LocalizationManager())
         .environmentObject(ThemeManager())
         .environmentObject(PreferencesManager())
+        .environmentObject(PremiumManager())
         .environment(\.theme, GrymBlueTheme())
 }

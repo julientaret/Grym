@@ -79,7 +79,7 @@ struct WikiDetailHeader: View {
         HStack(spacing: Theme.Spacing.medium) {
             stat(blockCount, localization.string(.statBlocks), theme.accent)
             stat(photoCount, localization.string(.statPhotos), theme.accentAlt)
-            stat(listCount, localization.string(.statLists), .grymAccentRose)
+            stat(listCount, localization.string(.statLists), theme.brand)
 
             Spacer(minLength: Theme.Spacing.small)
 

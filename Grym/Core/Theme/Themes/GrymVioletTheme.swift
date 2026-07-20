@@ -2,14 +2,20 @@
 //  GrymVioletTheme.swift
 //  Grym
 //
-//  Variante violette : accent #7C6FF0, halo renforcé. Démontre qu'un
-//  nouveau thème ne surcharge que ses écarts par rapport à la base.
+//  Variante violette (premium) : accent #7C6FF0 sur la base violette
+//  historique de Grym. Ne surcharge pas les fonds : ce sont ceux par défaut.
 //
 
 import SwiftUI
 
 struct GrymVioletTheme: AppTheme {
     let id: ThemeID = .grymViolet
+
     let accent: Color = .grymAccentViolet
-    let glow: Color = Color.grymAccentViolet.opacity(0.30)
+    let accentAlt: Color = .grymAccentLilac
+    let brand: Color = .grymBrand
+
+    let glow: Color = .grymBgGlow
+
+    let pageAccents: [Color] = [.grymAccentViolet, .grymAccentLilac, .grymAccentRose, .grymAccent]
 }

@@ -42,6 +42,13 @@ enum TranslationKey: String {
     case profileWikiModeSampleSecond
     case themeGrymBlue
     case themeGrymViolet
+    case themeGrymEmerald
+    case themeGrymMagenta
+    case profileThemeHint
+    case profileThemePremium
+    case profileDebugSection
+    case profileDebugPremium
+    case profileDebugHint
     // Home
     case appTagline
     case homeSearchPlaceholder
@@ -156,6 +163,13 @@ enum Translation {
             .profileWikiModeSampleSecond: "Builds",
             .themeGrymBlue: "Bleu",
             .themeGrymViolet: "Violet",
+            .themeGrymEmerald: "Émeraude",
+            .themeGrymMagenta: "Magenta",
+            .profileThemeHint: "Le thème colore les fonds, les surfaces et les accents de toute l'app.",
+            .profileThemePremium: "Premium",
+            .profileDebugSection: "Développement",
+            .profileDebugPremium: "Simuler le premium",
+            .profileDebugHint: "Réglage de debug : absent des builds App Store.",
             .appTagline: "Votre pense-bête vidéoludique",
             .homeSearchPlaceholder: "Rechercher un wiki ou un jeu…",
             .homePinned: "Épinglés",
@@ -253,6 +267,13 @@ enum Translation {
             .profileWikiModeSampleSecond: "Builds",
             .themeGrymBlue: "Blue",
             .themeGrymViolet: "Violet",
+            .themeGrymEmerald: "Emerald",
+            .themeGrymMagenta: "Magenta",
+            .profileThemeHint: "The theme tints backgrounds, surfaces and accents across the app.",
+            .profileThemePremium: "Premium",
+            .profileDebugSection: "Development",
+            .profileDebugPremium: "Simulate premium",
+            .profileDebugHint: "Debug setting: not shipped in App Store builds.",
             .appTagline: "Your video game notebook",
             .homeSearchPlaceholder: "Search a wiki or a game…",
             .homePinned: "Pinned",

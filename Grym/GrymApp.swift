@@ -24,6 +24,11 @@ struct GrymApp: App {
                 .environmentObject(preferences)
                 .environment(\.theme, themeManager.theme)
                 .tint(themeManager.theme.accent)
+                // Un thème premium ne doit pas survivre à la perte du droit.
+                .task { themeManager.enforceEntitlement(isPremium: premium.isPremium) }
+                .onChange(of: premium.isPremium) { _, isPremium in
+                    themeManager.enforceEntitlement(isPremium: isPremium)
+                }
         }
         .modelContainer(for: [Game.self, Wiki.self, Page.self, Block.self])
     }

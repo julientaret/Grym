@@ -53,6 +53,7 @@ Couche de données locale (SwiftData, offline-first).
 - `Core/Localization/LocalizationManager.swift` — `ObservableObject` gérant la langue active (persistée en UserDefaults) et l'accès aux traductions ; injecté dans l'environnement.
 - `Core/Localization/Translation.swift` — Catalogue des traductions FR/EN, enum `AppLanguage` et clés `TranslationKey`.
 - `Core/Extensions/Date+Relative.swift` — Formatage relatif localisé d'une date (« il y a 2 h », « hier »).
+- `Core/Extensions/View+SelectAllOnFocus.swift` — Modifieur `selectAllOnFocus(isArmed:)` : sélectionne le texte du prochain champ prenant le focus (via la notification UIKit d'entrée en édition), pour écraser une valeur par défaut.
 - `Core/Extensions/View+GrymListRow.swift` — Style de ligne de `List` transparent (`grymBlockRow`, et `grymFullWidthRow` pour les contenus bord à bord) pour garder l'apparence carte avec le drag & drop natif.
 
 ## Core/Services/IGDB
@@ -103,7 +104,7 @@ Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
 Éditeur d'une page : titre éditable et flux de blocs (texte, checklist ; photo/carte à venir).
 
-- `PageDetailView.swift` — `List` : titre et blocs ; ajout (menu de type), réorganisation (drag & drop via EditButton) et suppression de blocs ; sauvegarde à la sortie.
+- `PageDetailView.swift` — `List` : titre et blocs ; ajout (menu de type), réorganisation (drag & drop via EditButton) et suppression de blocs ; sauvegarde à la sortie. `autofocusTitle` place le focus dans le titre à l'ouverture d'une page fraîchement créée, texte présélectionné (`selectAllOnFocus`).
 - `Components/TextBlockView.swift` — Bloc texte libre, lié à `Block.content`.
 - `Components/ChecklistBlockView.swift` — Bloc checklist : titre, items cochables, progression.
 - `Components/PhotoBlockView.swift` — Bloc photo : galerie de miniatures locales, ajout via PhotosPicker, suppression, ouverture plein écran au tap via QuickLook natif (`.quickLookPreview`, zoom/pan/partage/swipe).
@@ -116,7 +117,7 @@ Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
 Détail d'un wiki : édition directe du modèle via `@Bindable` (écart MVVM justifié) ; mutations structurelles via `WikiRepository`.
 
-- `WikiDetailView.swift` — `List` : bandeau illustré, en-tête, note personnelle, galerie des photos de l'utilisateur (aperçu QuickLook) et pages selon le mode d'affichage global choisi dans le Profil (Liste/Onglets/Cartes) ; épinglage, score, ajout/réorganisation (drag & drop en mode Liste)/suppression de pages.
+- `WikiDetailView.swift` — `List` : bandeau illustré, en-tête, note personnelle, galerie des photos de l'utilisateur (aperçu QuickLook) et pages selon le mode d'affichage global choisi dans le Profil (Liste/Onglets/Cartes) ; épinglage, score, ajout (la page créée est ouverte immédiatement)/réorganisation (drag & drop en mode Liste)/suppression de pages.
 - `WikiMediaViewModel.swift` — Charge les médias IGDB du jeu à l'ouverture du wiki (si jamais récupérés) et les persiste sur `Game` ; alimente le bandeau. Erreurs silencieuses (décoratif, réessai à la prochaine ouverture).
 - `Components/WikiDetailHeader.swift` — Cover, titre, méta, bouton épingler et ligne de stats.
 - `Components/WikiHeroBanner.swift` — Bandeau illustré pleine largeur en tête du wiki : file jusqu'au haut de l'écran (la barre de navigation se pose dessus), fondu vers le bas par un masque (se raccorde à n'importe quel thème).

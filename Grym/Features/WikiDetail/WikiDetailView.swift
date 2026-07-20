@@ -25,6 +25,8 @@ struct WikiDetailView: View {
 
     @State private var selectedPageID: PersistentIdentifier?
     @State private var openPage: Page?
+    /// Page tout juste créée : son titre prendra le focus à l'ouverture.
+    @State private var createdPageID: PersistentIdentifier?
     /// Photo affichée en plein écran (QuickLook), parmi `photoURLs`.
     @State private var previewURL: URL?
 
@@ -88,7 +90,7 @@ struct WikiDetailView: View {
             }
         }
         .navigationDestination(item: $openPage) { page in
-            PageDetailView(page: page)
+            PageDetailView(page: page, autofocusTitle: page.persistentModelID == createdPageID)
         }
         .quickLookPreview($previewURL, in: photoURLs)
         .task(id: wiki.game?.igdbId) {
@@ -209,14 +211,19 @@ struct WikiDetailView: View {
         repository.touch(wiki)
     }
 
+    /// Crée la page puis l'ouvre immédiatement.
     private func addPage() {
-        _ = try? repository.addPage(to: wiki, title: localization.string(.wikiNewPageDefaultTitle))
+        guard let page = try? repository.addPage(
+            to: wiki,
+            title: localization.string(.wikiNewPageDefaultTitle)
+        ) else { return }
+        createdPageID = page.persistentModelID
+        openPage = page
     }
 
     private var metaLine: String? {
         guard let game = wiki.game else { return nil }
-        let parts = [game.releaseYear.map(String.init), game.platform].compactMap { $0 }
-        return parts.isEmpty ? nil : parts.joined(separator: " · ")
+        return game.releaseYear.map(String.init)
     }
 
     // MARK: Fond

@@ -11,10 +11,17 @@ import SwiftUI
 
 struct PageDetailView: View {
     @Bindable var page: Page
+    /// Vrai à l'ouverture d'une page tout juste créée : le titre prend le focus.
+    var autofocusTitle: Bool = false
 
     @EnvironmentObject private var localization: LocalizationManager
     @Environment(\.theme) private var theme
     @Environment(\.modelContext) private var modelContext
+
+    @FocusState private var isTitleFocused: Bool
+    /// Armé juste avant la prise de focus du titre, pour n'en sélectionner
+    /// le contenu qu'à ce moment-là (et pas sur les champs des blocs).
+    @State private var shouldSelectTitle = false
 
     private var repository: WikiRepository { WikiRepository(context: modelContext) }
 
@@ -27,6 +34,8 @@ struct PageDetailView: View {
             TextField(localization.string(.pageTitlePlaceholder), text: $page.title)
                 .font(.system(size: Theme.FontSize.title, weight: .bold))
                 .foregroundStyle(theme.primaryText)
+                .focused($isTitleFocused)
+                .submitLabel(.done)
                 .grymBlockRow()
 
             if sortedBlocks.isEmpty {
@@ -54,6 +63,15 @@ struct PageDetailView: View {
             ToolbarItem(placement: .topBarTrailing) { EditButton() }
         }
         .onDisappear { repository.save() }
+        // Le focus doit attendre la fin de la transition de push, sinon le
+        // clavier est refermé aussitôt par l'animation de navigation.
+        .task {
+            guard autofocusTitle else { return }
+            try? await Task.sleep(for: .seconds(Theme.AnimationDuration.medium))
+            shouldSelectTitle = true
+            isTitleFocused = true
+        }
+        .selectAllOnFocus(isArmed: $shouldSelectTitle)
     }
 
     // MARK: Réorganisation / suppression

@@ -30,6 +30,9 @@ struct MyGamesView: View {
                     if viewModel.wikis.isEmpty {
                         emptyState
                     } else {
+                        GameSortMenu(selection: $viewModel.sortOption)
+                            .padding(.horizontal, Theme.Spacing.large)
+
                         LazyVStack(spacing: Theme.Spacing.small) {
                             ForEach(viewModel.wikis) { wiki in
                                 if let summary = WikiSummary(wiki: wiki) {

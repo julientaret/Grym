@@ -16,6 +16,7 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
 ## Core/Preferences
 
 - `WikiPagesMode.swift` — Mode d'affichage des pages d'un wiki (liste / onglets / cartes) : clé de traduction et icône.
+- `GameSortOption.swift` — Critère de tri de « Mes jeux » (récent / titre / note / date de sortie) : clé de traduction et icône.
 - `PreferencesManager.swift` — `ObservableObject` détenant les préférences d'affichage globales (mode des pages de wiki), persistées en UserDefaults.
 
 ## Core/Premium
@@ -99,7 +100,8 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
 - `MyGamesView.swift` — `NavigationStack` : bannière d'en-tête (`BannerHeaderView`, `banner-my-games`), liste des wikis (`WikiRowView`), compteur, état vide illustré (`EmptyStateView` + CTA d'ajout, mention du palier gratuit hors premium), suppression par menu contextuel, navigation vers `WikiDetailView` (le wiki créé depuis la recherche est poussé automatiquement à la fermeture de la sheet).
-- `MyGamesViewModel.swift` — `ObservableObject` : charge les wikis (`load`), suppression via `WikiRepository` (`delete`).
+- `MyGamesViewModel.swift` — `ObservableObject` : charge les wikis (`load`), suppression via `WikiRepository` (`delete`), tri en mémoire selon `sortOption` (persisté dans les UserDefaults).
+- `Components/GameSortMenu.swift` — Menu capsule de choix du critère de tri (`GameSortOption`).
 
 ## Features/PageDetail
 

@@ -101,6 +101,12 @@ enum TranslationKey: String {
     case tabMyGames
     case myGamesTitle
     case commonDelete
+    // Tri de la liste des jeux
+    case sortLabel
+    case sortRecent
+    case sortTitle
+    case sortScore
+    case sortReleaseYear
     // Wiki detail
     case wikiNoteTitle
     case wikiPrivate
@@ -227,6 +233,11 @@ enum Translation {
             .tabMyGames: "Mes jeux",
             .myGamesTitle: "Mes jeux",
             .commonDelete: "Supprimer",
+            .sortLabel: "Trier par",
+            .sortRecent: "Récemment modifiés",
+            .sortTitle: "Titre",
+            .sortScore: "Note",
+            .sortReleaseYear: "Date de sortie",
             .wikiNoteTitle: "TON VERDICT / 100",
             .wikiPrivate: "PRIVÉ",
             .wikiTierLabel: "TIER",
@@ -339,6 +350,11 @@ enum Translation {
             .tabMyGames: "My games",
             .myGamesTitle: "My games",
             .commonDelete: "Delete",
+            .sortLabel: "Sort by",
+            .sortRecent: "Recently updated",
+            .sortTitle: "Title",
+            .sortScore: "Score",
+            .sortReleaseYear: "Release date",
             .wikiNoteTitle: "YOUR VERDICT / 100",
             .wikiPrivate: "PRIVATE",
             .wikiTierLabel: "TIER",

@@ -129,6 +129,11 @@ enum TranslationKey: String {
     case blockTypeChecklist
     case blockTypePhoto
     case blockTypeMap
+    case pageEmptyTitle
+    case blockTypeTextHint
+    case blockTypeChecklistHint
+    case blockTypePhotoHint
+    case blockTypeMapHint
     case photoAdd
     case mapAddImage
     case mapReplaceImage
@@ -241,12 +246,17 @@ enum Translation {
             .tierTopTier: "TOP TIER",
             .tierGoty: "GOTY",
             .pageTitlePlaceholder: "Titre du wiki",
-            .pageEmptyBlocks: "Wiki vide.\nAjoute un premier bloc ci-dessous.",
+            .pageEmptyBlocks: "Compose-le en empilant des blocs. Voici ceux disponibles :",
             .addBlock: "Ajouter un bloc",
             .blockTypeText: "Texte",
             .blockTypeChecklist: "Checklist",
             .blockTypePhoto: "Photo",
             .blockTypeMap: "Carte",
+            .pageEmptyTitle: "Ton wiki est vierge",
+            .blockTypeTextHint: "Tes notes libres : soluce, build, lore.",
+            .blockTypeChecklistHint: "Une liste à cocher pour suivre ta progression.",
+            .blockTypePhotoHint: "Tes captures d'écran, en pleine largeur.",
+            .blockTypeMapHint: "Une carte que tu annotes de tes propres repères.",
             .photoAdd: "Ajouter des photos",
             .mapAddImage: "Ajouter une carte",
             .mapReplaceImage: "Remplacer",
@@ -348,12 +358,17 @@ enum Translation {
             .tierTopTier: "TOP TIER",
             .tierGoty: "GOTY",
             .pageTitlePlaceholder: "Wiki title",
-            .pageEmptyBlocks: "Empty wiki.\nAdd a first block below.",
+            .pageEmptyBlocks: "Build it by stacking blocks. Here are the ones available:",
             .addBlock: "Add a block",
             .blockTypeText: "Text",
             .blockTypeChecklist: "Checklist",
             .blockTypePhoto: "Photo",
             .blockTypeMap: "Map",
+            .pageEmptyTitle: "Your wiki is blank",
+            .blockTypeTextHint: "Free-form notes: walkthrough, build, lore.",
+            .blockTypeChecklistHint: "A checklist to track your progress.",
+            .blockTypePhotoHint: "Your screenshots, full width.",
+            .blockTypeMapHint: "A map you annotate with your own markers.",
             .photoAdd: "Add photos",
             .mapAddImage: "Add a map",
             .mapReplaceImage: "Replace",

@@ -112,6 +112,7 @@ Onglet « Mes jeux » : liste complète des jeux ajoutés.
 - `Components/MapBlockView.swift` — Bloc carte : aperçu (image + pins) ou invite d'ajout ; ouvre l'éditeur au tap, ou d'office sur un bloc tout juste créé (`autoPresentPicker`).
 - `Components/AnnotatedMapView.swift` — Affichage image + pins (coordonnées relatives) ; mode lecture seule ou édition. Inclut `MapPinMarker`.
 - `Components/AddBlockButton.swift` — Bouton + menu de choix du type de bloc (texte / checklist / photo / carte).
+- `Components/EmptyBlocksPlaceholder.swift` — Placeholder d'un wiki sans bloc : en-tête illustré et une carte par type de bloc (icône, nom, rôle) pour guider la première création.
 
 ## Features/WikiDetail
 

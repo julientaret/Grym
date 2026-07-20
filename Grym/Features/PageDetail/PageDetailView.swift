@@ -42,7 +42,7 @@ struct PageDetailView: View {
                 .grymBlockRow()
 
             if sortedBlocks.isEmpty {
-                emptyState.grymBlockRow()
+                EmptyBlocksPlaceholder().grymBlockRow()
             } else {
                 ForEach(sortedBlocks) { block in
                     blockView(block).grymBlockRow()
@@ -119,22 +119,6 @@ struct PageDetailView: View {
 
     private func isPendingPicker(_ block: Block) -> Bool {
         block.persistentModelID == pendingPickerBlockID
-    }
-
-    // MARK: État vide
-
-    private var emptyState: some View {
-        VStack(spacing: Theme.Spacing.medium) {
-            Image(systemName: "square.stack")
-                .font(.system(size: Theme.FontSize.largeTitle))
-                .foregroundStyle(theme.secondaryText.opacity(0.7))
-            Text(localization.string(.pageEmptyBlocks))
-                .font(.system(size: Theme.FontSize.body))
-                .foregroundStyle(theme.secondaryText)
-                .multilineTextAlignment(.center)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, Theme.Spacing.large)
     }
 
     // MARK: Fond

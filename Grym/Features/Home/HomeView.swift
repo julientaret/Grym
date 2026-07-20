@@ -12,6 +12,8 @@ import SwiftUI
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @State private var showingGameSearch = false
+    /// Destination poussée depuis une entrée d'activité récente.
+    @State private var activityTarget: ActivityTarget?
     @EnvironmentObject private var localization: LocalizationManager
     @Environment(\.theme) private var theme
     @Environment(\.modelContext) private var modelContext
@@ -31,7 +33,12 @@ struct HomeView: View {
                     }
 
                     if !viewModel.recentActivity.isEmpty {
-                        RecentActivitySection(entries: viewModel.recentActivity)
+                        RecentActivitySection(
+                            entries: viewModel.recentActivity,
+                            onSelect: { entry in
+                                activityTarget = viewModel.target(for: entry, context: modelContext)
+                            }
+                        )
                     }
 
                     if viewModel.isDashboardEmpty {
@@ -44,6 +51,9 @@ struct HomeView: View {
             .background(background)
             .navigationDestination(for: Wiki.self) { wiki in
                 WikiDetailView(wiki: wiki)
+            }
+            .navigationDestination(item: $activityTarget) { target in
+                WikiDetailView(wiki: target.wiki, initialPage: target.page)
             }
         }
         .onAppear { viewModel.load(context: modelContext, localization: localization) }

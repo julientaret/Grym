@@ -6,6 +6,7 @@
 //  la couche SwiftData (Game / Wiki / Page / Block).
 //
 
+import SwiftData
 import SwiftUI
 
 // MARK: - Wiki (résumé pour la liste)
@@ -101,6 +102,10 @@ struct ActivityEntry: Identifiable, Hashable {
     let coverImageId: String?
     let coverTint: Color
     let date: Date
+    /// Wiki concerné, cible de la navigation au tap.
+    let wikiID: PersistentIdentifier?
+    /// Page concernée, ouverte par-dessus le wiki quand l'entrée en vise une.
+    let pageID: PersistentIdentifier?
 
     init(
         id: UUID = UUID(),
@@ -109,7 +114,9 @@ struct ActivityEntry: Identifiable, Hashable {
         subtitle: String,
         coverImageId: String? = nil,
         coverTint: Color,
-        date: Date
+        date: Date,
+        wikiID: PersistentIdentifier? = nil,
+        pageID: PersistentIdentifier? = nil
     ) {
         self.id = id
         self.kind = kind
@@ -118,5 +125,16 @@ struct ActivityEntry: Identifiable, Hashable {
         self.coverImageId = coverImageId
         self.coverTint = coverTint
         self.date = date
+        self.wikiID = wikiID
+        self.pageID = pageID
     }
+}
+
+// MARK: - Cible de navigation d'une activité
+
+/// Destination d'une entrée d'activité : un wiki, éventuellement ouvert
+/// directement sur une de ses pages.
+struct ActivityTarget: Hashable {
+    let wiki: Wiki
+    let page: Page?
 }

@@ -15,6 +15,8 @@ import SwiftUI
 
 struct WikiDetailView: View {
     @Bindable var wiki: Wiki
+    /// Page à ouvrir automatiquement à l'arrivée (navigation depuis l'accueil).
+    var initialPage: Page?
 
     @EnvironmentObject private var localization: LocalizationManager
     @EnvironmentObject private var preferences: PreferencesManager
@@ -29,6 +31,8 @@ struct WikiDetailView: View {
     @State private var createdPageID: PersistentIdentifier?
     /// Photo affichée en plein écran (QuickLook), parmi `photoURLs`.
     @State private var previewURL: URL?
+    /// Empêche `initialPage` de se rouvrir au retour depuis la page.
+    @State private var didOpenInitialPage = false
 
     private var repository: WikiRepository { WikiRepository(context: modelContext) }
 
@@ -93,6 +97,11 @@ struct WikiDetailView: View {
             PageDetailView(page: page, autofocusTitle: page.persistentModelID == createdPageID)
         }
         .quickLookPreview($previewURL, in: photoURLs)
+        .onAppear {
+            guard !didOpenInitialPage, let initialPage else { return }
+            didOpenInitialPage = true
+            openPage = initialPage
+        }
         .task(id: wiki.game?.igdbId) {
             await mediaViewModel.loadIfNeeded(for: wiki.game, context: modelContext)
         }

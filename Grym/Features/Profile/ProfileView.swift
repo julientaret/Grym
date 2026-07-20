@@ -19,6 +19,8 @@ struct ProfileView: View {
                     ProfileHeaderView()
                         .padding(.horizontal, Theme.Spacing.large)
 
+                    StudioCreditComponent()
+
                     appearanceSection
 
                     languageSection

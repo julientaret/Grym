@@ -22,6 +22,9 @@ struct PageDetailView: View {
     /// Armé juste avant la prise de focus du titre, pour n'en sélectionner
     /// le contenu qu'à ce moment-là (et pas sur les champs des blocs).
     @State private var shouldSelectTitle = false
+    /// Bloc photo/carte tout juste ajouté : sa vue ouvre directement le
+    /// sélecteur d'images, puis remet cette valeur à `nil`.
+    @State private var pendingPickerBlockID: PersistentIdentifier?
 
     private var repository: WikiRepository { WikiRepository(context: modelContext) }
 
@@ -49,7 +52,10 @@ struct PageDetailView: View {
             }
 
             AddBlockButton { type in
-                _ = try? repository.addBlock(to: page, type: type)
+                guard let block = try? repository.addBlock(to: page, type: type) else { return }
+                if type == .photo || type == .map {
+                    pendingPickerBlockID = block.persistentModelID
+                }
             }
             .grymBlockRow()
         }
@@ -97,10 +103,22 @@ struct PageDetailView: View {
         case .checklist:
             ChecklistBlockView(block: block)
         case .photo:
-            PhotoBlockView(block: block)
+            PhotoBlockView(
+                block: block,
+                autoPresentPicker: isPendingPicker(block),
+                onPickerPresented: { pendingPickerBlockID = nil }
+            )
         case .map:
-            MapBlockView(block: block)
+            MapBlockView(
+                block: block,
+                autoPresentPicker: isPendingPicker(block),
+                onPickerPresented: { pendingPickerBlockID = nil }
+            )
         }
+    }
+
+    private func isPendingPicker(_ block: Block) -> Bool {
+        block.persistentModelID == pendingPickerBlockID
     }
 
     // MARK: État vide

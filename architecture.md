@@ -79,8 +79,8 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 Écran d'accueil (onglet Wikis) — **dashboard** : épinglés et activité récente. La liste complète vit dans « Mes jeux ».
 
 - `HomeView.swift` — Vue principale : en-tête, épinglés, activité récente, sur fond dégradé. Deux états vides via `EmptyStateView` (onboarding + ajout de jeu si aucun jeu, explication de l'épinglage sinon).
-- `HomeViewModel.swift` — `ObservableObject` : charge épinglés + total depuis SwiftData (`load(context:localization:)`) et construit le flux d'activité récente (wikis créés + notes modifiées, fusionnés et triés, 8 max) ; `isDashboardEmpty`.
-- `Models/HomeModel.swift` — Modèles de présentation : `WikiSummary` (mapping depuis `Wiki`), `ActivityEntry` (jaquette incluse), `ActivityKind`.
+- `HomeViewModel.swift` — `ObservableObject` : charge épinglés + total depuis SwiftData (`load(context:localization:)`) et construit le flux d'activité récente (wikis créés + notes modifiées, fusionnés et triés, 10 max) ; `isDashboardEmpty` ; `target(for:context:)` résout la destination d'une entrée d'activité.
+- `Models/HomeModel.swift` — Modèles de présentation : `WikiSummary` (mapping depuis `Wiki`), `ActivityEntry` (jaquette + identifiants wiki/page cibles), `ActivityKind`, `ActivityTarget` (destination de navigation).
 - `Components/HomeHeaderView.swift` — Titre « Grym », tagline et bouton d'ajout.
 - `Components/HomeSearchBar.swift` — Barre de recherche locale (actuellement masquée, conservée pour plus tard).
 - `Components/SectionHeaderView.swift` — En-tête de section réutilisable (icône + titre + compteur).
@@ -89,7 +89,7 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 - `Components/PinnedWikiCard.swift` — Carte d'un wiki épinglé.
 - `Components/PinnedWikisSection.swift` — Section « Épinglés » (défilement horizontal).
 - `Components/ActivityRowView.swift` — Ligne du flux d'activité récente.
-- `Components/RecentActivitySection.swift` — Section « Activité récente » (carte + filets).
+- `Components/RecentActivitySection.swift` — Section « Activité récente » (carte + filets) ; chaque ligne est un bouton remontant l'entrée via `onSelect`.
 - `Components/WikiRowView.swift` — Ligne de jeu réutilisable (cover, méta, stats blocs/photos/listes, note). Utilisée aussi par « Mes jeux ».
 - `Components/AllWikisSection.swift` — Section liste de wikis avec compteur et état vide.
 
@@ -104,12 +104,12 @@ Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
 Éditeur d'une page : titre éditable et flux de blocs (texte, checklist ; photo/carte à venir).
 
-- `PageDetailView.swift` — `List` : titre et blocs ; ajout (menu de type), réorganisation (drag & drop via EditButton) et suppression de blocs ; sauvegarde à la sortie. `autofocusTitle` place le focus dans le titre à l'ouverture d'une page fraîchement créée, texte présélectionné (`selectAllOnFocus`).
+- `PageDetailView.swift` — `List` : titre et blocs ; ajout (menu de type), réorganisation (drag & drop via EditButton) et suppression de blocs ; sauvegarde à la sortie. Un bloc photo/carte fraîchement ajouté ouvre directement le sélecteur d'images (`pendingPickerBlockID`). `autofocusTitle` place le focus dans le titre à l'ouverture d'une page fraîchement créée, texte présélectionné (`selectAllOnFocus`).
 - `Components/TextBlockView.swift` — Bloc texte libre, lié à `Block.content`.
 - `Components/ChecklistBlockView.swift` — Bloc checklist : titre, items cochables, progression.
-- `Components/PhotoBlockView.swift` — Bloc photo : galerie de miniatures locales, ajout via PhotosPicker, suppression, ouverture plein écran au tap via QuickLook natif (`.quickLookPreview`, zoom/pan/partage/swipe).
-- `MapEditorView.swift` — Éditeur plein écran d'une carte : image + pins (ajout au tap, drag, renommage/suppression).
-- `Components/MapBlockView.swift` — Bloc carte : aperçu (image + pins) ou invite d'ajout ; ouvre l'éditeur au tap.
+- `Components/PhotoBlockView.swift` — Bloc photo : galerie de miniatures locales, ajout via PhotosPicker (ouvert d'office sur un bloc tout juste créé, `autoPresentPicker`), suppression, ouverture plein écran au tap via QuickLook natif (`.quickLookPreview`, zoom/pan/partage/swipe).
+- `MapEditorView.swift` — Éditeur plein écran d'une carte : image + pins (ajout au tap, drag, renommage/suppression) ; `autoPresentPicker` ouvre le sélecteur d'images à l'arrivée.
+- `Components/MapBlockView.swift` — Bloc carte : aperçu (image + pins) ou invite d'ajout ; ouvre l'éditeur au tap, ou d'office sur un bloc tout juste créé (`autoPresentPicker`).
 - `Components/AnnotatedMapView.swift` — Affichage image + pins (coordonnées relatives) ; mode lecture seule ou édition. Inclut `MapPinMarker`.
 - `Components/AddBlockButton.swift` — Bouton + menu de choix du type de bloc (texte / checklist / photo / carte).
 
@@ -117,7 +117,7 @@ Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
 Détail d'un wiki : édition directe du modèle via `@Bindable` (écart MVVM justifié) ; mutations structurelles via `WikiRepository`.
 
-- `WikiDetailView.swift` — `List` : bandeau illustré, en-tête, note personnelle, galerie des photos de l'utilisateur (aperçu QuickLook) et pages selon le mode d'affichage global choisi dans le Profil (Liste/Onglets/Cartes) ; épinglage, score, ajout (la page créée est ouverte immédiatement)/réorganisation (drag & drop en mode Liste)/suppression de pages.
+- `WikiDetailView.swift` — `List` : bandeau illustré, en-tête, note personnelle, galerie des photos de l'utilisateur (aperçu QuickLook) et pages selon le mode d'affichage global choisi dans le Profil (Liste/Onglets/Cartes) ; épinglage, score, ajout (la page créée est ouverte immédiatement)/réorganisation (drag & drop en mode Liste)/suppression de pages ; `initialPage` ouvre directement une page à l'arrivée (navigation depuis l'activité récente).
 - `WikiMediaViewModel.swift` — Charge les médias IGDB du jeu à l'ouverture du wiki (si jamais récupérés) et les persiste sur `Game` ; alimente le bandeau. Erreurs silencieuses (décoratif, réessai à la prochaine ouverture).
 - `Components/WikiDetailHeader.swift` — Cover, titre, méta, bouton épingler et ligne de stats.
 - `Components/WikiHeroBanner.swift` — Bandeau illustré pleine largeur en tête du wiki : file jusqu'au haut de l'écran (la barre de navigation se pose dessus), fondu vers le bas par un masque (se raccorde à n'importe quel thème).
@@ -143,6 +143,7 @@ Ajout d'un jeu : recherche live IGDB, présentée en sheet depuis le bouton « +
 
 - `ProfileView.swift` — Onglet Profil : fond dégradé Grym et cartes de réglages (Apparence : thème ; Langue ; Affichage : mode des wikis ; Développement : simulation du premium, DEBUG seulement).
 - `Components/ProfileHeaderView.swift` — En-tête du profil (titre + sous-titre), aligné sur le style de l'accueil.
+- `Components/StudioCreditComponent.swift` — Encart « Une création AppleMousse Studio » : logo, libellé et lien vers https://applemousse-studio.fr.
 - `Components/ProfileSectionCard.swift` — Carte de section générique : `SectionHeaderView` + contenu sur surface translucide.
 - `Components/ProfileSettingRow.swift` — Ligne de réglage : intitulé, contrôle et texte d'aide optionnel.
 - `Components/ThemePickerComponent.swift` — Grille de vignettes de thèmes ; applique le thème via le `ThemeManager`, ou ouvre `PremiumUpgradeView` si le thème est verrouillé.

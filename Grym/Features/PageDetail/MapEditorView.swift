@@ -12,6 +12,8 @@ import UIKit
 
 struct MapEditorView: View {
     @Bindable var block: Block
+    /// Carte tout juste créée : le sélecteur s'ouvre sans action de l'utilisateur.
+    var autoPresentPicker: Bool = false
 
     @EnvironmentObject private var localization: LocalizationManager
     @Environment(\.theme) private var theme
@@ -22,6 +24,7 @@ struct MapEditorView: View {
     @State private var pickerItem: PhotosPickerItem?
     @State private var editingPin: MapPin?
     @State private var editingLabel = ""
+    @State private var isPickerPresented = false
 
     var body: some View {
         // Capturée hors du closure (non-isolé) du label de PhotosPicker.
@@ -62,9 +65,17 @@ struct MapEditorView: View {
                 }
             }
         }
+        .photosPicker(isPresented: $isPickerPresented, selection: $pickerItem, matching: .images)
         .onAppear {
             content = block.map
             loadImage()
+        }
+        // Le sélecteur doit attendre la fin de la transition du plein écran,
+        // sinon sa présentation est annulée par l'animation en cours.
+        .task {
+            guard autoPresentPicker, block.map.imageFileName == nil else { return }
+            try? await Task.sleep(for: .seconds(Theme.AnimationDuration.medium))
+            isPickerPresented = true
         }
         .onChange(of: content) { _, newValue in
             block.map = newValue

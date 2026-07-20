@@ -11,6 +11,9 @@ import UIKit
 
 struct MapBlockView: View {
     @Bindable var block: Block
+    /// Bloc tout juste créé : l'éditeur s'ouvre et propose l'image directement.
+    var autoPresentPicker: Bool = false
+    var onPickerPresented: () -> Void = {}
 
     @EnvironmentObject private var localization: LocalizationManager
     @Environment(\.theme) private var theme
@@ -18,6 +21,8 @@ struct MapBlockView: View {
     @State private var content = MapContent()
     @State private var image: UIImage?
     @State private var showingEditor = false
+    /// Transmis à l'éditeur pour qu'il ouvre son sélecteur d'images.
+    @State private var editorAutoPresentsPicker = false
 
     var body: some View {
         Button {
@@ -34,12 +39,17 @@ struct MapBlockView: View {
         .onAppear {
             content = block.map
             loadImage()
+            guard autoPresentPicker else { return }
+            onPickerPresented()
+            editorAutoPresentsPicker = true
+            showingEditor = true
         }
         .fullScreenCover(isPresented: $showingEditor, onDismiss: {
+            editorAutoPresentsPicker = false
             content = block.map
             loadImage()
         }) {
-            MapEditorView(block: block)
+            MapEditorView(block: block, autoPresentPicker: editorAutoPresentsPicker)
         }
     }
 

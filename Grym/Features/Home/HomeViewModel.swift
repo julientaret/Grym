@@ -49,6 +49,17 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Navigation
+
+    /// Résout la cible de navigation d'une entrée d'activité : le wiki, et
+    /// la page visée quand l'entrée en désigne une.
+    func target(for entry: ActivityEntry, context: ModelContext) -> ActivityTarget? {
+        guard let wikiID = entry.wikiID,
+              let wiki = context.model(for: wikiID) as? Wiki else { return nil }
+        let page = entry.pageID.flatMap { context.model(for: $0) as? Page }
+        return ActivityTarget(wiki: wiki, page: page)
+    }
+
     // MARK: - Activité récente
 
     /// Construit le flux d'activité : wikis (pages) créés et notes attribuées
@@ -68,7 +79,9 @@ final class HomeViewModel: ObservableObject {
                     subtitle: "\(game.title) · \(page.title)",
                     coverImageId: game.coverImageId,
                     coverTint: tint,
-                    date: page.createdAt
+                    date: page.createdAt,
+                    wikiID: wiki.persistentModelID,
+                    pageID: page.persistentModelID
                 )
             }
 
@@ -80,7 +93,8 @@ final class HomeViewModel: ObservableObject {
                     subtitle: "\(game.title) · \(wiki.score)/100",
                     coverImageId: game.coverImageId,
                     coverTint: tint,
-                    date: date
+                    date: date,
+                    wikiID: wiki.persistentModelID
                 )]
             } ?? []
 
@@ -91,5 +105,5 @@ final class HomeViewModel: ObservableObject {
     }
 
     /// Nombre maximal d'entrées affichées dans le flux.
-    private static let activityLimit = 8
+    private static let activityLimit = 10
 }

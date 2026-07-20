@@ -10,6 +10,8 @@ import SwiftUI
 
 struct RecentActivitySection: View {
     let entries: [ActivityEntry]
+    /// Appelé au tap sur une entrée (navigation gérée par le parent).
+    let onSelect: (ActivityEntry) -> Void
 
     @EnvironmentObject private var localization: LocalizationManager
     @Environment(\.theme) private var theme
@@ -23,7 +25,10 @@ struct RecentActivitySection: View {
 
             VStack(spacing: 0) {
                 ForEach(Array(entries.enumerated()), id: \.element.id) { index, entry in
-                    ActivityRowView(entry: entry)
+                    Button { onSelect(entry) } label: {
+                        ActivityRowView(entry: entry)
+                    }
+                    .buttonStyle(.plain)
                     if index < entries.count - 1 {
                         Divider().overlay(theme.secondaryText.opacity(0.15))
                     }
@@ -52,7 +57,8 @@ struct RecentActivitySection: View {
             ActivityEntry(kind: .photos, title: "Added 3 photos",
                           subtitle: "Baldur's Gate 3 · Tav Build — Sorcadin",
                           coverTint: Color(hex: 0xC0392B), date: Date().addingTimeInterval(-86400))
-        ]
+        ],
+        onSelect: { _ in }
     )
     .padding(.vertical)
     .background(Color.grymBgDark)

@@ -50,6 +50,8 @@ enum TranslationKey: String {
     case profileDebugSection
     case profileDebugPremium
     case profileDebugHint
+    case profileStudioCreditPrefix
+    case profileStudioCreditName
     // Home
     case appTagline
     case homeSearchPlaceholder
@@ -172,6 +174,8 @@ enum Translation {
             .profileDebugSection: "Développement",
             .profileDebugPremium: "Simuler le premium",
             .profileDebugHint: "Réglage de debug : absent des builds App Store.",
+            .profileStudioCreditPrefix: "Une création",
+            .profileStudioCreditName: "AppleMousse Studio",
             .appTagline: "Votre pense-bête vidéoludique",
             .homeSearchPlaceholder: "Rechercher un wiki ou un jeu…",
             .homePinned: "Épinglés",
@@ -218,7 +222,7 @@ enum Translation {
             .tabMyGames: "Mes jeux",
             .myGamesTitle: "Mes jeux",
             .commonDelete: "Supprimer",
-            .wikiNoteTitle: "NOTE PERSONNELLE",
+            .wikiNoteTitle: "TON VERDICT / 100",
             .wikiPrivate: "PRIVÉ",
             .wikiTierLabel: "TIER",
             .wikiPagesTitle: "Wikis",
@@ -277,6 +281,8 @@ enum Translation {
             .profileDebugSection: "Development",
             .profileDebugPremium: "Simulate premium",
             .profileDebugHint: "Debug setting: not shipped in App Store builds.",
+            .profileStudioCreditPrefix: "Made by",
+            .profileStudioCreditName: "AppleMousse Studio",
             .appTagline: "Your video game notebook",
             .homeSearchPlaceholder: "Search a wiki or a game…",
             .homePinned: "Pinned",
@@ -323,7 +329,7 @@ enum Translation {
             .tabMyGames: "My games",
             .myGamesTitle: "My games",
             .commonDelete: "Delete",
-            .wikiNoteTitle: "PERSONAL SCORE",
+            .wikiNoteTitle: "YOUR VERDICT / 100",
             .wikiPrivate: "PRIVATE",
             .wikiTierLabel: "TIER",
             .wikiPagesTitle: "Wikis",

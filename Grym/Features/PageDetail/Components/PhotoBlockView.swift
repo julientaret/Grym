@@ -12,12 +12,16 @@ import SwiftUI
 
 struct PhotoBlockView: View {
     @Bindable var block: Block
+    /// Bloc tout juste créé : le sélecteur s'ouvre sans action de l'utilisateur.
+    var autoPresentPicker: Bool = false
+    var onPickerPresented: () -> Void = {}
 
     @EnvironmentObject private var localization: LocalizationManager
     @Environment(\.theme) private var theme
 
     @State private var content = PhotoContent()
     @State private var pickerItems: [PhotosPickerItem] = []
+    @State private var isPickerPresented = false
     /// Photo affichée en plein écran (QuickLook), parmi `photoURLs`.
     @State private var previewURL: URL?
 
@@ -56,7 +60,18 @@ struct PhotoBlockView: View {
             RoundedRectangle(cornerRadius: Theme.Radius.medium, style: .continuous)
                 .fill(theme.surface.opacity(0.4))
         )
-        .onAppear { content = block.photos }
+        .photosPicker(
+            isPresented: $isPickerPresented,
+            selection: $pickerItems,
+            maxSelectionCount: 10,
+            matching: .images
+        )
+        .onAppear {
+            content = block.photos
+            guard autoPresentPicker else { return }
+            onPickerPresented()
+            isPickerPresented = true
+        }
         .onChange(of: pickerItems) { _, items in
             guard !items.isEmpty else { return }
             importPickerItems(items)

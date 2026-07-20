@@ -8,6 +8,10 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
 
 - `GrymApp.swift` — Point d'entrée `@main`, injecte `LocalizationManager`/`ThemeManager`/`PremiumManager`/`PreferencesManager`, installe le `modelContainer` SwiftData (Game/Wiki/Page/Block) et affiche `RootTabView`.
 
+## Core/Components
+
+- `EmptyStateView.swift` — État vide réutilisable (Accueil, Mes jeux) : badge illustré, titre, message, étapes « quoi faire » et appel à l'action optionnel.
+
 ## Core/Preferences
 
 - `WikiPagesMode.swift` — Mode d'affichage des pages d'un wiki (liste / onglets / cartes) : clé de traduction et icône.
@@ -71,7 +75,7 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 
 Écran d'accueil (onglet Wikis) — **dashboard** : épinglés et activité récente. La liste complète vit dans « Mes jeux ».
 
-- `HomeView.swift` — Vue principale : en-tête, épinglés, activité récente, état vide de dashboard, sur fond dégradé. Ouvre la recherche via « + ».
+- `HomeView.swift` — Vue principale : en-tête, épinglés, activité récente, sur fond dégradé. Deux états vides via `EmptyStateView` (onboarding + ajout de jeu si aucun jeu, explication de l'épinglage sinon).
 - `HomeViewModel.swift` — `ObservableObject` : charge épinglés + total depuis SwiftData (`load(context:localization:)`) et construit le flux d'activité récente (wikis créés + notes modifiées, fusionnés et triés, 8 max) ; `isDashboardEmpty`.
 - `Models/HomeModel.swift` — Modèles de présentation : `WikiSummary` (mapping depuis `Wiki`), `ActivityEntry` (jaquette incluse), `ActivityKind`.
 - `Components/HomeHeaderView.swift` — Titre « Grym », tagline et bouton d'ajout.
@@ -90,7 +94,7 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 
 Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
-- `MyGamesView.swift` — `NavigationStack` : liste des wikis (`WikiRowView`), compteur, état vide, suppression par menu contextuel, navigation vers `WikiDetailView`.
+- `MyGamesView.swift` — `NavigationStack` : liste des wikis (`WikiRowView`), compteur, état vide illustré (`EmptyStateView` + CTA d'ajout, mention du palier gratuit hors premium), suppression par menu contextuel, navigation vers `WikiDetailView`.
 - `MyGamesViewModel.swift` — `ObservableObject` : charge les wikis (`load`), suppression via `WikiRepository` (`delete`).
 
 ## Features/PageDetail

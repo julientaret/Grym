@@ -11,6 +11,7 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
+    @State private var showingGameSearch = false
     @EnvironmentObject private var localization: LocalizationManager
     @Environment(\.theme) private var theme
     @Environment(\.modelContext) private var modelContext
@@ -46,23 +47,58 @@ struct HomeView: View {
             }
         }
         .onAppear { viewModel.load(context: modelContext, localization: localization) }
+        .sheet(isPresented: $showingGameSearch, onDismiss: {
+            viewModel.load(context: modelContext, localization: localization)
+        }) {
+            GameSearchView { _ in showingGameSearch = false }
+        }
     }
 
     // MARK: État vide
 
+    /// Deux situations distinctes : aucun jeu du tout (onboarding + ajout),
+    /// ou des jeux mais rien à mettre en avant (explication de l'épinglage).
+    @ViewBuilder
     private var dashboardEmptyState: some View {
-        VStack(spacing: Theme.Spacing.medium) {
-            Image(systemName: "pin")
-                .font(.system(size: Theme.FontSize.largeTitle))
-                .foregroundStyle(theme.secondaryText.opacity(0.7))
-            Text(localization.string(.homeDashboardEmpty))
-                .font(.system(size: Theme.FontSize.body))
-                .foregroundStyle(theme.secondaryText)
-                .multilineTextAlignment(.center)
+        if viewModel.totalWikiCount == 0 {
+            EmptyStateView(
+                systemImage: "sparkles",
+                title: localization.string(.homeOnboardingTitle),
+                message: localization.string(.homeOnboardingMessage),
+                steps: [
+                    EmptyStateStep(
+                        systemImage: "magnifyingglass",
+                        text: localization.string(.homeOnboardingStepSearch)
+                    ),
+                    EmptyStateStep(
+                        systemImage: "doc.text",
+                        text: localization.string(.homeOnboardingStepWiki)
+                    ),
+                    EmptyStateStep(
+                        systemImage: "star.fill",
+                        text: localization.string(.homeOnboardingStepScore)
+                    )
+                ]
+            ) {
+                WideAddGameButton { showingGameSearch = true }
+            }
+        } else {
+            EmptyStateView(
+                systemImage: "pin",
+                title: localization.string(.homeNoPinnedTitle),
+                message: localization.string(.homeNoPinnedMessage),
+                steps: [
+                    EmptyStateStep(
+                        systemImage: "pin.fill",
+                        text: localization.string(.homeNoPinnedStepPin)
+                    ),
+                    EmptyStateStep(
+                        systemImage: "clock.arrow.circlepath",
+                        text: localization.string(.homeNoPinnedStepActivity)
+                    )
+                ]
+            )
         }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, Theme.Spacing.large)
-        .padding(.top, Theme.Spacing.xLarge)
     }
 
     // MARK: Fond

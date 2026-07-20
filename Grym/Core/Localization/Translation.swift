@@ -62,6 +62,19 @@ enum TranslationKey: String {
     case commonCancel
     case commonRetry
     case homeEmptyWikis
+    case homeOnboardingTitle
+    case homeOnboardingMessage
+    case homeOnboardingStepSearch
+    case homeOnboardingStepWiki
+    case homeOnboardingStepScore
+    case homeNoPinnedTitle
+    case homeNoPinnedMessage
+    case homeNoPinnedStepPin
+    case homeNoPinnedStepActivity
+    case myGamesEmptyTitle
+    case myGamesEmptyMessage
+    case myGamesEmptyStepSearch
+    case myGamesEmptyStepLimit
     // Premium
     case premiumTitle
     case premiumLimitReached
@@ -75,7 +88,6 @@ enum TranslationKey: String {
     case premiumUnlock
     case premiumRestore
     case premiumLater
-    case homeDashboardEmpty
     case tabMyGames
     case myGamesTitle
     case commonDelete
@@ -162,6 +174,19 @@ enum Translation {
             .commonCancel: "Annuler",
             .commonRetry: "Réessayer",
             .homeEmptyWikis: "Aucun wiki pour l'instant.\nAppuie sur + pour ajouter un jeu.",
+            .homeOnboardingTitle: "Bienvenue dans Grym",
+            .homeOnboardingMessage: "Ta collection est vide. Ajoute un premier jeu pour commencer à consigner tes parties.",
+            .homeOnboardingStepSearch: "Recherche un jeu dans le catalogue et ajoute-le.",
+            .homeOnboardingStepWiki: "Crée des wikis : notes, checklists, photos et cartes annotées.",
+            .homeOnboardingStepScore: "Donne-lui ta note personnelle de 0 à 100.",
+            .homeNoPinnedTitle: "Ton tableau de bord est prêt",
+            .homeNoPinnedMessage: "Rien à afficher pour l'instant : épingle tes jeux du moment pour les garder sous la main.",
+            .homeNoPinnedStepPin: "Ouvre un jeu et touche l'épingle pour l'afficher ici.",
+            .homeNoPinnedStepActivity: "Tes derniers ajouts et notes apparaîtront dans l'activité récente.",
+            .myGamesEmptyTitle: "Aucun jeu pour l'instant",
+            .myGamesEmptyMessage: "Ajoute ton premier jeu : il servira de point de départ à tes wikis.",
+            .myGamesEmptyStepSearch: "Touche « Ajouter un jeu » et cherche-le par son titre.",
+            .myGamesEmptyStepLimit: "Le palier gratuit couvre 10 jeux.",
             .premiumTitle: "Passez Premium",
             .premiumLimitReached: "Limite gratuite atteinte (10 jeux).",
             .premiumFreeHint: "Supprime un jeu pour en ajouter un autre gratuitement.",
@@ -174,7 +199,6 @@ enum Translation {
             .premiumUnlock: "Débloquer",
             .premiumRestore: "Restaurer l'achat",
             .premiumLater: "Plus tard",
-            .homeDashboardEmpty: "Tes jeux épinglés et ton activité récente apparaîtront ici.",
             .tabMyGames: "Mes jeux",
             .myGamesTitle: "Mes jeux",
             .commonDelete: "Supprimer",
@@ -247,6 +271,19 @@ enum Translation {
             .commonCancel: "Cancel",
             .commonRetry: "Retry",
             .homeEmptyWikis: "No wiki yet.\nTap + to add a game.",
+            .homeOnboardingTitle: "Welcome to Grym",
+            .homeOnboardingMessage: "Your collection is empty. Add a first game to start logging your playthroughs.",
+            .homeOnboardingStepSearch: "Search the catalog for a game and add it.",
+            .homeOnboardingStepWiki: "Create wikis: notes, checklists, photos and annotated maps.",
+            .homeOnboardingStepScore: "Give it your personal score from 0 to 100.",
+            .homeNoPinnedTitle: "Your dashboard is ready",
+            .homeNoPinnedMessage: "Nothing to show yet: pin the games you are playing to keep them at hand.",
+            .homeNoPinnedStepPin: "Open a game and tap the pin to show it here.",
+            .homeNoPinnedStepActivity: "Your latest additions and scores will appear in recent activity.",
+            .myGamesEmptyTitle: "No games yet",
+            .myGamesEmptyMessage: "Add your first game: it will be the starting point of your wikis.",
+            .myGamesEmptyStepSearch: "Tap “Add a game” and search it by title.",
+            .myGamesEmptyStepLimit: "The free tier covers 10 games.",
             .premiumTitle: "Go Premium",
             .premiumLimitReached: "Free limit reached (10 games).",
             .premiumFreeHint: "Delete a game to add another one for free.",
@@ -259,7 +296,6 @@ enum Translation {
             .premiumUnlock: "Unlock",
             .premiumRestore: "Restore purchase",
             .premiumLater: "Later",
-            .homeDashboardEmpty: "Your pinned games and recent activity will show up here.",
             .tabMyGames: "My games",
             .myGamesTitle: "My games",
             .commonDelete: "Delete",

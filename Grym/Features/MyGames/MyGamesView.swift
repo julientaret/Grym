@@ -46,11 +46,12 @@ struct MyGamesView: View {
                             }
                         }
                         .padding(.horizontal, Theme.Spacing.large)
-                    }
 
-                    WideAddGameButton { showingGameSearch = true }
-                        .padding(.horizontal, Theme.Spacing.large)
-                        .padding(.top, Theme.Spacing.small)
+                        // Le bouton d'ajout est déjà porté par l'état vide.
+                        WideAddGameButton { showingGameSearch = true }
+                            .padding(.horizontal, Theme.Spacing.large)
+                            .padding(.top, Theme.Spacing.small)
+                    }
                 }
                 .padding(.top, Theme.Spacing.small)
                 .padding(.bottom, Theme.Spacing.xLarge)
@@ -96,18 +97,33 @@ struct MyGamesView: View {
     // MARK: État vide
 
     private var emptyState: some View {
-        VStack(spacing: Theme.Spacing.medium) {
-            Image(systemName: "gamecontroller")
-                .font(.system(size: Theme.FontSize.largeTitle))
-                .foregroundStyle(theme.secondaryText.opacity(0.7))
-            Text(localization.string(.homeEmptyWikis))
-                .font(.system(size: Theme.FontSize.body))
-                .foregroundStyle(theme.secondaryText)
-                .multilineTextAlignment(.center)
+        EmptyStateView(
+            systemImage: "gamecontroller",
+            title: localization.string(.myGamesEmptyTitle),
+            message: localization.string(.myGamesEmptyMessage),
+            steps: emptyStateSteps
+        ) {
+            WideAddGameButton { showingGameSearch = true }
         }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, Theme.Spacing.large)
-        .padding(.top, Theme.Spacing.xLarge)
+    }
+
+    /// La mention du palier gratuit n'a de sens que hors premium.
+    private var emptyStateSteps: [EmptyStateStep] {
+        var steps = [
+            EmptyStateStep(
+                systemImage: "magnifyingglass",
+                text: localization.string(.myGamesEmptyStepSearch)
+            )
+        ]
+        if !premium.isPremium {
+            steps.append(
+                EmptyStateStep(
+                    systemImage: "sparkles",
+                    text: localization.string(.myGamesEmptyStepLimit)
+                )
+            )
+        }
+        return steps
     }
 
     // MARK: Fond

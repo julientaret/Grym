@@ -146,6 +146,8 @@ enum TranslationKey: String {
     case mapEmptyHint
     case mapPinLabelPlaceholder
     case mapNoImageHint
+    case mapFullScreen
+    case mapExitFullScreen
     case commonDone
     case textBlockPlaceholder
     case checklistTitlePlaceholder
@@ -274,6 +276,8 @@ enum Translation {
             .mapEmptyHint: "Touche la carte pour ajouter un repère.",
             .mapPinLabelPlaceholder: "Nom du repère",
             .mapNoImageHint: "Aucune carte. Ajoute une image à annoter.",
+            .mapFullScreen: "Afficher en plein écran",
+            .mapExitFullScreen: "Fermer le plein écran",
             .commonDone: "Terminé",
             .textBlockPlaceholder: "Écris ici…",
             .checklistTitlePlaceholder: "Titre de la liste",
@@ -391,6 +395,8 @@ enum Translation {
             .mapEmptyHint: "Tap the map to add a pin.",
             .mapPinLabelPlaceholder: "Pin name",
             .mapNoImageHint: "No map yet. Add an image to annotate.",
+            .mapFullScreen: "View full screen",
+            .mapExitFullScreen: "Close full screen",
             .commonDone: "Done",
             .textBlockPlaceholder: "Write here…",
             .checklistTitlePlaceholder: "List title",

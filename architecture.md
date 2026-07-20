@@ -112,7 +112,8 @@ Onglet « Mes jeux » : liste complète des jeux ajoutés.
 - `Components/ChecklistBlockView.swift` — Bloc checklist : titre, items cochables, progression.
 - `Components/PhotoBlockView.swift` — Bloc photo : galerie de miniatures locales, ajout via PhotosPicker (ouvert d'office sur un bloc tout juste créé, `autoPresentPicker`), suppression, ouverture plein écran au tap via QuickLook natif (`.quickLookPreview`, zoom/pan/partage/swipe).
 - `MapEditorView.swift` — Éditeur plein écran d'une carte : image + pins (ajout au tap, drag, renommage/suppression) ; `autoPresentPicker` ouvre le sélecteur d'images à l'arrivée.
-- `Components/MapBlockView.swift` — Bloc carte : aperçu (image + pins) ou invite d'ajout ; ouvre l'éditeur au tap, ou d'office sur un bloc tout juste créé (`autoPresentPicker`).
+- `MapFullScreenView.swift` — Visionneuse plein écran d'une carte (lecture seule) : image bord à bord, safe areas ignorées, rotation paysage ; fermeture par la croix ou au tap.
+- `Components/MapBlockView.swift` — Bloc carte : aperçu (image + pins) ou invite d'ajout ; ouvre l'éditeur au tap, ou d'office sur un bloc tout juste créé (`autoPresentPicker`). Deux pastilles d'action sur l'aperçu : plein écran (`MapFullScreenView`) et édition.
 - `Components/AnnotatedMapView.swift` — Affichage image + pins (coordonnées relatives) ; mode lecture seule ou édition. Inclut `MapPinMarker`.
 - `Components/AddBlockButton.swift` — Bouton + menu de choix du type de bloc (texte / checklist / photo / carte).
 - `Components/EmptyBlocksPlaceholder.swift` — Placeholder d'un wiki sans bloc : en-tête illustré et une carte par type de bloc (icône, nom, rôle) pour guider la première création.

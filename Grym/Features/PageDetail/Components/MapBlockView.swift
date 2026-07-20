@@ -21,21 +21,12 @@ struct MapBlockView: View {
     @State private var content = MapContent()
     @State private var image: UIImage?
     @State private var showingEditor = false
+    @State private var showingFullScreen = false
     /// Transmis à l'éditeur pour qu'il ouvre son sélecteur d'images.
     @State private var editorAutoPresentsPicker = false
 
     var body: some View {
-        Button {
-            showingEditor = true
-        } label: {
-            if let image {
-                AnnotatedMapView(image: image, pins: .constant(content.pins))
-                    .overlay(alignment: .bottomTrailing) { editChip }
-            } else {
-                placeholder
-            }
-        }
-        .buttonStyle(.plain)
+        preview
         .onAppear {
             content = block.map
             loadImage()
@@ -51,15 +42,54 @@ struct MapBlockView: View {
         }) {
             MapEditorView(block: block, autoPresentPicker: editorAutoPresentsPicker)
         }
+        .fullScreenCover(isPresented: $showingFullScreen) {
+            if let image {
+                MapFullScreenView(image: image, pins: content.pins)
+            }
+        }
     }
 
-    private var editChip: some View {
-        Image(systemName: "pencil")
-            .font(.system(size: Theme.FontSize.caption, weight: .bold))
-            .foregroundStyle(.white)
-            .padding(Theme.Spacing.small)
-            .background(Circle().fill(.black.opacity(0.5)))
-            .padding(Theme.Spacing.small)
+    /// L'aperçu porte deux actions distinctes (éditer / plein écran) : les
+    /// pastilles doivent donc être de vrais boutons, hors d'un bouton parent.
+    @ViewBuilder
+    private var preview: some View {
+        if let image {
+            AnnotatedMapView(image: image, pins: .constant(content.pins))
+                .contentShape(Rectangle())
+                .onTapGesture { showingEditor = true }
+                .overlay(alignment: .bottomTrailing) { chips(for: image) }
+        } else {
+            Button { showingEditor = true } label: { placeholder }
+                .buttonStyle(.plain)
+        }
+    }
+
+    private func chips(for image: UIImage) -> some View {
+        HStack(spacing: Theme.Spacing.small) {
+            chip(systemImage: "arrow.up.left.and.arrow.down.right",
+                 label: localization.string(.mapFullScreen)) {
+                showingFullScreen = true
+            }
+            chip(systemImage: "pencil",
+                 label: localization.string(.blockTypeMap)) {
+                showingEditor = true
+            }
+        }
+        .padding(Theme.Spacing.small)
+    }
+
+    private func chip(systemImage: String,
+                      label: String,
+                      action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.system(size: Theme.FontSize.caption, weight: .bold))
+                .foregroundStyle(.white)
+                .padding(Theme.Spacing.small)
+                .background(Circle().fill(.black.opacity(0.5)))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(label)
     }
 
     private var placeholder: some View {

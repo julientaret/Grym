@@ -185,8 +185,8 @@ Paywall : ce que l'achat unique débloque, expliqué avantage par avantage. Ouve
 - `Models/PremiumBenefit.swift` — Les trois avantages réellement livrés (jeux illimités, tous les thèmes, bilan complet) : icône, clé de titre et clé d'explication.
 - `Models/PremiumContext.swift` — Origine de l'ouverture (profil / limite de jeux / thème verrouillé / bilan) : clé de la phrase de contexte et icône associée.
 - `Components/PremiumHeaderView.swift` — En-tête : badge trophée, kicker HUD, titre d'édition en dégradé et bandeau capsule expliquant le blocage.
-- `Components/PremiumBadgeView.swift` — Badge façon trophée : halo, anneau d'accent en rotation lente (désactivée si « Réduire les animations ») et pastille trophée/coche.
-- `Components/PremiumBackgroundView.swift` — Fond « menu de jeu » : dégradé du thème, halo haut et grille en perspective dessinée en `Canvas`, estompée par un masque.
+- `Components/PremiumBadgeView.swift` — Badge façon trophée : halo (aura d'accent en thème clair), anneau d'accent en rotation lente (désactivée si « Réduire les animations ») et pastille trophée/coche.
+- `Components/PremiumBackgroundView.swift` — Fond « menu de jeu » : dégradé du thème, halo haut et grille en perspective dessinée en `Canvas`, estompée par un masque. Le halo (sombre par nature) devient un voile blanc teinté en thème clair, où la grille passe aussi en fusion normale pour rester visible.
 - `Components/PremiumHUDLabel.swift` — Petit libellé en capitales espacées (interlettrage `Theme.Tracking.hud`), façon en-tête de menu de jeu.
 - `Components/PremiumBenefitRow.swift` — Ligne d'avantage façon succès : pastille d'icône accentuée, intitulé, explication concrète et état cadenas/coche (`isUnlocked`).
 - `Components/PremiumPurchaseFooter.swift` — Pied épinglé : bouton d'achat balayé d'un reflet en boucle (prix localisé StoreKit, `ProgressView` pendant l'achat), mention « achat unique » et restauration ; remonte le déverrouillage via `onUnlocked`.

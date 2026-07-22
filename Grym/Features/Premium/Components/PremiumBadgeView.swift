@@ -12,6 +12,7 @@ struct PremiumBadgeView: View {
     let isUnlocked: Bool
 
     @Environment(\.theme) private var theme
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isSpinning = false
 
@@ -27,11 +28,16 @@ struct PremiumBadgeView: View {
         .onAppear { isSpinning = !reduceMotion }
     }
 
+    /// Le halo du thème étant sombre, il devient une aura d'accent en thème clair.
     private var halo: some View {
         Circle()
             .fill(
-                RadialGradient(colors: [theme.glow.opacity(0.9), .clear],
-                               center: .center, startRadius: 0, endRadius: size)
+                RadialGradient(
+                    colors: colorScheme == .light
+                        ? [theme.accent.opacity(0.22), .clear]
+                        : [theme.glow.opacity(0.9), .clear],
+                    center: .center, startRadius: 0, endRadius: size
+                )
             )
     }
 

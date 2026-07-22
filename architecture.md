@@ -39,6 +39,7 @@ Couche de données locale (SwiftData, offline-first).
 - `GameStatus.swift` — Enum du statut de progression (aucun / à jouer / en cours / terminé / platiné / abandonné) : clé de traduction, icône et couleur.
 - `PlaySession.swift` — `@Model` session de jeu consignée : date, durée en minutes, ressenti (`moodRaw`, exposé via `mood`) et note libre ; fournit les durées proposées à l'éditeur.
 - `SessionMood.swift` — Enum du ressenti d'une session (excellent / bien / mitigé / galère) : clé de traduction, icône et couleur.
+- `WikiLink.swift` — Liens internes `[[Titre de page]]` : analyse du balisage, rendu en `AttributedString` cliquable (URL interne `grym://page?title=`), et extensions `Wiki.page(titled:)` / `Page.linkedTitles` / `Page.backlinks`.
 - `Page.swift` — `@Model` page nommée d'un wiki (« wiki » côté UI), contenant des blocs ordonnés ; `createdAt` alimente le flux d'activité de l'accueil.
 - `Block.swift` — `@Model` bloc de contenu (type persisté en `String`, exposé via `BlockType`).
 - `BlockType.swift` — Enum des types de bloc (text/photo/checklist/map).
@@ -114,8 +115,10 @@ Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
 Éditeur d'une page : titre éditable et flux de blocs (texte, checklist ; photo/carte à venir).
 
-- `PageDetailView.swift` — `List` : titre et blocs ; ajout (menu de type), réorganisation (drag & drop via EditButton) et suppression de blocs ; sauvegarde à la sortie. Un bloc photo/carte fraîchement ajouté ouvre directement le sélecteur d'images (`pendingPickerBlockID`). `autofocusTitle` place le focus dans le titre à l'ouverture d'une page fraîchement créée, texte présélectionné (`selectAllOnFocus`).
-- `Components/TextBlockView.swift` — Bloc texte libre, lié à `Block.content`.
+- `PageDetailView.swift` — `List` : titre, blocs et rétroliens ; ajout (menu de type), réorganisation (drag & drop via EditButton) et suppression de blocs ; sauvegarde à la sortie. Un lien `[[Titre]]` pousse la page ciblée, et la crée à la volée si elle n'existe pas. Un bloc photo/carte fraîchement ajouté ouvre directement le sélecteur d'images (`pendingPickerBlockID`). `autofocusTitle` place le focus dans le titre à l'ouverture d'une page fraîchement créée, texte présélectionné (`selectAllOnFocus`).
+- `Components/TextBlockView.swift` — Bloc texte libre, lié à `Block.content`. Hors édition, les liens `[[Titre]]` sont rendus cliquables (couleur d'accent, gris si la page cible n'existe pas) et remontés via `onOpenLink` ; deux pastilles d'action : insertion d'un lien (en édition) et reprise de l'édition (hors édition). Le texte rendu ne porte aucun geste, pour ne pas avaler les taps sur les liens.
+- `Components/PageLinkPickerView.swift` — Sheet listant les autres pages du wiki ; le titre choisi est inséré en `[[Titre]]`.
+- `Components/PageBacklinksSection.swift` — Section « Cité par » : pages du wiki qui référencent la page courante.
 - `Components/ChecklistBlockView.swift` — Bloc checklist : titre, items cochables, progression.
 - `Components/PhotoBlockView.swift` — Bloc photo : galerie de miniatures locales, ajout via PhotosPicker (ouvert d'office sur un bloc tout juste créé, `autoPresentPicker`), suppression, ouverture plein écran au tap via QuickLook natif (`.quickLookPreview`, zoom/pan/partage/swipe).
 - `MapEditorView.swift` — Éditeur plein écran d'une carte : image + pins (ajout au tap, drag, renommage/suppression) ; `autoPresentPicker` ouvre le sélecteur d'images à l'arrivée.

@@ -156,6 +156,10 @@ enum TranslationKey: String {
     case checklistTitlePlaceholder
     case checklistAddItem
     case checklistItemPlaceholder
+    // Liens internes entre pages
+    case linkPickerTitle
+    case linkPickerEmpty
+    case backlinksTitle
     // Statuts de progression
     case statusNone
     case statusBacklog
@@ -323,6 +327,9 @@ enum Translation {
             .checklistTitlePlaceholder: "Titre de la liste",
             .checklistAddItem: "Ajouter un élément",
             .checklistItemPlaceholder: "Élément",
+            .linkPickerTitle: "Lier un wiki",
+            .linkPickerEmpty: "Ce jeu n'a qu'un seul wiki. Crées-en un autre pour pouvoir le lier.",
+            .backlinksTitle: "Cité par",
             .statusNone: "Sans statut",
             .statusBacklog: "À jouer",
             .statusPlaying: "En cours",
@@ -476,6 +483,9 @@ enum Translation {
             .checklistTitlePlaceholder: "List title",
             .checklistAddItem: "Add an item",
             .checklistItemPlaceholder: "Item",
+            .linkPickerTitle: "Link a wiki",
+            .linkPickerEmpty: "This game has a single wiki. Create another one to link it.",
+            .backlinksTitle: "Referenced by",
             .statusNone: "No status",
             .statusBacklog: "Backlog",
             .statusPlaying: "Playing",

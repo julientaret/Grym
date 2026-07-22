@@ -2,8 +2,9 @@
 //  PageDetailView.swift
 //  Grym
 //
-//  Éditeur d'une page : titre éditable et flux de blocs (texte, checklist).
-//  Édition directe du modèle via `@Bindable` ; structure via `WikiRepository`.
+//  Éditeur d'une page : titre éditable, flux de blocs (texte, checklist,
+//  photo, carte) et rétroliens. Édition directe du modèle via `@Bindable` ;
+//  structure via `WikiRepository`.
 //
 
 import SwiftData
@@ -25,6 +26,8 @@ struct PageDetailView: View {
     /// Bloc photo/carte tout juste ajouté : sa vue ouvre directement le
     /// sélecteur d'images, puis remet cette valeur à `nil`.
     @State private var pendingPickerBlockID: PersistentIdentifier?
+    /// Page ouverte par un lien interne ou un rétrolien.
+    @State private var linkedPage: Page?
 
     private var repository: WikiRepository { WikiRepository(context: modelContext) }
 
@@ -58,6 +61,11 @@ struct PageDetailView: View {
                 }
             }
             .grymBlockRow()
+
+            if !backlinks.isEmpty {
+                PageBacklinksSection(pages: backlinks) { linkedPage = $0 }
+                    .grymBlockRow()
+            }
         }
         .listStyle(.plain)
         .environment(\.defaultMinListRowHeight, 0)
@@ -67,6 +75,9 @@ struct PageDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) { EditButton() }
+        }
+        .navigationDestination(item: $linkedPage) { page in
+            PageDetailView(page: page)
         }
         .onDisappear { repository.save() }
         // Le focus doit attendre la fin de la transition de push, sinon le
@@ -93,13 +104,29 @@ struct PageDetailView: View {
         for index in offsets { try? repository.delete(sortedBlocks[index]) }
     }
 
+    // MARK: Liens internes
+
+    private var backlinks: [Page] { page.backlinks }
+
+    /// Ouvre la page ciblée par un lien `[[Titre]]` ; la crée si elle n'existe
+    /// pas encore, pour que le lien reste toujours actionnable.
+    private func openLink(to title: String) {
+        guard let wiki = page.wiki else { return }
+        if let existing = wiki.page(titled: title) {
+            linkedPage = existing
+        } else {
+            repository.save()
+            linkedPage = try? repository.addPage(to: wiki, title: title)
+        }
+    }
+
     // MARK: Rendu d'un bloc
 
     @ViewBuilder
     private func blockView(_ block: Block) -> some View {
         switch block.type {
         case .text:
-            TextBlockView(block: block)
+            TextBlockView(block: block, wiki: page.wiki, onOpenLink: openLink)
         case .checklist:
             ChecklistBlockView(block: block)
         case .photo:

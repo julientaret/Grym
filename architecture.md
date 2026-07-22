@@ -160,6 +160,17 @@ Détail d'un wiki : édition directe du modèle via `@Bindable` (écart MVVM jus
 - `Components/WikiScoreCard.swift` — Carte « Note personnelle » : score, palier et slider 0–100 à dégradé de tiers (drag par translation), replié par défaut derrière un en-tête cliquable.
 - `Components/PageRowView.swift` — Ligne d'une page (icône, titre, nombre de blocs).
 
+## Features/Stats
+
+Bilan personnel de la collection (avantage premium), poussé depuis le Profil.
+
+- `StatsView.swift` — Écran du bilan : chiffres clés (jeux, temps de jeu, note moyenne, sessions), répartitions par statut et par palier, classements de tête, volumes de contenu créé ; état vide si la collection est vide.
+- `StatsViewModel.swift` — `ObservableObject` : agrège les wikis en mémoire (`load(context:localization:)`), exclut les jeux non notés de la moyenne et construit les répartitions et classements (5 entrées).
+- `Models/StatsModel.swift` — `LibraryStats` (tous les compteurs et dérivés), `BreakdownSlice` (part d'une répartition) et `RankedGame` (entrée de classement).
+- `Components/StatTileView.swift` — Tuile d'une statistique (icône, valeur, libellé).
+- `Components/StatsBreakdownView.swift` — Barre empilée proportionnelle + légende chiffrée.
+- `Components/RankingSection.swift` — Classement de tête : rang, jaquette, titre, valeur.
+
 ## Features/Premium
 
 - `PremiumUpgradeView.swift` — Prompt d'upgrade (avantages + prix localisé StoreKit) : achat et restauration via `PremiumManager`, présenté à l'atteinte de la limite gratuite.
@@ -174,7 +185,8 @@ Ajout d'un jeu : recherche live IGDB, présentée en sheet depuis le bouton « +
 
 ## Features/Profile
 
-- `ProfileView.swift` — Onglet Profil : fond dégradé Grym et cartes de réglages (Apparence : thème ; Langue ; Affichage : mode des wikis ; Développement : simulation du premium, DEBUG seulement).
+- `ProfileView.swift` — Onglet Profil : fond dégradé Grym et cartes de réglages (Bilan : accès aux statistiques ; Apparence : thème ; Langue ; Affichage : mode des wikis ; Développement : simulation du premium, DEBUG seulement).
+- `Components/StatsEntryRow.swift` — Ligne d'accès au bilan : pousse `StatsView` en premium, ouvre `PremiumUpgradeView` sinon (badge « Premium »).
 - `Components/ProfileHeaderView.swift` — En-tête du profil : bannière illustrée (`BannerHeaderView`, `banner-profile`, hauteur compacte) avec titre et sous-titre superposés.
 - `Components/StudioCreditComponent.swift` — Encart « Une création AppleMousse Studio » : logo, libellé et lien vers https://applemousse-studio.fr.
 - `Components/ProfileSectionCard.swift` — Carte de section générique : `SectionHeaderView` + contenu sur surface translucide.

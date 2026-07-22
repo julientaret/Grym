@@ -156,6 +156,21 @@ enum TranslationKey: String {
     case checklistTitlePlaceholder
     case checklistAddItem
     case checklistItemPlaceholder
+    // Bilan personnel
+    case statsSection
+    case statsTitle
+    case statsHint
+    case statsGames
+    case statsPlaytime
+    case statsAverageScore
+    case statsSessions
+    case statsPages
+    case statsByStatus
+    case statsByTier
+    case statsTopRated
+    case statsMostPlayed
+    case statsEmptyTitle
+    case statsEmptyMessage
     // Recherche globale
     case searchTitle
     case searchPlaceholder
@@ -337,6 +352,20 @@ enum Translation {
             .checklistTitlePlaceholder: "Titre de la liste",
             .checklistAddItem: "Ajouter un élément",
             .checklistItemPlaceholder: "Élément",
+            .statsSection: "Bilan",
+            .statsTitle: "Mes statistiques",
+            .statsHint: "Temps de jeu, notes et répartition de ta collection.",
+            .statsGames: "Jeux",
+            .statsPlaytime: "Temps de jeu",
+            .statsAverageScore: "Note moyenne",
+            .statsSessions: "Sessions",
+            .statsPages: "Wikis",
+            .statsByStatus: "Par statut",
+            .statsByTier: "Par palier",
+            .statsTopRated: "Tes meilleures notes",
+            .statsMostPlayed: "Les plus joués",
+            .statsEmptyTitle: "Rien à compter pour l'instant",
+            .statsEmptyMessage: "Ajoute des jeux, note-les et consigne tes sessions : ton bilan se remplira tout seul.",
             .searchTitle: "Rechercher",
             .searchPlaceholder: "Jeux, wikis, notes, checklists…",
             .searchPrompt: "Cherche dans tous tes jeux : titres, wikis, notes, checklists et repères de carte.",
@@ -502,6 +531,20 @@ enum Translation {
             .checklistTitlePlaceholder: "List title",
             .checklistAddItem: "Add an item",
             .checklistItemPlaceholder: "Item",
+            .statsSection: "Insights",
+            .statsTitle: "My stats",
+            .statsHint: "Playtime, scores and the shape of your collection.",
+            .statsGames: "Games",
+            .statsPlaytime: "Playtime",
+            .statsAverageScore: "Average score",
+            .statsSessions: "Sessions",
+            .statsPages: "Wikis",
+            .statsByStatus: "By status",
+            .statsByTier: "By tier",
+            .statsTopRated: "Your best scores",
+            .statsMostPlayed: "Most played",
+            .statsEmptyTitle: "Nothing to count yet",
+            .statsEmptyMessage: "Add games, score them and log your sessions: your stats will fill up on their own.",
             .searchTitle: "Search",
             .searchPlaceholder: "Games, wikis, notes, checklists…",
             .searchPrompt: "Search across all your games: titles, wikis, notes, checklists and map pins.",

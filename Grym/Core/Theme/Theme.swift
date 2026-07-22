@@ -52,6 +52,10 @@ enum Theme {
         static let sessionMoodIcon: CGFloat = 36
         /// Vignette de jaquette d'un résultat de recherche.
         static let searchThumbnail: CGFloat = 44
+        /// Hauteur de la barre de répartition du bilan.
+        static let breakdownBarHeight: CGFloat = 14
+        /// Vignette de jaquette d'une ligne de classement.
+        static let rankingThumbnail: CGFloat = 40
     }
 
     // MARK: - Seuils d'affichage

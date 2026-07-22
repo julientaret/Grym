@@ -48,6 +48,15 @@ enum Theme {
         static let bannerHeight: CGFloat = 260
         /// Variante réduite, pour les écrans dont le contenu prime sur l'illustration.
         static let bannerHeightCompact: CGFloat = 180
+        /// Pastille d'humeur d'une ligne de session.
+        static let sessionMoodIcon: CGFloat = 36
+    }
+
+    // MARK: - Seuils d'affichage
+
+    enum Limit {
+        /// Sessions visibles dans le journal avant « Tout afficher ».
+        static let visibleSessions = 3
     }
 
     // MARK: - Durées d'animation

@@ -31,9 +31,21 @@ struct WikiRowView: View {
                     .foregroundStyle(theme.primaryText)
                     .lineLimit(1)
 
-                Text(metaLine)
-                    .font(.system(size: Theme.FontSize.caption, weight: .regular))
-                    .foregroundStyle(theme.secondaryText)
+                HStack(spacing: Theme.Spacing.small) {
+                    Text(metaLine)
+                        .font(.system(size: Theme.FontSize.caption, weight: .regular))
+                        .foregroundStyle(theme.secondaryText)
+
+                    if wiki.status != .none {
+                        GameStatusBadge(status: wiki.status)
+                    }
+
+                    if wiki.playMinutes > 0 {
+                        Text(playtimeLabel)
+                            .font(.system(size: Theme.FontSize.caption, weight: .medium))
+                            .foregroundStyle(theme.secondaryText)
+                    }
+                }
 
                 HStack(spacing: Theme.Spacing.small) {
                     stat(wiki.blockCount, localization.string(.statBlocks), theme.accent)
@@ -69,6 +81,13 @@ struct WikiRowView: View {
     private var metaLine: String {
         wiki.year.map(String.init) ?? ""
     }
+
+    private var playtimeLabel: String {
+        wiki.playMinutes.playtimeLabel(
+            hourUnit: localization.string(.durationHourUnit),
+            minuteUnit: localization.string(.durationMinuteUnit)
+        )
+    }
 }
 
 #Preview {
@@ -77,7 +96,7 @@ struct WikiRowView: View {
             title: "Elden Ring", coverTint: Color(hex: 0xE0A458),
             year: 2022,
             blockCount: 63, photoCount: 18, listCount: 9,
-            score: 92, updatedAt: Date()
+            score: 92, updatedAt: Date(), status: .playing, playMinutes: 1_260
         )
     )
     .padding()

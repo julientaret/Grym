@@ -73,6 +73,40 @@ struct WikiRepository {
         try? context.save()
     }
 
+    /// Change le statut de progression, date l'événement et persiste.
+    func updateStatus(_ wiki: Wiki, to status: GameStatus) {
+        guard wiki.status != status else { return }
+        let now = Date()
+        wiki.status = status
+        wiki.statusUpdatedAt = now
+        wiki.updatedAt = now
+        try? context.save()
+    }
+
+    /// Consigne une session de jeu sur le wiki et sauvegarde.
+    @discardableResult
+    func addSession(
+        to wiki: Wiki,
+        date: Date,
+        minutes: Int,
+        mood: SessionMood,
+        note: String
+    ) throws -> PlaySession {
+        let session = PlaySession(date: date, minutes: minutes, mood: mood, note: note)
+        session.wiki = wiki
+        context.insert(session)
+        wiki.updatedAt = Date()
+        try context.save()
+        return session
+    }
+
+    /// Supprime une session et sauvegarde.
+    func delete(_ session: PlaySession) throws {
+        session.wiki?.updatedAt = Date()
+        context.delete(session)
+        try context.save()
+    }
+
     /// Ajoute un bloc à une page (ordre = fin de liste) et sauvegarde.
     @discardableResult
     func addBlock(to page: Page, type: BlockType, content: String = "") throws -> Block {

@@ -14,6 +14,8 @@ enum GameSortOption: String, CaseIterable, Identifiable {
     case title
     case score
     case releaseYear
+    /// Temps de jeu cumulé décroissant (sessions consignées).
+    case playtime
 
     var id: String { rawValue }
 
@@ -24,6 +26,7 @@ enum GameSortOption: String, CaseIterable, Identifiable {
         case .title:       .sortTitle
         case .score:       .sortScore
         case .releaseYear: .sortReleaseYear
+        case .playtime:    .sortPlaytime
         }
     }
 
@@ -34,6 +37,7 @@ enum GameSortOption: String, CaseIterable, Identifiable {
         case .title:       "textformat.abc"
         case .score:       "star"
         case .releaseYear: "calendar"
+        case .playtime:    "hourglass"
         }
     }
 }

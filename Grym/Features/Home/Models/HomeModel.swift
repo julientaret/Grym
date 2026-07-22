@@ -26,6 +26,10 @@ struct WikiSummary: Identifiable, Hashable {
     /// Note personnelle privée (0–100).
     let score: Int
     let updatedAt: Date
+    /// Statut de progression (`.none` tant que l'utilisateur n'en a pas choisi).
+    let status: GameStatus
+    /// Temps de jeu cumulé des sessions consignées, en minutes.
+    let playMinutes: Int
 
     init(
         id: String = UUID().uuidString,
@@ -37,7 +41,9 @@ struct WikiSummary: Identifiable, Hashable {
         photoCount: Int,
         listCount: Int,
         score: Int,
-        updatedAt: Date
+        updatedAt: Date,
+        status: GameStatus = .none,
+        playMinutes: Int = 0
     ) {
         self.id = id
         self.title = title
@@ -49,6 +55,8 @@ struct WikiSummary: Identifiable, Hashable {
         self.listCount = listCount
         self.score = score
         self.updatedAt = updatedAt
+        self.status = status
+        self.playMinutes = playMinutes
     }
 
     /// Construit un résumé à partir d'un wiki persistant (SwiftData).
@@ -65,7 +73,9 @@ struct WikiSummary: Identifiable, Hashable {
             photoCount: wiki.photoCount,
             listCount: wiki.listCount,
             score: wiki.score,
-            updatedAt: wiki.updatedAt
+            updatedAt: wiki.updatedAt,
+            status: wiki.status,
+            playMinutes: wiki.totalPlayMinutes
         )
     }
 }
@@ -78,6 +88,8 @@ enum ActivityKind {
     case photos
     case page
     case note
+    case session
+    case status
 
     /// Symbole SF associé.
     var systemImage: String {
@@ -86,6 +98,8 @@ enum ActivityKind {
         case .photos:    "photo.on.rectangle"
         case .page:      "book.pages"
         case .note:      "note.text"
+        case .session:   "hourglass"
+        case .status:    "flag.fill"
         }
     }
 }

@@ -30,6 +30,6 @@ struct GrymApp: App {
                     themeManager.enforceEntitlement(isPremium: isPremium)
                 }
         }
-        .modelContainer(for: [Game.self, Wiki.self, Page.self, Block.self])
+        .modelContainer(for: [Game.self, Wiki.self, Page.self, Block.self, PlaySession.self])
     }
 }

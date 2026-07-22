@@ -84,6 +84,19 @@ extension Color {
     static let grymTierTopTier  = Color(hex: 0x7C6FF0)   // Top tier   (60–84)
     static let grymTierGOTY     = Color(hex: 0x3FC9E8)   // GOTY       (85–100)
 
+    // MARK: - Statuts de progression (cf. GameStatus)
+    static let grymStatusBacklog   = Color(hex: 0x8A93A8)   // À jouer
+    static let grymStatusPlaying   = Color(hex: 0x3FC9E8)   // En cours
+    static let grymStatusCompleted = Color(hex: 0x7AE582)   // Terminé
+    static let grymStatusPlatinum  = Color(hex: 0xF5C46B)   // Platiné / 100 %
+    static let grymStatusAbandoned = Color(hex: 0xE07A5F)   // Abandonné
+
+    // MARK: - Humeurs de session (cf. SessionMood)
+    static let grymMoodHyped   = Color(hex: 0x7AE582)
+    static let grymMoodGood    = Color(hex: 0x3FC9E8)
+    static let grymMoodNeutral = Color(hex: 0xF5C46B)
+    static let grymMoodRough   = Color(hex: 0xE07A5F)
+
     /// Retourne la couleur du tier pour une note 0–100
     static func grymTier(for note: Int) -> Color {
         switch note {

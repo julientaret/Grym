@@ -2,21 +2,23 @@
 
 Carnet de jeu personnel pour gamers (iOS / macOS, SwiftUI, offline-first).
 Chaque jeu possède un carnet composé de pages — nommées « wikis » côté UI — et de blocs (texte, photos,
-checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
+checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu, statut de progression
+(à jouer → platiné) et journal de sessions de jeu.
 
 ## App
 
-- `GrymApp.swift` — Point d'entrée `@main`, injecte `LocalizationManager`/`ThemeManager`/`PremiumManager`/`PreferencesManager`, installe le `modelContainer` SwiftData (Game/Wiki/Page/Block) et affiche `RootTabView`.
+- `GrymApp.swift` — Point d'entrée `@main`, injecte `LocalizationManager`/`ThemeManager`/`PremiumManager`/`PreferencesManager`, installe le `modelContainer` SwiftData (Game/Wiki/Page/Block/PlaySession) et affiche `RootTabView`.
 
 ## Core/Components
 
 - `BannerHeaderView.swift` — Bannière illustrée d'en-tête d'onglet (Accueil, Mes jeux) : image rognée à la largeur de la vue, assombrie et fondue en alpha vers le bas, avec contenu libre superposé.
+- `GameStatusBadge.swift` — Pastille de statut de progression (icône + libellé colorés), variante compacte pour les listes denses ; partagée entre le détail d'un wiki et « Mes jeux ».
 - `EmptyStateView.swift` — État vide réutilisable (Accueil, Mes jeux) : badge illustré, titre, message, étapes « quoi faire » et appel à l'action optionnel.
 
 ## Core/Preferences
 
 - `WikiPagesMode.swift` — Mode d'affichage des pages d'un wiki (liste / onglets / cartes) : clé de traduction et icône.
-- `GameSortOption.swift` — Critère de tri de « Mes jeux » (récent / titre / note / date de sortie) : clé de traduction et icône.
+- `GameSortOption.swift` — Critère de tri de « Mes jeux » (récent / titre / note / date de sortie / temps de jeu) : clé de traduction et icône.
 - `PreferencesManager.swift` — `ObservableObject` détenant les préférences d'affichage globales (mode des pages de wiki), persistées en UserDefaults.
 
 ## Core/Premium
@@ -33,12 +35,15 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu.
 Couche de données locale (SwiftData, offline-first).
 
 - `Game.swift` — `@Model` métadonnées d'un jeu IGDB (dé-doublonné par `igdbId`) ; cover reconstruite depuis `coverImageId`. Porte aussi les médias IGDB (`screenshotImageIds`, `artworkImageIds`, `mediaFetchedAt`) et en dérive l'image du bandeau (`heroImageId`).
-- `Wiki.swift` — `@Model` wiki d'un jeu : note privée (datée par `scoreUpdatedAt`), épinglage, pages ; expose des stats dérivées (blocs/photos/listes) et `photoFileNames` (toutes les photos du wiki, pour la galerie du détail).
+- `Wiki.swift` — `@Model` wiki d'un jeu : note privée (datée par `scoreUpdatedAt`), statut de progression (`statusRaw`/`statusUpdatedAt`, exposé via `status`), épinglage, pages et sessions ; expose des stats dérivées (blocs/photos/listes), `photoFileNames` (galerie du détail) et le cumul de temps de jeu (`totalPlayMinutes`, `sortedSessions`, `lastSessionDate`).
+- `GameStatus.swift` — Enum du statut de progression (aucun / à jouer / en cours / terminé / platiné / abandonné) : clé de traduction, icône et couleur.
+- `PlaySession.swift` — `@Model` session de jeu consignée : date, durée en minutes, ressenti (`moodRaw`, exposé via `mood`) et note libre ; fournit les durées proposées à l'éditeur.
+- `SessionMood.swift` — Enum du ressenti d'une session (excellent / bien / mitigé / galère) : clé de traduction, icône et couleur.
 - `Page.swift` — `@Model` page nommée d'un wiki (« wiki » côté UI), contenant des blocs ordonnés ; `createdAt` alimente le flux d'activité de l'accueil.
 - `Block.swift` — `@Model` bloc de contenu (type persisté en `String`, exposé via `BlockType`).
 - `BlockType.swift` — Enum des types de bloc (text/photo/checklist/map).
 - `BlockContent.swift` — Encodage du contenu des blocs : texte brut (`.text`), JSON `ChecklistContent` (`.checklist`), `PhotoContent` (`.photo`) ou `MapContent` (`.map`, image + pins) ; accès via `Block.checklist` / `Block.photos` / `Block.map`.
-- `WikiRepository.swift` — Écritures autour d'un `ModelContext` : création (dé-doublonnée) et suppression de wikis ; `updateScore` date les changements de note, `touch` marque une simple modification.
+- `WikiRepository.swift` — Écritures autour d'un `ModelContext` : création (dé-doublonnée) et suppression de wikis ; `updateScore` date les changements de note, `updateStatus` ceux de statut, `addSession`/`delete(_ session:)` gèrent le journal, `touch` marque une simple modification.
 - `PreviewSampleData.swift` — Conteneur SwiftData en mémoire pré-rempli (previews, DEBUG).
 
 ## Core
@@ -55,6 +60,7 @@ Couche de données locale (SwiftData, offline-first).
 - `Core/Localization/LocalizationManager.swift` — `ObservableObject` gérant la langue active (persistée en UserDefaults) et l'accès aux traductions ; injecté dans l'environnement.
 - `Core/Localization/Translation.swift` — Catalogue des traductions FR/EN, enum `AppLanguage` et clés `TranslationKey`.
 - `Core/Extensions/Date+Relative.swift` — Formatage relatif localisé d'une date (« il y a 2 h », « hier »).
+- `Core/Extensions/Int+Playtime.swift` — Formate une durée en minutes en libellé lisible (« 2 h 30 », « 45 min »), unités fournies par l'appelant (localisées).
 - `Core/Extensions/View+SelectAllOnFocus.swift` — Modifieur `selectAllOnFocus(isArmed:)` : sélectionne le texte du prochain champ prenant le focus (via la notification UIKit d'entrée en édition), pour écraser une valeur par défaut.
 - `Core/Extensions/View+GrymListRow.swift` — Style de ligne de `List` transparent (`grymBlockRow`, et `grymFullWidthRow` pour les contenus bord à bord) pour garder l'apparence carte avec le drag & drop natif.
 
@@ -81,8 +87,8 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 Écran d'accueil (onglet Wikis) — **dashboard** : épinglés et activité récente. La liste complète vit dans « Mes jeux ».
 
 - `HomeView.swift` — Vue principale : en-tête, épinglés, activité récente, sur fond dégradé. Deux états vides via `EmptyStateView` (onboarding + ajout de jeu si aucun jeu, explication de l'épinglage sinon).
-- `HomeViewModel.swift` — `ObservableObject` : charge épinglés + total depuis SwiftData (`load(context:localization:)`) et construit le flux d'activité récente (wikis créés + notes modifiées, fusionnés et triés, 10 max) ; `isDashboardEmpty` ; `target(for:context:)` résout la destination d'une entrée d'activité.
-- `Models/HomeModel.swift` — Modèles de présentation : `WikiSummary` (mapping depuis `Wiki`), `ActivityEntry` (jaquette + identifiants wiki/page cibles), `ActivityKind`, `ActivityTarget` (destination de navigation).
+- `HomeViewModel.swift` — `ObservableObject` : charge épinglés + total depuis SwiftData (`load(context:localization:)`) et construit le flux d'activité récente (wikis créés, notes modifiées, sessions consignées et changements de statut, fusionnés et triés, 10 max) ; `isDashboardEmpty` ; `target(for:context:)` résout la destination d'une entrée d'activité.
+- `Models/HomeModel.swift` — Modèles de présentation : `WikiSummary` (mapping depuis `Wiki`, statut et temps de jeu inclus), `ActivityEntry` (jaquette + identifiants wiki/page cibles), `ActivityKind` (page/note/session/statut…), `ActivityTarget` (destination de navigation).
 - `Components/HomeHeaderView.swift` — Bannière illustrée (`banner-home`) avec overlay dégradé, titre « Grym », tagline et bouton d'ajout superposés.
 - `Components/HomeSearchBar.swift` — Barre de recherche locale (actuellement masquée, conservée pour plus tard).
 - `Components/SectionHeaderView.swift` — En-tête de section réutilisable (icône + titre + compteur).
@@ -92,16 +98,17 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 - `Components/PinnedWikisSection.swift` — Section « Épinglés » (défilement horizontal).
 - `Components/ActivityRowView.swift` — Ligne du flux d'activité récente.
 - `Components/RecentActivitySection.swift` — Section « Activité récente » (carte + filets) ; chaque ligne est un bouton remontant l'entrée via `onSelect`.
-- `Components/WikiRowView.swift` — Ligne de jeu réutilisable (cover, méta, stats blocs/photos/listes, note). Utilisée aussi par « Mes jeux ».
+- `Components/WikiRowView.swift` — Ligne de jeu réutilisable (cover, méta, statut, temps de jeu, stats blocs/photos/listes, note). Utilisée aussi par « Mes jeux ».
 - `Components/AllWikisSection.swift` — Section liste de wikis avec compteur et état vide.
 
 ## Features/MyGames
 
 Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
-- `MyGamesView.swift` — `NavigationStack` : bannière d'en-tête (`BannerHeaderView`, `banner-my-games`), liste des wikis (`WikiRowView`), compteur, état vide illustré (`EmptyStateView` + CTA d'ajout, mention du palier gratuit hors premium), suppression par menu contextuel, navigation vers `WikiDetailView` (le wiki créé depuis la recherche est poussé automatiquement à la fermeture de la sheet).
-- `MyGamesViewModel.swift` — `ObservableObject` : charge les wikis (`load`), suppression via `WikiRepository` (`delete`), tri en mémoire selon `sortOption` (persisté dans les UserDefaults).
+- `MyGamesView.swift` — `NavigationStack` : bannière d'en-tête (`BannerHeaderView`, `banner-my-games`), barre tri + filtre, liste des wikis (`WikiRowView`), compteur (toujours sur la collection entière), état vide illustré (`EmptyStateView` + CTA d'ajout, mention du palier gratuit hors premium), suppression par menu contextuel, navigation vers `WikiDetailView` (le wiki créé depuis la recherche est poussé automatiquement à la fermeture de la sheet).
+- `MyGamesViewModel.swift` — `ObservableObject` : charge les wikis (`load` → `allWikis`), suppression via `WikiRepository` (`delete`), tri en mémoire selon `sortOption` et filtre par `statusFilter` (les deux persistés dans les UserDefaults) ; `wikis` expose la liste affichée, `hasNoGame` distingue collection vide et filtre sans résultat.
 - `Components/GameSortMenu.swift` — Menu capsule de choix du critère de tri (`GameSortOption`).
+- `Components/GameStatusFilterMenu.swift` — Menu capsule de filtrage par statut (`GameStatus`), « Tous » quand la sélection est `nil`.
 
 ## Features/PageDetail
 
@@ -122,9 +129,13 @@ Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
 Détail d'un wiki : édition directe du modèle via `@Bindable` (écart MVVM justifié) ; mutations structurelles via `WikiRepository`.
 
-- `WikiDetailView.swift` — `List` : bandeau illustré, en-tête, note personnelle, galerie des photos de l'utilisateur (aperçu QuickLook) et pages selon le mode d'affichage global choisi dans le Profil (Liste/Onglets/Cartes) ; épinglage, score, ajout (la page créée est ouverte immédiatement)/réorganisation (drag & drop en mode Liste)/suppression de pages ; `initialPage` ouvre directement une page à l'arrivée (navigation depuis l'activité récente).
+- `WikiDetailView.swift` — `List` : bandeau illustré, en-tête, note personnelle, journal de sessions, galerie des photos de l'utilisateur (aperçu QuickLook) et pages selon le mode d'affichage global choisi dans le Profil (Liste/Onglets/Cartes) ; épinglage, score, ajout (la page créée est ouverte immédiatement)/réorganisation (drag & drop en mode Liste)/suppression de pages ; `initialPage` ouvre directement une page à l'arrivée (navigation depuis l'activité récente).
 - `WikiMediaViewModel.swift` — Charge les médias IGDB du jeu à l'ouverture du wiki (si jamais récupérés) et les persiste sur `Game` ; alimente le bandeau. Erreurs silencieuses (décoratif, réessai à la prochaine ouverture).
-- `Components/WikiDetailHeader.swift` — Cover, titre, méta, bouton épingler et ligne de stats.
+- `SessionEditorView.swift` — Sheet de création/modification d'une session (date, durée par heures + quarts d'heure, ressenti, note libre) ; saisie locale remontée en une fois via `onSave`.
+- `Components/WikiDetailHeader.swift` — Cover, titre, méta, sélecteur de statut, bouton épingler et ligne de stats.
+- `Components/WikiStatusMenu.swift` — Pastille de statut cliquable ouvrant le menu des statuts disponibles.
+- `Components/WikiSessionsCard.swift` — Carte « Sessions » : temps de jeu cumulé, nombre de sessions, journal tronqué à 3 entrées (dépliable), ajout / édition / suppression.
+- `Components/SessionRowView.swift` — Ligne d'une session : pastille de ressenti, date, durée et note.
 - `Components/WikiHeroBanner.swift` — Bandeau illustré pleine largeur en tête du wiki : file jusqu'au haut de l'écran (la barre de navigation se pose dessus), fondu vers le bas par un masque (se raccorde à n'importe quel thème).
 - `Components/WikiMediaGallery.swift` — Galerie horizontale des photos ajoutées par l'utilisateur (blocs photo du wiki) ; vignettes locales (`ImageStore`), appui pour ouvrir l'aperçu. Masquée si aucune photo.
 - `Components/PageCardView.swift` — Carte de page (mode Cartes).

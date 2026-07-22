@@ -19,7 +19,7 @@ enum PreviewSampleData {
     static let container: ModelContainer = {
         // force try / force unwrap justifiés : code de preview DEBUG uniquement.
         let container = try! ModelContainer(
-            for: Game.self, Wiki.self, Page.self, Block.self,
+            for: Game.self, Wiki.self, Page.self, Block.self, PlaySession.self,
             configurations: ModelConfiguration(isStoredInMemoryOnly: true)
         )
         let context = container.mainContext
@@ -31,13 +31,17 @@ enum PreviewSampleData {
              year: 2022, score: 92, pinned: true,
              photos: 18, lists: 9, texts: 36, age: 2 * hour,
              artworks: ["ar3m1o", "ar3m1p", "ar1481"],
-             screenshots: ["scagdm", "scagdn", "scagdo", "scagdp", "scagdq"])
+             screenshots: ["scagdm", "scagdn", "scagdo", "scagdp", "scagdq"],
+             status: .playing, sessions: [(150, SessionMood.hyped, "Malenia enfin battue."),
+                                          (90, .rough, "Farm de runes, sans plus.")])
         seed(context, igdbId: 2, title: "Baldur's Gate 3", cover: "co670h",
              year: 2023, score: 88, pinned: true,
-             photos: 11, lists: 7, texts: 24, age: day)
+             photos: 11, lists: 7, texts: 24, age: day,
+             status: .completed, sessions: [(240, SessionMood.good, "Acte 3 terminé.")])
         seed(context, igdbId: 3, title: "Subnautica", cover: "co1o6r",
              year: 2018, score: 76, pinned: false,
-             photos: 24, lists: 5, texts: 18, age: 3 * day)
+             photos: 24, lists: 5, texts: 18, age: 3 * day,
+             status: .backlog)
 
         return container
     }()
@@ -64,7 +68,9 @@ enum PreviewSampleData {
         igdbId: Int, title: String, cover: String,
         year: Int, score: Int, pinned: Bool,
         photos: Int, lists: Int, texts: Int, age: TimeInterval,
-        artworks: [String] = [], screenshots: [String] = []
+        artworks: [String] = [], screenshots: [String] = [],
+        status: GameStatus = .none,
+        sessions: [(minutes: Int, mood: SessionMood, note: String)] = []
     ) {
         let date = Date().addingTimeInterval(-age)
         let game = Game(igdbId: igdbId, title: title, coverImageId: cover,
@@ -76,7 +82,19 @@ enum PreviewSampleData {
 
         let wiki = Wiki(game: game, score: score, isPinned: pinned)
         wiki.scoreUpdatedAt = date
+        wiki.status = status
         context.insert(wiki)
+
+        for (index, entry) in sessions.enumerated() {
+            let session = PlaySession(
+                date: date.addingTimeInterval(-Double(index) * day),
+                minutes: entry.minutes,
+                mood: entry.mood,
+                note: entry.note
+            )
+            session.wiki = wiki
+            context.insert(session)
+        }
 
         let page = Page(title: "Notes", order: 0, createdAt: date)
         page.wiki = wiki

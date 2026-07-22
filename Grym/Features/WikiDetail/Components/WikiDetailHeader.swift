@@ -2,8 +2,8 @@
 //  WikiDetailHeader.swift
 //  Grym
 //
-//  En-tête du détail d'un wiki : cover, titre, méta, bouton d'épinglage
-//  et ligne de statistiques (blocs / photos / listes · mise à jour).
+//  En-tête du détail d'un wiki : cover, titre, méta, statut de progression,
+//  bouton d'épinglage et ligne de statistiques (blocs / photos / listes).
 //
 
 import SwiftUI
@@ -18,7 +18,9 @@ struct WikiDetailHeader: View {
     let listCount: Int
     let updatedAt: Date
     let isPinned: Bool
+    let status: GameStatus
     let onTogglePin: () -> Void
+    let onSelectStatus: (GameStatus) -> Void
 
     @EnvironmentObject private var localization: LocalizationManager
     @Environment(\.theme) private var theme
@@ -43,6 +45,8 @@ struct WikiDetailHeader: View {
                     }
 
                     Spacer(minLength: 0)
+
+                    WikiStatusMenu(status: status, onSelect: onSelectStatus)
 
                     pinButton
                 }
@@ -114,7 +118,8 @@ struct WikiDetailHeader: View {
     WikiDetailHeader(
         title: "Subnautica", coverImageId: nil, coverTint: Color(hex: 0x2FA9D8),
         metaLine: "2018 · PC", blockCount: 47, photoCount: 24, listCount: 5,
-        updatedAt: Date().addingTimeInterval(-259_200), isPinned: true, onTogglePin: {}
+        updatedAt: Date().addingTimeInterval(-259_200), isPinned: true, status: .playing,
+        onTogglePin: {}, onSelectStatus: { _ in }
     )
     .padding()
     .background(Color.grymBgDark)

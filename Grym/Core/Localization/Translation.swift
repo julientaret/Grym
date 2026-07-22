@@ -59,6 +59,8 @@ enum TranslationKey: String {
     case homeRecentActivity
     case homeActivityNewWiki
     case homeActivityScore
+    case homeActivitySession
+    case homeActivityStatus
     case homeAllWikis
     case statBlocks
     case statPhotos
@@ -107,6 +109,7 @@ enum TranslationKey: String {
     case sortTitle
     case sortScore
     case sortReleaseYear
+    case sortPlaytime
     // Wiki detail
     case wikiNoteTitle
     case wikiPrivate
@@ -153,6 +156,40 @@ enum TranslationKey: String {
     case checklistTitlePlaceholder
     case checklistAddItem
     case checklistItemPlaceholder
+    // Statuts de progression
+    case statusNone
+    case statusBacklog
+    case statusPlaying
+    case statusCompleted
+    case statusPlatinum
+    case statusAbandoned
+    case statusLabel
+    case statusFilterAll
+    case filterLabel
+    case myGamesFilterEmpty
+    // Journal de sessions
+    case sessionsTitle
+    case sessionsAdd
+    case sessionsEmpty
+    case sessionsTotal
+    case sessionsCount
+    case sessionsShowAll
+    case sessionsShowLess
+    case sessionEditorTitle
+    case sessionEditorEditTitle
+    case sessionDate
+    case sessionDuration
+    case sessionMood
+    case sessionNote
+    case sessionNotePlaceholder
+    case commonSave
+    case durationHourUnit
+    case durationMinuteUnit
+    // Ressentis de session
+    case moodHyped
+    case moodGood
+    case moodNeutral
+    case moodRough
 }
 
 /// Accès statique aux traductions.
@@ -195,6 +232,8 @@ enum Translation {
             .homeRecentActivity: "Activité récente",
             .homeActivityNewWiki: "Nouveau wiki",
             .homeActivityScore: "Note mise à jour",
+            .homeActivitySession: "Session de jeu",
+            .homeActivityStatus: "Statut mis à jour",
             .homeAllWikis: "Tous les wikis",
             .statBlocks: "blocs",
             .statPhotos: "photos",
@@ -240,6 +279,7 @@ enum Translation {
             .sortTitle: "Titre",
             .sortScore: "Note",
             .sortReleaseYear: "Date de sortie",
+            .sortPlaytime: "Temps de jeu",
             .wikiNoteTitle: "TON VERDICT / 100",
             .wikiPrivate: "PRIVÉ",
             .wikiTierLabel: "TIER",
@@ -282,7 +322,38 @@ enum Translation {
             .textBlockPlaceholder: "Écris ici…",
             .checklistTitlePlaceholder: "Titre de la liste",
             .checklistAddItem: "Ajouter un élément",
-            .checklistItemPlaceholder: "Élément"
+            .checklistItemPlaceholder: "Élément",
+            .statusNone: "Sans statut",
+            .statusBacklog: "À jouer",
+            .statusPlaying: "En cours",
+            .statusCompleted: "Terminé",
+            .statusPlatinum: "Platiné",
+            .statusAbandoned: "Abandonné",
+            .statusLabel: "Statut",
+            .statusFilterAll: "Tous",
+            .filterLabel: "Filtrer",
+            .myGamesFilterEmpty: "Aucun jeu avec ce statut.",
+            .sessionsTitle: "Sessions",
+            .sessionsAdd: "Ajouter une session",
+            .sessionsEmpty: "Aucune session consignée. Note tes parties pour suivre ton temps de jeu.",
+            .sessionsTotal: "Temps de jeu",
+            .sessionsCount: "sessions",
+            .sessionsShowAll: "Tout afficher",
+            .sessionsShowLess: "Réduire",
+            .sessionEditorTitle: "Nouvelle session",
+            .sessionEditorEditTitle: "Modifier la session",
+            .sessionDate: "Date",
+            .sessionDuration: "Durée",
+            .sessionMood: "Ressenti",
+            .sessionNote: "Note",
+            .sessionNotePlaceholder: "Ce que tu as fait pendant cette session…",
+            .commonSave: "Enregistrer",
+            .durationHourUnit: "h",
+            .durationMinuteUnit: "min",
+            .moodHyped: "Excellent",
+            .moodGood: "Bien",
+            .moodNeutral: "Mitigé",
+            .moodRough: "Galère"
         ],
         .english: [
             .tabProfile: "Profile",
@@ -314,6 +385,8 @@ enum Translation {
             .homeRecentActivity: "Recent activity",
             .homeActivityNewWiki: "New wiki",
             .homeActivityScore: "Score updated",
+            .homeActivitySession: "Play session",
+            .homeActivityStatus: "Status updated",
             .homeAllWikis: "All wikis",
             .statBlocks: "blocks",
             .statPhotos: "photos",
@@ -359,6 +432,7 @@ enum Translation {
             .sortTitle: "Title",
             .sortScore: "Score",
             .sortReleaseYear: "Release date",
+            .sortPlaytime: "Playtime",
             .wikiNoteTitle: "YOUR VERDICT / 100",
             .wikiPrivate: "PRIVATE",
             .wikiTierLabel: "TIER",
@@ -401,7 +475,38 @@ enum Translation {
             .textBlockPlaceholder: "Write here…",
             .checklistTitlePlaceholder: "List title",
             .checklistAddItem: "Add an item",
-            .checklistItemPlaceholder: "Item"
+            .checklistItemPlaceholder: "Item",
+            .statusNone: "No status",
+            .statusBacklog: "Backlog",
+            .statusPlaying: "Playing",
+            .statusCompleted: "Completed",
+            .statusPlatinum: "Platinum",
+            .statusAbandoned: "Dropped",
+            .statusLabel: "Status",
+            .statusFilterAll: "All",
+            .filterLabel: "Filter",
+            .myGamesFilterEmpty: "No game with this status.",
+            .sessionsTitle: "Sessions",
+            .sessionsAdd: "Log a session",
+            .sessionsEmpty: "No session logged yet. Log your playthroughs to track your playtime.",
+            .sessionsTotal: "Playtime",
+            .sessionsCount: "sessions",
+            .sessionsShowAll: "Show all",
+            .sessionsShowLess: "Show less",
+            .sessionEditorTitle: "New session",
+            .sessionEditorEditTitle: "Edit session",
+            .sessionDate: "Date",
+            .sessionDuration: "Duration",
+            .sessionMood: "Mood",
+            .sessionNote: "Note",
+            .sessionNotePlaceholder: "What you did during this session…",
+            .commonSave: "Save",
+            .durationHourUnit: "h",
+            .durationMinuteUnit: "min",
+            .moodHyped: "Great",
+            .moodGood: "Good",
+            .moodNeutral: "Mixed",
+            .moodRough: "Rough"
         ]
     ]
 }

@@ -33,6 +33,9 @@ struct WikiDetailView: View {
     @State private var previewURL: URL?
     /// Empêche `initialPage` de se rouvrir au retour depuis la page.
     @State private var didOpenInitialPage = false
+    /// Session en cours d'édition ; `nil` = création.
+    @State private var editedSession: PlaySession?
+    @State private var showingSessionEditor = false
 
     private var repository: WikiRepository { WikiRepository(context: modelContext) }
 
@@ -63,12 +66,22 @@ struct WikiDetailView: View {
                 listCount: wiki.listCount,
                 updatedAt: wiki.updatedAt,
                 isPinned: wiki.isPinned,
-                onTogglePin: togglePin
+                status: wiki.status,
+                onTogglePin: togglePin,
+                onSelectStatus: { repository.updateStatus(wiki, to: $0) }
             )
             .grymBlockRow()
 
             WikiScoreCard(score: $wiki.score, onCommit: { repository.updateScore(wiki) })
                 .grymBlockRow()
+
+            WikiSessionsCard(
+                sessions: wiki.sortedSessions,
+                onAdd: { editedSession = nil; showingSessionEditor = true },
+                onEdit: { editedSession = $0; showingSessionEditor = true },
+                onDelete: { try? repository.delete($0) }
+            )
+            .grymBlockRow()
 
             if !photoFileNames.isEmpty {
                 WikiMediaGallery(fileNames: photoFileNames, onOpen: { previewURL = ImageStore.url(for: $0) })
@@ -97,6 +110,9 @@ struct WikiDetailView: View {
             PageDetailView(page: page, autofocusTitle: page.persistentModelID == createdPageID)
         }
         .quickLookPreview($previewURL, in: photoURLs)
+        .sheet(isPresented: $showingSessionEditor) {
+            SessionEditorView(session: editedSession, onSave: saveSession)
+        }
         .onAppear {
             guard !didOpenInitialPage, let initialPage else { return }
             didOpenInitialPage = true
@@ -214,6 +230,23 @@ struct WikiDetailView: View {
     }
 
     // MARK: Actions
+
+    /// Applique l'édition sur la session existante, ou en crée une nouvelle.
+    private func saveSession(date: Date, minutes: Int, mood: SessionMood, note: String) {
+        if let session = editedSession {
+            session.date = date
+            session.minutes = minutes
+            session.mood = mood
+            session.note = note
+            wiki.updatedAt = Date()
+            repository.save()
+        } else {
+            _ = try? repository.addSession(
+                to: wiki, date: date, minutes: minutes, mood: mood, note: note
+            )
+        }
+        editedSession = nil
+    }
 
     private func togglePin() {
         wiki.isPinned.toggle()

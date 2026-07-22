@@ -27,11 +27,23 @@ struct MyGamesView: View {
                 VStack(alignment: .leading, spacing: Theme.Spacing.large) {
                     header
 
-                    if viewModel.wikis.isEmpty {
+                    if viewModel.hasNoGame {
                         emptyState
                     } else {
-                        GameSortMenu(selection: $viewModel.sortOption)
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: Theme.Spacing.small) {
+                                GameSortMenu(selection: $viewModel.sortOption)
+                                GameStatusFilterMenu(selection: $viewModel.statusFilter)
+                            }
                             .padding(.horizontal, Theme.Spacing.large)
+                        }
+
+                        if viewModel.wikis.isEmpty {
+                            Text(localization.string(.myGamesFilterEmpty))
+                                .font(.system(size: Theme.FontSize.caption))
+                                .foregroundStyle(theme.secondaryText)
+                                .padding(.horizontal, Theme.Spacing.large)
+                        }
 
                         LazyVStack(spacing: Theme.Spacing.small) {
                             ForEach(viewModel.wikis) { wiki in
@@ -93,7 +105,7 @@ struct MyGamesView: View {
                 Text(localization.string(.myGamesTitle))
                     .font(.system(size: Theme.FontSize.largeTitle, weight: .bold))
                     .foregroundStyle(theme.primaryText)
-                if !viewModel.wikis.isEmpty {
+                if !viewModel.hasNoGame {
                     Text(countLabel)
                         .font(.system(size: Theme.FontSize.title, weight: .semibold))
                         .foregroundStyle(theme.secondaryText)
@@ -105,10 +117,11 @@ struct MyGamesView: View {
     }
 
     /// « · N » en premium, « · N / 10 » au palier gratuit.
+    /// Compte toujours la collection entière, indépendamment du filtre.
     private var countLabel: String {
         premium.isPremium
-            ? "· \(viewModel.wikis.count)"
-            : "· \(viewModel.wikis.count) / \(PremiumManager.freeGameLimit)"
+            ? "· \(viewModel.allWikis.count)"
+            : "· \(viewModel.allWikis.count) / \(PremiumManager.freeGameLimit)"
     }
 
     // MARK: État vide

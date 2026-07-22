@@ -98,7 +98,33 @@ final class HomeViewModel: ObservableObject {
                 )]
             } ?? []
 
-            return created + scored
+            // Une entrée par session consignée.
+            let played = wiki.sessions.map { session in
+                ActivityEntry(
+                    kind: .session,
+                    title: localization.string(.homeActivitySession),
+                    subtitle: "\(game.title) · \(session.minutes.playtimeLabel(hourUnit: localization.string(.durationHourUnit), minuteUnit: localization.string(.durationMinuteUnit)))",
+                    coverImageId: game.coverImageId,
+                    coverTint: tint,
+                    date: session.date,
+                    wikiID: wiki.persistentModelID
+                )
+            }
+
+            // Une seule entrée par jeu : le dernier changement de statut.
+            let statused = wiki.statusUpdatedAt.map { date in
+                [ActivityEntry(
+                    kind: .status,
+                    title: localization.string(.homeActivityStatus),
+                    subtitle: "\(game.title) · \(localization.string(wiki.status.nameKey))",
+                    coverImageId: game.coverImageId,
+                    coverTint: tint,
+                    date: date,
+                    wikiID: wiki.persistentModelID
+                )]
+            } ?? []
+
+            return created + scored + played + statused
         }
 
         return Array(entries.sorted { $0.date > $1.date }.prefix(activityLimit))

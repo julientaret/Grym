@@ -2,8 +2,8 @@
 //  PremiumHeaderView.swift
 //  Grym
 //
-//  En-tête du paywall : pastille couronne halo, titre, promesse en une phrase
-//  et bandeau expliquant ce qui vient d'être verrouillé (selon le contexte).
+//  En-tête du paywall : badge trophée, nom de l'édition en titre de menu,
+//  promesse en une phrase et bandeau expliquant ce qui vient d'être verrouillé.
 //
 
 import SwiftUI
@@ -17,12 +17,17 @@ struct PremiumHeaderView: View {
 
     var body: some View {
         VStack(spacing: Theme.Spacing.medium) {
-            crest
+            PremiumBadgeView(isUnlocked: isPremium)
 
             VStack(spacing: Theme.Spacing.small) {
+                PremiumHUDLabel(text: localization.string(.premiumKicker))
+
                 Text(localization.string(isPremium ? .premiumActiveTitle : .premiumTitle))
-                    .font(.system(size: Theme.FontSize.title, weight: .bold))
-                    .foregroundStyle(theme.primaryText)
+                    .font(.system(size: Theme.FontSize.title, weight: .heavy, design: .rounded))
+                    .foregroundStyle(
+                        LinearGradient(colors: [theme.primaryText, theme.accent],
+                                       startPoint: .top, endPoint: .bottom)
+                    )
 
                 Text(localization.string(isPremium ? .premiumActiveMessage : .premiumTagline))
                     .font(.system(size: Theme.FontSize.body))
@@ -37,35 +42,9 @@ struct PremiumHeaderView: View {
         .frame(maxWidth: .infinity)
     }
 
-    // MARK: Pastille
-
-    private var crest: some View {
-        ZStack {
-            Circle()
-                .fill(
-                    RadialGradient(colors: [theme.glow.opacity(0.9), .clear],
-                                   center: .center, startRadius: 0,
-                                   endRadius: Theme.Size.premiumCrest)
-                )
-                .frame(width: Theme.Size.premiumCrest * 2,
-                       height: Theme.Size.premiumCrest * 2)
-
-            Circle()
-                .fill(
-                    LinearGradient(colors: [theme.accent, theme.accentAlt],
-                                   startPoint: .topLeading, endPoint: .bottomTrailing)
-                )
-                .frame(width: Theme.Size.premiumCrest, height: Theme.Size.premiumCrest)
-                .overlay(
-                    Image(systemName: isPremium ? "checkmark" : "crown.fill")
-                        .font(.system(size: Theme.FontSize.title, weight: .bold))
-                        .foregroundStyle(.white)
-                )
-        }
-    }
-
     // MARK: Bandeau de contexte
 
+    /// Façon notification de jeu : ce qui vient d'être bloqué, en une ligne.
     private func reasonBanner(_ text: String) -> some View {
         HStack(spacing: Theme.Spacing.small) {
             Image(systemName: context.reasonIcon)
@@ -80,6 +59,7 @@ struct PremiumHeaderView: View {
         .background(
             Capsule(style: .continuous)
                 .fill(theme.accent.opacity(0.12))
+                .overlay(Capsule(style: .continuous).stroke(theme.accent.opacity(0.35), lineWidth: 1))
         )
     }
 }

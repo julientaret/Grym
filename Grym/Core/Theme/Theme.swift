@@ -66,10 +66,19 @@ enum Theme {
         static let scoreGauge: CGFloat = 46
         /// Jauge de note de la carte du détail d'un wiki.
         static let scoreGaugeLarge: CGFloat = 78
-        /// Pastille couronne de l'en-tête du paywall.
+        /// Pastille trophée de l'en-tête du paywall.
         static let premiumCrest: CGFloat = 64
+        /// Épaisseur de l'anneau tournant autour du trophée.
+        static let premiumRingWidth: CGFloat = 3
         /// Pastille d'icône d'un avantage premium.
         static let premiumBenefitIcon: CGFloat = 40
+    }
+
+    // MARK: - Interlettrage
+
+    enum Tracking {
+        /// Petites capitales façon HUD de jeu (libellés de section du paywall).
+        static let hud: CGFloat = 1.8
     }
 
     // MARK: - Seuils d'affichage

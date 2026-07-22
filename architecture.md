@@ -55,7 +55,7 @@ Couche de données locale (SwiftData, offline-first).
 
 ## Core
 
-- `Core/Theme/Theme.swift` — Constantes du design system indépendantes du thème (spacings, font sizes, radius, dimensions, durées d'animation).
+- `Core/Theme/Theme.swift` — Constantes du design system indépendantes du thème (spacings, font sizes, radius, dimensions, interlettrage, durées d'animation).
 - `Core/Theme/Color+Theme.swift` — Palette brute (tokens `grym*`), helper de tier de note 0–100, teinte déterministe `grymTint`, init `hex` et init adaptatif clair/sombre.
 - `Core/Theme/ScoreTier.swift` — Paliers de note (Naze→GOTY) : rang, libellé localisé et couleur.
 - `Core/Theme/AppTheme.swift` — Protocole `AppTheme` (rôles de couleur, dont `pageAccents`) avec défauts base Grym, enum `ThemeID` (+ `requiresPremium`, thème gratuit, `nameKey`/`taglineKey` — noms clins d'œil au vocabulaire du jeu vidéo), et clé d'environnement `\.theme`.
@@ -181,12 +181,15 @@ Bilan personnel de la collection. Le résumé vit sur l'accueil (`HomeStatsSecti
 
 Paywall : ce que l'achat unique débloque, expliqué avantage par avantage. Ouvert volontairement depuis le Profil, ou quand une limite est atteinte.
 
-- `PremiumUpgradeView.swift` — Écran du paywall : en-tête, carte des avantages et pied d'achat épinglé, sur fond dégradé + halo. Prend un `PremiumContext` (défaut `.general`) qui pilote la phrase de contexte ; affiche l'astuce « supprimer un jeu » uniquement en contexte limite, et bascule en état « Premium actif » (simple bouton Fermer) si le droit est déjà là.
+- `PremiumUpgradeView.swift` — Écran du paywall : en-tête, carte des avantages (précédée d'un libellé HUD) et pied d'achat épinglé, sur `PremiumBackgroundView`. Prend un `PremiumContext` (défaut `.general`) qui pilote la phrase de contexte ; affiche l'astuce « supprimer un jeu » uniquement en contexte limite, et bascule en état « Premium actif » (simple bouton Fermer) si le droit est déjà là.
 - `Models/PremiumBenefit.swift` — Les trois avantages réellement livrés (jeux illimités, tous les thèmes, bilan complet) : icône, clé de titre et clé d'explication.
 - `Models/PremiumContext.swift` — Origine de l'ouverture (profil / limite de jeux / thème verrouillé / bilan) : clé de la phrase de contexte et icône associée.
-- `Components/PremiumHeaderView.swift` — En-tête : pastille couronne halo (coche si premium actif), titre, promesse en une phrase et bandeau capsule expliquant le blocage.
-- `Components/PremiumBenefitRow.swift` — Ligne d'avantage : pastille d'icône accentuée, intitulé et explication concrète.
-- `Components/PremiumPurchaseFooter.swift` — Pied épinglé : bouton d'achat (prix localisé StoreKit, `ProgressView` pendant l'achat), mention « achat unique » et restauration ; remonte le déverrouillage via `onUnlocked`.
+- `Components/PremiumHeaderView.swift` — En-tête : badge trophée, kicker HUD, titre d'édition en dégradé et bandeau capsule expliquant le blocage.
+- `Components/PremiumBadgeView.swift` — Badge façon trophée : halo, anneau d'accent en rotation lente (désactivée si « Réduire les animations ») et pastille trophée/coche.
+- `Components/PremiumBackgroundView.swift` — Fond « menu de jeu » : dégradé du thème, halo haut et grille en perspective dessinée en `Canvas`, estompée par un masque.
+- `Components/PremiumHUDLabel.swift` — Petit libellé en capitales espacées (interlettrage `Theme.Tracking.hud`), façon en-tête de menu de jeu.
+- `Components/PremiumBenefitRow.swift` — Ligne d'avantage façon succès : pastille d'icône accentuée, intitulé, explication concrète et état cadenas/coche (`isUnlocked`).
+- `Components/PremiumPurchaseFooter.swift` — Pied épinglé : bouton d'achat balayé d'un reflet en boucle (prix localisé StoreKit, `ProgressView` pendant l'achat), mention « achat unique » et restauration ; remonte le déverrouillage via `onUnlocked`.
 
 ## Features/GameSearch
 

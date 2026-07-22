@@ -92,12 +92,14 @@ enum TranslationKey: String {
     case myGamesEmptyStepSearch
     case myGamesEmptyStepLimit
     // Premium
+    case premiumKicker
     case premiumTitle
     case premiumTagline
     case premiumLimitReached
     case premiumReasonTheme
     case premiumReasonStats
     case premiumFreeHint
+    case premiumBenefitsLabel
     case premiumBenefitUnlimited
     case premiumBenefitUnlimitedDetail
     case premiumBenefitThemes
@@ -332,26 +334,28 @@ enum Translation {
             .myGamesEmptyMessage: "Ajoute ton premier jeu : il servira de point de départ à tes wikis.",
             .myGamesEmptyStepSearch: "Touche « Ajouter un jeu » et cherche-le par son titre.",
             .myGamesEmptyStepLimit: "Le palier gratuit couvre 10 jeux.",
-            .premiumTitle: "Grym Premium",
-            .premiumTagline: "Un seul achat, et Grym s'ouvre en entier.",
+            .premiumKicker: "Grym",
+            .premiumTitle: "Édition Complète",
+            .premiumTagline: "Un seul achat, et tout Grym se déverrouille. Pas d'abonnement, pas de saison.",
             .premiumLimitReached: "Limite gratuite atteinte (10 jeux).",
-            .premiumReasonTheme: "Ce thème fait partie du premium.",
-            .premiumReasonStats: "Le bilan complet fait partie du premium.",
+            .premiumReasonTheme: "Ce thème est verrouillé.",
+            .premiumReasonStats: "Le bilan complet est verrouillé.",
             .premiumFreeHint: "Vous pouvez aussi supprimer un jeu pour en ajouter un autre gratuitement.",
+            .premiumBenefitsLabel: "Ce que ça débloque",
             .premiumBenefitUnlimited: "Jeux illimités",
             .premiumBenefitUnlimitedDetail: "Ajoutez autant de jeux que vous voulez, au-delà des 10 du palier gratuit.",
             .premiumBenefitThemes: "Tous les thèmes",
             .premiumBenefitThemesDetail: "Quatre ambiances qui recolorent l'app entière, changeables à tout moment.",
             .premiumBenefitStats: "Bilan complet",
             .premiumBenefitStatsDetail: "Classements, répartitions par statut et par palier, volumes de contenu créé.",
-            .premiumOneTimeNote: "Achat unique. Pas d'abonnement, pas de compte.",
+            .premiumOneTimeNote: "Achat unique · Aucun abonnement · Restaurable",
             .premiumUnlock: "Débloquer",
             .premiumRestore: "Restaurer l'achat",
-            .premiumActiveTitle: "Premium actif",
+            .premiumActiveTitle: "Édition Complète débloquée",
             .premiumActiveMessage: "Merci ! Tout est débloqué, sur cet appareil comme sur les suivants.",
             .profilePremiumSection: "Premium",
             .profilePremiumHint: "L'achat est lié à votre identifiant Apple : restaurable sur vos autres appareils.",
-            .profilePremiumCTA: "Passer Premium",
+            .profilePremiumCTA: "Débloquer l'Édition Complète",
             .commonClose: "Fermer",
             .tabMyGames: "Mes jeux",
             .myGamesTitle: "Mes jeux",
@@ -550,26 +554,28 @@ enum Translation {
             .myGamesEmptyMessage: "Add your first game: it will be the starting point of your wikis.",
             .myGamesEmptyStepSearch: "Tap “Add a game” and search it by title.",
             .myGamesEmptyStepLimit: "The free tier covers 10 games.",
-            .premiumTitle: "Grym Premium",
-            .premiumTagline: "One purchase, and Grym opens up entirely.",
+            .premiumKicker: "Grym",
+            .premiumTitle: "Complete Edition",
+            .premiumTagline: "One purchase and all of Grym unlocks. No subscription, no season pass.",
             .premiumLimitReached: "Free limit reached (10 games).",
-            .premiumReasonTheme: "This theme is part of Premium.",
-            .premiumReasonStats: "The full breakdown is part of Premium.",
+            .premiumReasonTheme: "This theme is locked.",
+            .premiumReasonStats: "The full breakdown is locked.",
             .premiumFreeHint: "You can also delete a game to add another one for free.",
+            .premiumBenefitsLabel: "What it unlocks",
             .premiumBenefitUnlimited: "Unlimited games",
             .premiumBenefitUnlimitedDetail: "Add as many games as you want, beyond the 10 of the free tier.",
             .premiumBenefitThemes: "Every theme",
             .premiumBenefitThemesDetail: "Four moods that recolor the whole app, switchable at any time.",
             .premiumBenefitStats: "Full breakdown",
             .premiumBenefitStatsDetail: "Rankings, splits by status and tier, volumes of content you created.",
-            .premiumOneTimeNote: "One-time purchase. No subscription, no account.",
+            .premiumOneTimeNote: "One-time purchase · No subscription · Restorable",
             .premiumUnlock: "Unlock",
             .premiumRestore: "Restore purchase",
-            .premiumActiveTitle: "Premium active",
+            .premiumActiveTitle: "Complete Edition unlocked",
             .premiumActiveMessage: "Thank you! Everything is unlocked, on this device and the next ones.",
             .profilePremiumSection: "Premium",
             .profilePremiumHint: "The purchase is tied to your Apple ID: restorable on your other devices.",
-            .profilePremiumCTA: "Go Premium",
+            .profilePremiumCTA: "Unlock the Complete Edition",
             .commonClose: "Close",
             .tabMyGames: "My games",
             .myGamesTitle: "My games",

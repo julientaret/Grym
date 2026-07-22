@@ -20,7 +20,7 @@ struct PremiumUpgradeView: View {
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            background
+            PremiumBackgroundView()
 
             VStack(spacing: Theme.Spacing.large) {
                 ScrollView(showsIndicators: false) {
@@ -51,19 +51,25 @@ struct PremiumUpgradeView: View {
     // MARK: Avantages
 
     private var benefitsCard: some View {
-        VStack(alignment: .leading, spacing: Theme.Spacing.large) {
-            ForEach(PremiumBenefit.all) { PremiumBenefitRow(benefit: $0) }
+        VStack(alignment: .leading, spacing: Theme.Spacing.medium) {
+            PremiumHUDLabel(text: localization.string(.premiumBenefitsLabel))
+
+            VStack(alignment: .leading, spacing: Theme.Spacing.large) {
+                ForEach(PremiumBenefit.all) {
+                    PremiumBenefitRow(benefit: $0, isUnlocked: premium.isPremium)
+                }
+            }
+            .padding(Theme.Spacing.medium)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: Theme.Radius.large, style: .continuous)
+                    .fill(theme.surface.opacity(0.6))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Theme.Radius.large, style: .continuous)
+                            .stroke(theme.accent.opacity(0.18), lineWidth: 1)
+                    )
+            )
         }
-        .padding(Theme.Spacing.medium)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: Theme.Radius.large, style: .continuous)
-                .fill(theme.surface.opacity(0.5))
-                .overlay(
-                    RoundedRectangle(cornerRadius: Theme.Radius.large, style: .continuous)
-                        .stroke(.white.opacity(0.06), lineWidth: 1)
-                )
-        )
     }
 
     /// Rappelé seulement quand la limite gratuite bloque : il reste une issue sans payer.
@@ -106,24 +112,6 @@ struct PremiumUpgradeView: View {
         }
         .padding(Theme.Spacing.medium)
         .accessibilityLabel(localization.string(.commonClose))
-    }
-
-    // MARK: Fond
-
-    private var background: some View {
-        ZStack {
-            LinearGradient(
-                colors: [theme.backgroundDeep, theme.background],
-                startPoint: .top, endPoint: .bottom
-            )
-            RadialGradient(
-                colors: [theme.glow.opacity(0.5), .clear],
-                center: UnitPoint(x: 0.5, y: 0.05),
-                startRadius: 4,
-                endRadius: 360
-            )
-        }
-        .ignoresSafeArea()
     }
 }
 

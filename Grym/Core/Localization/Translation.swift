@@ -156,6 +156,31 @@ enum TranslationKey: String {
     case checklistTitlePlaceholder
     case checklistAddItem
     case checklistItemPlaceholder
+    // Modèles de démarrage
+    case templateSectionTitle
+    case templateSectionHint
+    case templateRPG
+    case templateRPGHint
+    case templateSoulslike
+    case templateSoulslikeHint
+    case templateOpenWorld
+    case templateOpenWorldHint
+    case templateRoguelike
+    case templateRoguelikeHint
+    case templatePageQuests
+    case templatePageBuilds
+    case templatePageItems
+    case templatePageLore
+    case templatePageBosses
+    case templatePageZones
+    case templatePageCollectibles
+    case templatePageMaps
+    case templatePageTodo
+    case templatePageNotes
+    case templatePageRuns
+    case templatePageSynergies
+    case templatePageCharacters
+    case templatePageStrategies
     // Bilan personnel
     case statsSection
     case statsTitle
@@ -352,6 +377,30 @@ enum Translation {
             .checklistTitlePlaceholder: "Titre de la liste",
             .checklistAddItem: "Ajouter un élément",
             .checklistItemPlaceholder: "Élément",
+            .templateSectionTitle: "Démarrer avec un modèle",
+            .templateSectionHint: "Un modèle crée d'un coup les wikis adaptés au genre du jeu. Tu peux les renommer ensuite.",
+            .templateRPG: "RPG",
+            .templateRPGHint: "Quêtes, builds, objets, lore.",
+            .templateSoulslike: "Souls-like",
+            .templateSoulslikeHint: "Boss, builds, zones, objets.",
+            .templateOpenWorld: "Monde ouvert",
+            .templateOpenWorldHint: "Collectibles, cartes, à faire, notes.",
+            .templateRoguelike: "Roguelike",
+            .templateRoguelikeHint: "Runs, synergies, personnages, stratégies.",
+            .templatePageQuests: "Quêtes",
+            .templatePageBuilds: "Builds",
+            .templatePageItems: "Objets",
+            .templatePageLore: "Lore",
+            .templatePageBosses: "Boss",
+            .templatePageZones: "Zones & raccourcis",
+            .templatePageCollectibles: "Collectibles",
+            .templatePageMaps: "Cartes",
+            .templatePageTodo: "À faire",
+            .templatePageNotes: "Notes",
+            .templatePageRuns: "Runs",
+            .templatePageSynergies: "Objets & synergies",
+            .templatePageCharacters: "Personnages",
+            .templatePageStrategies: "Stratégies",
             .statsSection: "Bilan",
             .statsTitle: "Mes statistiques",
             .statsHint: "Temps de jeu, notes et répartition de ta collection.",
@@ -531,6 +580,30 @@ enum Translation {
             .checklistTitlePlaceholder: "List title",
             .checklistAddItem: "Add an item",
             .checklistItemPlaceholder: "Item",
+            .templateSectionTitle: "Start from a template",
+            .templateSectionHint: "A template creates the wikis that fit the game's genre in one tap. You can rename them afterwards.",
+            .templateRPG: "RPG",
+            .templateRPGHint: "Quests, builds, items, lore.",
+            .templateSoulslike: "Souls-like",
+            .templateSoulslikeHint: "Bosses, builds, zones, items.",
+            .templateOpenWorld: "Open world",
+            .templateOpenWorldHint: "Collectibles, maps, to-do, notes.",
+            .templateRoguelike: "Roguelike",
+            .templateRoguelikeHint: "Runs, synergies, characters, strategies.",
+            .templatePageQuests: "Quests",
+            .templatePageBuilds: "Builds",
+            .templatePageItems: "Items",
+            .templatePageLore: "Lore",
+            .templatePageBosses: "Bosses",
+            .templatePageZones: "Zones & shortcuts",
+            .templatePageCollectibles: "Collectibles",
+            .templatePageMaps: "Maps",
+            .templatePageTodo: "To do",
+            .templatePageNotes: "Notes",
+            .templatePageRuns: "Runs",
+            .templatePageSynergies: "Items & synergies",
+            .templatePageCharacters: "Characters",
+            .templatePageStrategies: "Strategies",
             .statsSection: "Insights",
             .statsTitle: "My stats",
             .statsHint: "Playtime, scores and the shape of your collection.",

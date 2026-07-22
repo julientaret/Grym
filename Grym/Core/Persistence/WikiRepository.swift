@@ -73,6 +73,33 @@ struct WikiRepository {
         try? context.save()
     }
 
+    /// Applique un modèle de démarrage : crée ses pages (à la suite de celles
+    /// déjà présentes) et leurs blocs d'amorce, puis persiste une seule fois.
+    /// `titleFor` fournit le titre localisé de chaque page.
+    func apply(
+        template: WikiTemplate,
+        to wiki: Wiki,
+        titleFor: (TranslationKey) -> String
+    ) throws {
+        var order = (wiki.pages.map(\.order).max() ?? -1) + 1
+
+        for descriptor in template.pages {
+            let page = Page(title: titleFor(descriptor.titleKey), order: order)
+            page.wiki = wiki
+            context.insert(page)
+            order += 1
+
+            for (index, type) in descriptor.blocks.enumerated() {
+                let block = Block(type: type, content: "", order: index)
+                block.page = page
+                context.insert(block)
+            }
+        }
+
+        wiki.updatedAt = Date()
+        try context.save()
+    }
+
     /// Change le statut de progression, date l'événement et persiste.
     func updateStatus(_ wiki: Wiki, to status: GameStatus) {
         guard wiki.status != status else { return }

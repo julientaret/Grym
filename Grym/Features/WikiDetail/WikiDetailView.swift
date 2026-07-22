@@ -90,6 +90,10 @@ struct WikiDetailView: View {
 
             pagesHeader.grymBlockRow()
 
+            if sortedPages.isEmpty {
+                WikiTemplateSection(onSelect: applyTemplate).grymBlockRow()
+            }
+
             pagesContent
         }
         .listStyle(.plain)
@@ -251,6 +255,13 @@ struct WikiDetailView: View {
     private func togglePin() {
         wiki.isPinned.toggle()
         repository.touch(wiki)
+    }
+
+    /// Crée d'un coup les pages du modèle choisi (le carnet n'en a aucune).
+    private func applyTemplate(_ template: WikiTemplate) {
+        try? repository.apply(template: template, to: wiki) {
+            localization.string($0)
+        }
     }
 
     /// Crée la page puis l'ouvre immédiatement.

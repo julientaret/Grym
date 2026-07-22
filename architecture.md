@@ -43,12 +43,13 @@ Couche de données locale (SwiftData, offline-first).
 - `GameStatus.swift` — Enum du statut de progression (aucun / à jouer / en cours / terminé / platiné / abandonné) : clé de traduction, icône et couleur.
 - `PlaySession.swift` — `@Model` session de jeu consignée : date, durée en minutes, ressenti (`moodRaw`, exposé via `mood`) et note libre ; fournit les durées proposées à l'éditeur.
 - `SessionMood.swift` — Enum du ressenti d'une session (excellent / bien / mitigé / galère) : clé de traduction, icône et couleur.
+- `WikiTemplate.swift` — Modèles de démarrage d'un carnet (RPG, souls-like, monde ouvert, roguelike) : nom, description, icône et pages à créer avec leurs blocs d'amorce.
 - `WikiLink.swift` — Liens internes `[[Titre de page]]` : analyse du balisage, rendu en `AttributedString` cliquable (URL interne `grym://page?title=`), et extensions `Wiki.page(titled:)` / `Page.linkedTitles` / `Page.backlinks`.
 - `Page.swift` — `@Model` page nommée d'un wiki (« wiki » côté UI), contenant des blocs ordonnés ; `createdAt` alimente le flux d'activité de l'accueil.
 - `Block.swift` — `@Model` bloc de contenu (type persisté en `String`, exposé via `BlockType`).
 - `BlockType.swift` — Enum des types de bloc (text/photo/checklist/map).
 - `BlockContent.swift` — Encodage du contenu des blocs : texte brut (`.text`), JSON `ChecklistContent` (`.checklist`), `PhotoContent` (`.photo`) ou `MapContent` (`.map`, image + pins) ; accès via `Block.checklist` / `Block.photos` / `Block.map`.
-- `WikiRepository.swift` — Écritures autour d'un `ModelContext` : création (dé-doublonnée) et suppression de wikis ; `updateScore` date les changements de note, `updateStatus` ceux de statut, `addSession`/`delete(_ session:)` gèrent le journal, `touch` marque une simple modification.
+- `WikiRepository.swift` — Écritures autour d'un `ModelContext` : création (dé-doublonnée) et suppression de wikis ; `updateScore` date les changements de note, `updateStatus` ceux de statut, `addSession`/`delete(_ session:)` gèrent le journal, `apply(template:to:titleFor:)` déroule un modèle de démarrage, `touch` marque une simple modification.
 - `PreviewSampleData.swift` — Conteneur SwiftData en mémoire pré-rempli (previews, DEBUG).
 
 ## Core
@@ -152,6 +153,7 @@ Détail d'un wiki : édition directe du modèle via `@Bindable` (écart MVVM jus
 - `Components/WikiDetailHeader.swift` — Cover, titre, méta, sélecteur de statut, bouton épingler et ligne de stats.
 - `Components/WikiStatusMenu.swift` — Pastille de statut cliquable ouvrant le menu des statuts disponibles.
 - `Components/WikiSessionsCard.swift` — Carte « Sessions » : temps de jeu cumulé, nombre de sessions, journal tronqué à 3 entrées (dépliable), ajout / édition / suppression.
+- `Components/WikiTemplateSection.swift` — Grille de modèles de démarrage, affichée tant que le jeu n'a aucun wiki ; un tap crée toutes les pages du modèle.
 - `Components/SessionRowView.swift` — Ligne d'une session : pastille de ressenti, date, durée et note.
 - `Components/WikiHeroBanner.swift` — Bandeau illustré pleine largeur en tête du wiki : file jusqu'au haut de l'écran (la barre de navigation se pose dessus), fondu vers le bas par un masque (se raccorde à n'importe quel thème).
 - `Components/WikiMediaGallery.swift` — Galerie horizontale des photos ajoutées par l'utilisateur (blocs photo du wiki) ; vignettes locales (`ImageStore`), appui pour ouvrir l'aperçu. Masquée si aucune photo.

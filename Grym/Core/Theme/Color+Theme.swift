@@ -85,11 +85,19 @@ extension Color {
     static let grymTierGOTY     = Color(hex: 0x3FC9E8)   // GOTY       (85–100)
 
     // MARK: - Statuts de progression (cf. GameStatus)
+    // Les teintes claires sont pensées pour un fond sombre ; en light mode on
+    // bascule sur des variantes assombries pour conserver un contraste lisible.
     static let grymStatusBacklog   = Color(hex: 0x8A93A8)   // À jouer
     static let grymStatusPlaying   = Color(hex: 0x3FC9E8)   // En cours
     static let grymStatusCompleted = Color(hex: 0x7AE582)   // Terminé
     static let grymStatusPlatinum  = Color(hex: 0xF5C46B)   // Platiné / 100 %
     static let grymStatusAbandoned = Color(hex: 0xE07A5F)   // Abandonné
+
+    static let grymStatusBacklogLight   = Color(hex: 0x4E5771)
+    static let grymStatusPlayingLight   = Color(hex: 0x0B7089)
+    static let grymStatusCompletedLight = Color(hex: 0x1C7F3B)
+    static let grymStatusPlatinumLight  = Color(hex: 0x8A5D0C)
+    static let grymStatusAbandonedLight = Color(hex: 0xAC3D26)
 
     // MARK: - Humeurs de session (cf. SessionMood)
     static let grymMoodHyped   = Color(hex: 0x7AE582)

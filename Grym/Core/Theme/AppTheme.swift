@@ -36,6 +36,16 @@ enum ThemeID: String, CaseIterable, Identifiable {
         }
     }
 
+    /// Clé de traduction de la punchline qui explique le clin d'œil du nom.
+    var taglineKey: TranslationKey {
+        switch self {
+        case .grymBlue:    .themeGrymBlueTagline
+        case .grymViolet:  .themeGrymVioletTagline
+        case .grymEmerald: .themeGrymEmeraldTagline
+        case .grymMagenta: .themeGrymMagentaTagline
+        }
+    }
+
     /// Instancie le thème correspondant.
     func makeTheme() -> any AppTheme {
         switch self {

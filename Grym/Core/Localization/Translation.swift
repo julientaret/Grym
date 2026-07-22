@@ -45,6 +45,10 @@ enum TranslationKey: String {
     case themeGrymViolet
     case themeGrymEmerald
     case themeGrymMagenta
+    case themeGrymBlueTagline
+    case themeGrymVioletTagline
+    case themeGrymEmeraldTagline
+    case themeGrymMagentaTagline
     case profileThemeHint
     case profileThemePremium
     case profileDebugSection
@@ -271,10 +275,14 @@ enum Translation {
             .profileWikiModeHint: "Le même réglage s'applique à tous vos jeux.",
             .profileWikiModeSampleFirst: "Quêtes",
             .profileWikiModeSampleSecond: "Builds",
-            .themeGrymBlue: "Bleu",
-            .themeGrymViolet: "Violet",
-            .themeGrymEmerald: "Émeraude",
-            .themeGrymMagenta: "Magenta",
+            .themeGrymBlue: "Save Point",
+            .themeGrymViolet: "Loot Épique",
+            .themeGrymEmerald: "1-UP",
+            .themeGrymMagenta: "Coup Critique",
+            .themeGrymBlueTagline: "Le bleu rassurant des salles de sauvegarde.",
+            .themeGrymVioletTagline: "Le violet des objets qu'on ne revend jamais.",
+            .themeGrymEmeraldTagline: "Le vert des vies en rab.",
+            .themeGrymMagentaTagline: "Le rose des dégâts qui piquent.",
             .profileThemeHint: "Le thème colore les fonds, les surfaces et les accents de toute l'app.",
             .profileThemePremium: "Premium",
             .profileDebugSection: "Développement",
@@ -476,10 +484,14 @@ enum Translation {
             .profileWikiModeHint: "The same setting applies to all your games.",
             .profileWikiModeSampleFirst: "Quests",
             .profileWikiModeSampleSecond: "Builds",
-            .themeGrymBlue: "Blue",
-            .themeGrymViolet: "Violet",
-            .themeGrymEmerald: "Emerald",
-            .themeGrymMagenta: "Magenta",
+            .themeGrymBlue: "Save Point",
+            .themeGrymViolet: "Epic Loot",
+            .themeGrymEmerald: "1-UP",
+            .themeGrymMagenta: "Critical Hit",
+            .themeGrymBlueTagline: "The reassuring blue of save rooms.",
+            .themeGrymVioletTagline: "The purple of drops you never sell.",
+            .themeGrymEmeraldTagline: "The green of spare lives.",
+            .themeGrymMagentaTagline: "The pink of damage that stings.",
             .profileThemeHint: "The theme tints backgrounds, surfaces and accents across the app.",
             .profileThemePremium: "Premium",
             .profileDebugSection: "Development",

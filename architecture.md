@@ -40,7 +40,7 @@ Couche de données locale (SwiftData, offline-first).
 
 - `Game.swift` — `@Model` métadonnées d'un jeu IGDB (dé-doublonné par `igdbId`) ; cover reconstruite depuis `coverImageId`. Porte aussi les médias IGDB (`screenshotImageIds`, `artworkImageIds`, `mediaFetchedAt`) et en dérive l'image du bandeau (`heroImageId`).
 - `Wiki.swift` — `@Model` wiki d'un jeu : note privée (datée par `scoreUpdatedAt`), statut de progression (`statusRaw`/`statusUpdatedAt`, exposé via `status`), épinglage, pages et sessions ; expose des stats dérivées (blocs/photos/listes), `photoFileNames` (galerie du détail) et le cumul de temps de jeu (`totalPlayMinutes`, `sortedSessions`, `lastSessionDate`).
-- `GameStatus.swift` — Enum du statut de progression (aucun / à jouer / en cours / terminé / platiné / abandonné) : clé de traduction, icône et couleur.
+- `GameStatus.swift` — Enum du statut de progression (aucun / à jouer / en cours / terminé / platiné / abandonné) : clé de traduction, icône et couleur déclinée light/dark.
 - `PlaySession.swift` — `@Model` session de jeu consignée : date, durée en minutes, ressenti (`moodRaw`, exposé via `mood`) et note libre ; fournit les durées proposées à l'éditeur.
 - `SessionMood.swift` — Enum du ressenti d'une session (excellent / bien / mitigé / galère) : clé de traduction, icône et couleur.
 - `WikiTemplate.swift` — Modèles de démarrage d'un carnet (RPG, souls-like, monde ouvert, roguelike) : nom, description, icône et pages à créer avec leurs blocs d'amorce.
@@ -57,7 +57,7 @@ Couche de données locale (SwiftData, offline-first).
 - `Core/Theme/Theme.swift` — Constantes du design system indépendantes du thème (spacings, font sizes, radius, dimensions, durées d'animation).
 - `Core/Theme/Color+Theme.swift` — Palette brute (tokens `grym*`), helper de tier de note 0–100, teinte déterministe `grymTint`, init `hex` et init adaptatif clair/sombre.
 - `Core/Theme/ScoreTier.swift` — Paliers de note (Naze→GOTY) : rang, libellé localisé et couleur.
-- `Core/Theme/AppTheme.swift` — Protocole `AppTheme` (rôles de couleur, dont `pageAccents`) avec défauts base Grym, enum `ThemeID` (+ `requiresPremium`, thème gratuit), et clé d'environnement `\.theme`.
+- `Core/Theme/AppTheme.swift` — Protocole `AppTheme` (rôles de couleur, dont `pageAccents`) avec défauts base Grym, enum `ThemeID` (+ `requiresPremium`, thème gratuit, `nameKey`/`taglineKey` — noms clins d'œil au vocabulaire du jeu vidéo), et clé d'environnement `\.theme`.
 - `Core/Theme/Themes/GrymBlueTheme.swift` — Thème par défaut et gratuit : accent cyan sur base bleu nuit (fonds, surface et halo propres).
 - `Core/Theme/Themes/GrymVioletTheme.swift` — Variante violette (premium) sur la base violette historique.
 - `Core/Theme/Themes/GrymEmeraldTheme.swift` — Variante émeraude (premium) : accent #2CD4A0 sur base vert profond.
@@ -152,7 +152,7 @@ Détail d'un wiki : édition directe du modèle via `@Bindable` (écart MVVM jus
 - `WikiMediaViewModel.swift` — Charge les médias IGDB du jeu à l'ouverture du wiki (si jamais récupérés) et les persiste sur `Game` ; alimente le bandeau. Erreurs silencieuses (décoratif, réessai à la prochaine ouverture).
 - `SessionEditorView.swift` — Sheet de création/modification d'une session (date, durée par heures + quarts d'heure, ressenti, note libre) ; saisie locale remontée en une fois via `onSave`.
 - `Components/WikiDetailHeader.swift` — Cover, titre, méta, sélecteur de statut, bouton épingler et ligne de stats.
-- `Components/WikiStatusMenu.swift` — Pastille de statut cliquable ouvrant le menu des statuts disponibles.
+- `Components/WikiStatusMenu.swift` — Pastille de statut cliquable (icône + libellé + chevron) ouvrant un `Picker` inline des statuts disponibles.
 - `Components/WikiSessionsCard.swift` — Carte « Sessions » : temps de jeu cumulé, nombre de sessions, journal tronqué à 3 entrées (dépliable), ajout / édition / suppression.
 - `Components/WikiTemplateSection.swift` — Grille de modèles de démarrage, affichée tant que le jeu n'a aucun wiki ; un tap crée toutes les pages du modèle.
 - `Components/SessionRowView.swift` — Ligne d'une session : pastille de ressenti, date, durée et note.
@@ -196,8 +196,8 @@ Ajout d'un jeu : recherche live IGDB, présentée en sheet depuis le bouton « +
 - `Components/StudioCreditComponent.swift` — Encart « Une création AppleMousse Studio » : logo, libellé et lien vers https://applemousse-studio.fr.
 - `Components/ProfileSectionCard.swift` — Carte de section générique : `SectionHeaderView` + contenu sur surface translucide.
 - `Components/ProfileSettingRow.swift` — Ligne de réglage : intitulé, contrôle et texte d'aide optionnel.
-- `Components/ThemePickerComponent.swift` — Grille de vignettes de thèmes ; applique le thème via le `ThemeManager`, ou ouvre `PremiumUpgradeView` si le thème est verrouillé.
-- `Components/ThemeSwatchView.swift` — Vignette d'aperçu d'un thème (dégradé, halo, surface, accents) avec états sélectionné / verrouillé.
+- `Components/ThemePickerComponent.swift` — Grille de vignettes de thèmes (calées en haut de ligne, retour tactile à l'appui) ; applique le thème via le `ThemeManager`, ou ouvre `PremiumUpgradeView` si le thème est verrouillé.
+- `Components/ThemeSwatchView.swift` — Vignette d'un thème : mini-maquette de l'app (bandeau, ligne de jeu avec jaquette et pastille de note, palette d'accents) sur le fond et le halo du thème, nom et punchline ; sélection soulignée par un liseré et un halo d'accent, verrou premium en badge de coin sur voile léger.
 - `Components/DebugPremiumToggle.swift` — Interrupteur de simulation du premium, compilé uniquement en DEBUG (`#if DEBUG`).
 - `Components/LanguagePickerComponent.swift` — Sélecteur segmenté qui bascule la langue via le `LocalizationManager`.
 - `Components/WikiModePickerComponent.swift` — Sélecteur segmenté du mode d'affichage des wikis via le `PreferencesManager`, suivi de l'aperçu du rendu.

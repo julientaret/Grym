@@ -21,7 +21,7 @@ struct ThemePickerComponent: View {
     ]
 
     var body: some View {
-        LazyVGrid(columns: columns, spacing: Theme.Spacing.medium) {
+        LazyVGrid(columns: columns, alignment: .leading, spacing: Theme.Spacing.large) {
             ForEach(ThemeID.allCases) { id in
                 Button { select(id) } label: {
                     ThemeSwatchView(
@@ -29,8 +29,12 @@ struct ThemePickerComponent: View {
                         isSelected: id == themeManager.theme.id,
                         isLocked: isLocked(id)
                     )
+                    // Les punchlines n'ont pas toutes la même hauteur : on cale
+                    // les vignettes en haut de leur ligne.
+                    .frame(maxHeight: .infinity, alignment: .top)
+                    .contentShape(Rectangle())
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(ThemeSwatchButtonStyle())
             }
         }
         .animation(.easeInOut(duration: Theme.AnimationDuration.medium), value: themeManager.theme.id)
@@ -50,6 +54,16 @@ struct ThemePickerComponent: View {
         } else {
             themeManager.select(id)
         }
+    }
+}
+
+/// Retour tactile discret : la vignette s'enfonce légèrement à l'appui.
+private struct ThemeSwatchButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.97 : 1)
+            .animation(.easeOut(duration: Theme.AnimationDuration.fast),
+                       value: configuration.isPressed)
     }
 }
 

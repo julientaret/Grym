@@ -60,6 +60,8 @@ enum Theme {
         static let rankingThumbnail: CGFloat = 40
         /// Pastille d'icône de l'en-tête du bilan.
         static let statsHeroIcon: CGFloat = 52
+        /// Maquette d'aperçu d'une vignette de thème.
+        static let themeSwatchHeight: CGFloat = 104
     }
 
     // MARK: - Seuils d'affichage

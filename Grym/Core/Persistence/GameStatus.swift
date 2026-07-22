@@ -46,15 +46,22 @@ enum GameStatus: String, CaseIterable, Identifiable {
         }
     }
 
-    /// Couleur du statut (tokens fixes, indépendants du thème comme les tiers).
+    /// Couleur du statut (tokens fixes, indépendants du thème comme les tiers),
+    /// déclinée en light/dark pour rester lisible sur fond clair.
     var color: Color {
         switch self {
-        case .none:      .grymTextMuted
-        case .backlog:   .grymStatusBacklog
-        case .playing:   .grymStatusPlaying
-        case .completed: .grymStatusCompleted
-        case .platinum:  .grymStatusPlatinum
-        case .abandoned: .grymStatusAbandoned
+        case .none:
+            Color(light: .grymTextInverse.opacity(0.55), dark: .grymTextMuted)
+        case .backlog:
+            Color(light: .grymStatusBacklogLight, dark: .grymStatusBacklog)
+        case .playing:
+            Color(light: .grymStatusPlayingLight, dark: .grymStatusPlaying)
+        case .completed:
+            Color(light: .grymStatusCompletedLight, dark: .grymStatusCompleted)
+        case .platinum:
+            Color(light: .grymStatusPlatinumLight, dark: .grymStatusPlatinum)
+        case .abandoned:
+            Color(light: .grymStatusAbandonedLight, dark: .grymStatusAbandoned)
         }
     }
 }

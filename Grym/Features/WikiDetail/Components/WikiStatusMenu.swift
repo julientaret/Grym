@@ -13,33 +13,75 @@ struct WikiStatusMenu: View {
     var onSelect: (GameStatus) -> Void
 
     @EnvironmentObject private var localization: LocalizationManager
-    @Environment(\.theme) private var theme
 
     var body: some View {
         Menu {
-            ForEach(GameStatus.allCases) { option in
-                Button {
-                    onSelect(option)
-                } label: {
+            // Picker inline : coche de sélection native, plus lisible qu'une
+            // liste de boutons avec une coche ajoutée à la main.
+            Picker(selection: selection) {
+                ForEach(GameStatus.allCases) { option in
                     Label(localization.string(option.nameKey), systemImage: option.systemImage)
-                    if option == status { Image(systemName: "checkmark") }
+                        .tag(option)
                 }
+            } label: {
+                EmptyView()
             }
+            .pickerStyle(.inline)
         } label: {
-            HStack(spacing: Theme.Spacing.xSmall) {
-                GameStatusBadge(status: status)
-                Image(systemName: "chevron.down")
-                    .font(.system(size: Theme.FontSize.caption - 2, weight: .bold))
-                    .foregroundStyle(theme.secondaryText)
-            }
+            label
         }
+        .accessibilityLabel(localization.string(.statusLabel))
+        .accessibilityValue(localization.string(status.nameKey))
+    }
+
+    private var selection: Binding<GameStatus> {
+        Binding(get: { status }, set: onSelect)
+    }
+
+    // MARK: Pastille cliquable
+
+    private var label: some View {
+        HStack(spacing: Theme.Spacing.xSmall) {
+            Image(systemName: status.systemImage)
+                .font(.system(size: Theme.FontSize.caption - 1, weight: .bold))
+            Text(localization.string(status.nameKey))
+                .font(.system(size: Theme.FontSize.caption, weight: .semibold))
+            Image(systemName: "chevron.up.chevron.down")
+                .font(.system(size: Theme.FontSize.caption - 3, weight: .bold))
+                .opacity(0.7)
+        }
+        .foregroundStyle(status.color)
+        .padding(.horizontal, Theme.Spacing.small + 2)
+        .padding(.vertical, Theme.Spacing.xSmall + 2)
+        .background(
+            Capsule().fill(status.color.opacity(0.16))
+        )
+        .overlay(
+            Capsule().stroke(status.color.opacity(0.45), lineWidth: 1)
+        )
+        .contentShape(Capsule())
     }
 }
 
-#Preview {
-    WikiStatusMenu(status: .playing, onSelect: { _ in })
-        .padding()
+#Preview("Dark") {
+    statusMenuPreview
         .background(Color.grymBgDark)
-        .environmentObject(LocalizationManager())
-        .environment(\.theme, GrymBlueTheme())
+        .preferredColorScheme(.dark)
+}
+
+#Preview("Light") {
+    statusMenuPreview
+        .background(Color.grymBgLight)
+        .preferredColorScheme(.light)
+}
+
+private var statusMenuPreview: some View {
+    VStack(alignment: .leading, spacing: Theme.Spacing.small) {
+        ForEach(GameStatus.allCases) { status in
+            WikiStatusMenu(status: status, onSelect: { _ in })
+        }
+    }
+    .padding()
+    .environmentObject(LocalizationManager())
+    .environment(\.theme, GrymBlueTheme())
 }

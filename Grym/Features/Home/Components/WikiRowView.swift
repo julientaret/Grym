@@ -37,7 +37,8 @@ struct WikiRowView: View {
                         .foregroundStyle(theme.secondaryText)
 
                     if wiki.status != .none {
-                        GameStatusBadge(status: wiki.status)
+                        GameStatusBadge(status: wiki.status, compact: true)
+                            .accessibilityLabel(localization.string(wiki.status.nameKey))
                     }
 
                     if wiki.playMinutes > 0 {
@@ -47,11 +48,7 @@ struct WikiRowView: View {
                     }
                 }
 
-                HStack(spacing: Theme.Spacing.small) {
-                    stat(wiki.blockCount, localization.string(.statBlocks), theme.accent)
-                    stat(wiki.photoCount, localization.string(.statPhotos), theme.accentAlt)
-                    stat(wiki.listCount, localization.string(.statLists), theme.brand)
-                }
+                statsRow
             }
 
             Spacer(minLength: Theme.Spacing.small)
@@ -67,14 +64,33 @@ struct WikiRowView: View {
 
     // MARK: Sous-vues
 
-    private func stat(_ count: Int, _ label: String, _ color: Color) -> some View {
-        HStack(spacing: Theme.Spacing.xSmall) {
-            Circle()
-                .fill(color)
-                .frame(width: 6, height: 6)
-            Text("\(count) \(label)")
-                .font(.system(size: Theme.FontSize.caption, weight: .regular))
-                .foregroundStyle(theme.secondaryText)
+    /// Compteurs de contenu : icône + nombre, les compteurs à zéro sont masqués
+    /// pour ne garder que l'information utile sur une ligne dense.
+    private var statsRow: some View {
+        HStack(spacing: Theme.Spacing.small + 2) {
+            stat("square.stack.3d.up.fill", wiki.blockCount,
+                 localization.string(.statBlocks), theme.accent)
+            stat("photo.fill", wiki.photoCount,
+                 localization.string(.statPhotos), theme.accentAlt)
+            stat("checklist", wiki.listCount,
+                 localization.string(.statLists), theme.brand)
+        }
+    }
+
+    @ViewBuilder
+    private func stat(_ systemImage: String, _ count: Int,
+                      _ label: String, _ color: Color) -> some View {
+        if count > 0 {
+            HStack(spacing: Theme.Spacing.xSmall) {
+                Image(systemName: systemImage)
+                    .font(.system(size: Theme.FontSize.caption - 2, weight: .semibold))
+                    .foregroundStyle(color)
+                Text("\(count)")
+                    .font(.system(size: Theme.FontSize.caption, weight: .medium))
+                    .foregroundStyle(theme.secondaryText)
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("\(count) \(label)")
         }
     }
 

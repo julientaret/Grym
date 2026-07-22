@@ -62,6 +62,10 @@ enum Theme {
         static let statsHeroIcon: CGFloat = 52
         /// Maquette d'aperçu d'une vignette de thème.
         static let themeSwatchHeight: CGFloat = 104
+        /// Jauge de note d'une ligne de liste.
+        static let scoreGauge: CGFloat = 46
+        /// Jauge de note de la carte du détail d'un wiki.
+        static let scoreGaugeLarge: CGFloat = 78
     }
 
     // MARK: - Seuils d'affichage

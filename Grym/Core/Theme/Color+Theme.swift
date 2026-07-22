@@ -78,11 +78,13 @@ extension Color {
     static let grymTextMuted    = Color(hex: 0xE9E8F5).opacity(0.55)
 
     // MARK: - Tiers de notation (Naze → GOTY)
-    static let grymTierNaze     = Color(hex: 0x8A8794)   // Naze       (0–19)
-    static let grymTierPasOuf   = Color(hex: 0xE07A5F)   // Pas ouf    (20–39)
-    static let grymTierMid      = Color(hex: 0xF5C46B)   // Mid        (40–59)
-    static let grymTierTopTier  = Color(hex: 0x7C6FF0)   // Top tier   (60–84)
-    static let grymTierGOTY     = Color(hex: 0x3FC9E8)   // GOTY       (85–100)
+    // Comme les statuts : teintes claires en dark mode, variantes assombries
+    // en light mode pour rester lisibles sur fond clair.
+    static let grymTierNaze     = Color(light: Color(hex: 0x5C5966), dark: Color(hex: 0x8A8794))
+    static let grymTierPasOuf   = Color(light: Color(hex: 0xAC3D26), dark: Color(hex: 0xE07A5F))
+    static let grymTierMid      = Color(light: Color(hex: 0x8A5D0C), dark: Color(hex: 0xF5C46B))
+    static let grymTierTopTier  = Color(light: Color(hex: 0x4B3FC4), dark: Color(hex: 0x7C6FF0))
+    static let grymTierGOTY     = Color(light: Color(hex: 0x0B7089), dark: Color(hex: 0x3FC9E8))
 
     // MARK: - Statuts de progression (cf. GameStatus)
     // Les teintes claires sont pensées pour un fond sombre ; en light mode on

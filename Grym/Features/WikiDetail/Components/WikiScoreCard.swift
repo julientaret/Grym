@@ -54,37 +54,37 @@ struct WikiScoreCard: View {
     // MARK: En-tête de carte
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: Theme.Spacing.small) {
-            Text(localization.string(.wikiNoteTitle))
-                .font(.system(size: Theme.FontSize.caption, weight: .semibold))
-                .foregroundStyle(theme.secondaryText)
-                .tracking(1)
+        HStack(spacing: Theme.Spacing.medium) {
+            // Même jauge que la liste des jeux : la note se reconnaît d'un écran
+            // à l'autre, sans répéter le nombre en gros chiffre + pastille.
+            ScoreGaugeView(
+                score: score,
+                diameter: Theme.Size.scoreGaugeLarge,
+                lineWidth: 6,
+                fontSize: Theme.FontSize.title + 6
+            )
 
-            HStack(alignment: .firstTextBaseline) {
-                Text("\(score)")
-                    .font(.system(size: 48, weight: .bold))
-                    .foregroundStyle(theme.primaryText)
-                    .contentTransition(.numericText())
-
-                VStack(alignment: .leading, spacing: 2) {
-                    HStack(spacing: Theme.Spacing.xSmall) {
-                        Circle().fill(tier.color).frame(width: 8, height: 8)
-                        Text(localization.string(tier.nameKey))
-                            .font(.system(size: Theme.FontSize.body, weight: .bold))
-                            .foregroundStyle(tier.color)
-                    }
-                    Text("\(localization.string(.wikiTierLabel)) \(tier.rank) / \(ScoreTier.count)")
-                        .font(.system(size: Theme.FontSize.caption, weight: .medium))
-                        .foregroundStyle(theme.secondaryText)
-                }
-
-                Spacer()
-
-                Image(systemName: "chevron.down")
-                    .font(.system(size: Theme.FontSize.caption, weight: .bold))
+            VStack(alignment: .leading, spacing: Theme.Spacing.xSmall) {
+                Text(localization.string(.wikiNoteTitle))
+                    .font(.system(size: Theme.FontSize.caption, weight: .semibold))
                     .foregroundStyle(theme.secondaryText)
-                    .rotationEffect(.degrees(isExpanded ? 180 : 0))
+                    .tracking(1)
+
+                Text(localization.string(tier.nameKey))
+                    .font(.system(size: Theme.FontSize.title, weight: .bold))
+                    .foregroundStyle(tier.color)
+
+                Text("\(localization.string(.wikiTierLabel)) \(tier.rank) / \(ScoreTier.count)")
+                    .font(.system(size: Theme.FontSize.caption, weight: .medium))
+                    .foregroundStyle(theme.secondaryText)
             }
+
+            Spacer(minLength: 0)
+
+            Image(systemName: "chevron.down")
+                .font(.system(size: Theme.FontSize.caption, weight: .bold))
+                .foregroundStyle(theme.secondaryText)
+                .rotationEffect(.degrees(isExpanded ? 180 : 0))
         }
     }
 
@@ -142,7 +142,7 @@ struct WikiScoreCard: View {
         HStack(spacing: 0) {
             ForEach(ScoreTier.allCases) { t in
                 Text(localization.string(t.nameKey))
-                    .font(.system(size: 10, weight: t == tier ? .bold : .medium))
+                    .font(.system(size: Theme.FontSize.caption - 2, weight: t == tier ? .bold : .medium))
                     .foregroundStyle(t == tier ? tier.color : theme.secondaryText)
                     .frame(maxWidth: .infinity)
             }

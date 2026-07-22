@@ -16,6 +16,7 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu, sta
 ## Core/Components
 
 - `BannerHeaderView.swift` — Bannière illustrée d'en-tête d'onglet (Accueil, Mes jeux) : image rognée à la largeur de la vue, assombrie et fondue en alpha vers le bas, avec contenu libre superposé.
+- `ScoreGaugeView.swift` — Jauge circulaire de note 0–100 colorée selon le tier (tiret si non noté) ; partagée entre la liste des jeux et la carte de note du détail.
 - `GameStatusBadge.swift` — Pastille de statut de progression (icône + libellé colorés), variante compacte pour les listes denses ; partagée entre le détail d'un wiki et « Mes jeux ».
 - `EmptyStateView.swift` — État vide réutilisable (Accueil, Mes jeux) : badge illustré, titre, message, étapes « quoi faire » et appel à l'action optionnel.
 
@@ -110,7 +111,6 @@ Recherche globale hors ligne dans toute la collection, présentée en sheet depu
 - `Components/SectionHeaderView.swift` — En-tête de section réutilisable (icône + titre + compteur).
 - `Components/HomeStatsSection.swift` — Résumé du bilan sur le dashboard : en-tête temps de jeu (`PlaytimeHeroView`), répartition par statut (barre + pastilles), trois chiffres clés (jeux, note moyenne, wikis) et accès au bilan complet (badge « Premium » si verrouillé).
 - `Components/WikiCoverView.swift` — Cover d'un wiki : jaquette locale (offline) sinon CDN IGDB sinon dégradé teinté. Prend un `image_id`.
-- `Components/ScoreBadgeView.swift` — Pastille de note 0–100 colorée selon le tier du thème.
 - `Components/PinnedWikiCard.swift` — Carte d'un wiki épinglé.
 - `Components/PinnedWikisSection.swift` — Section « Épinglés » (défilement horizontal).
 - `Components/ActivityRowView.swift` — Ligne du flux d'activité récente.
@@ -160,7 +160,7 @@ Détail d'un wiki : édition directe du modèle via `@Bindable` (écart MVVM jus
 - `Components/WikiMediaGallery.swift` — Galerie horizontale des photos ajoutées par l'utilisateur (blocs photo du wiki) ; vignettes locales (`ImageStore`), appui pour ouvrir l'aperçu. Masquée si aucune photo.
 - `Components/PageCardView.swift` — Carte de page (mode Cartes).
 - `Components/PageTabsView.swift` — Mode Onglets : chips de pages + aperçu léger (résumé des blocs) de la page sélectionnée.
-- `Components/WikiScoreCard.swift` — Carte « Note personnelle » : score, palier et slider 0–100 à dégradé de tiers (drag par translation), replié par défaut derrière un en-tête cliquable.
+- `Components/WikiScoreCard.swift` — Carte « Note personnelle » : jauge de note (`ScoreGaugeView`), palier et slider 0–100 à dégradé de tiers (drag par translation), replié par défaut derrière un en-tête cliquable.
 - `Components/PageRowView.swift` — Ligne d'une page (icône, titre, nombre de blocs).
 
 ## Features/Stats

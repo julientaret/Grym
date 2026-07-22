@@ -53,7 +53,9 @@ struct WikiRowView: View {
 
             Spacer(minLength: Theme.Spacing.small)
 
-            ScoreBadgeView(score: wiki.score)
+            ScoreGaugeView(score: wiki.score)
+                .accessibilityLabel(localization.string(.wikiNoteTitle))
+                .accessibilityValue("\(wiki.score)")
         }
         .padding(Theme.Spacing.medium)
         .background(

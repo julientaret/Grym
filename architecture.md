@@ -179,7 +179,14 @@ Bilan personnel de la collection. Le résumé vit sur l'accueil (`HomeStatsSecti
 
 ## Features/Premium
 
-- `PremiumUpgradeView.swift` — Prompt d'upgrade (avantages + prix localisé StoreKit) : achat et restauration via `PremiumManager`, présenté à l'atteinte de la limite gratuite.
+Paywall : ce que l'achat unique débloque, expliqué avantage par avantage. Ouvert volontairement depuis le Profil, ou quand une limite est atteinte.
+
+- `PremiumUpgradeView.swift` — Écran du paywall : en-tête, carte des avantages et pied d'achat épinglé, sur fond dégradé + halo. Prend un `PremiumContext` (défaut `.general`) qui pilote la phrase de contexte ; affiche l'astuce « supprimer un jeu » uniquement en contexte limite, et bascule en état « Premium actif » (simple bouton Fermer) si le droit est déjà là.
+- `Models/PremiumBenefit.swift` — Les trois avantages réellement livrés (jeux illimités, tous les thèmes, bilan complet) : icône, clé de titre et clé d'explication.
+- `Models/PremiumContext.swift` — Origine de l'ouverture (profil / limite de jeux / thème verrouillé / bilan) : clé de la phrase de contexte et icône associée.
+- `Components/PremiumHeaderView.swift` — En-tête : pastille couronne halo (coche si premium actif), titre, promesse en une phrase et bandeau capsule expliquant le blocage.
+- `Components/PremiumBenefitRow.swift` — Ligne d'avantage : pastille d'icône accentuée, intitulé et explication concrète.
+- `Components/PremiumPurchaseFooter.swift` — Pied épinglé : bouton d'achat (prix localisé StoreKit, `ProgressView` pendant l'achat), mention « achat unique » et restauration ; remonte le déverrouillage via `onUnlocked`.
 
 ## Features/GameSearch
 
@@ -191,8 +198,9 @@ Ajout d'un jeu : recherche live IGDB, présentée en sheet depuis le bouton « +
 
 ## Features/Profile
 
-- `ProfileView.swift` — Onglet Profil : fond dégradé Grym et cartes de réglages (Apparence : thème ; Langue ; Affichage : mode des wikis ; Développement : simulation du premium, DEBUG seulement).
+- `ProfileView.swift` — Onglet Profil : fond dégradé Grym et cartes de réglages (Premium : état + accès au paywall ; Apparence : thème ; Langue ; Affichage : mode des wikis ; Développement : simulation du premium, DEBUG seulement).
 - `Components/ProfileHeaderView.swift` — En-tête du profil : bannière illustrée (`BannerHeaderView`, `banner-profile`, hauteur compacte) avec titre et sous-titre superposés.
+- `Components/PremiumStatusCard.swift` — Carte cliquable de l'état premium (couronne / sceau validé, libellé et sous-titre selon `PremiumManager.isPremium`) ; ouvre `PremiumUpgradeView` en sheet.
 - `Components/StudioCreditComponent.swift` — Encart « Une création AppleMousse Studio » : logo, libellé et lien vers https://applemousse-studio.fr.
 - `Components/ProfileSectionCard.swift` — Carte de section générique : `SectionHeaderView` + contenu sur surface translucide.
 - `Components/ProfileSettingRow.swift` — Ligne de réglage : intitulé, contrôle et texte d'aide optionnel.

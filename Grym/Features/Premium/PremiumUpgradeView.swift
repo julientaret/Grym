@@ -2,154 +2,139 @@
 //  PremiumUpgradeView.swift
 //  Grym
 //
-//  Prompt d'upgrade premium, présenté quand la limite gratuite (10 jeux)
-//  est atteinte. L'achat réel sera branché sur StoreKit ultérieurement.
+//  Paywall : ce que l'achat unique débloque, expliqué avantage par avantage.
+//  Ouvert volontairement depuis le Profil, ou quand une limite est atteinte
+//  (ajout de jeu, thème verrouillé, bilan complet).
 //
 
 import SwiftUI
 
 struct PremiumUpgradeView: View {
+    /// Ce qui a déclenché l'ouverture ; sert à expliquer le blocage.
+    var context: PremiumContext = .general
+
     @EnvironmentObject private var localization: LocalizationManager
     @EnvironmentObject private var premium: PremiumManager
     @Environment(\.theme) private var theme
     @Environment(\.dismiss) private var dismiss
 
-    private var benefits: [(icon: String, key: TranslationKey)] {
-        [
-            ("infinity", .premiumBenefitUnlimited),
-            ("icloud", .premiumBenefitSync),
-            ("paintpalette", .premiumBenefitThemes),
-            ("square.and.arrow.up", .premiumBenefitExport),
-            ("apps.iphone", .premiumBenefitWidgets),
-            ("chart.bar", .premiumBenefitStats)
-        ]
-    }
-
     var body: some View {
-        ZStack {
+        ZStack(alignment: .topTrailing) {
             background
 
-            VStack(alignment: .leading, spacing: Theme.Spacing.large) {
-                header
-
-                VStack(alignment: .leading, spacing: Theme.Spacing.medium) {
-                    ForEach(benefits, id: \.key) { benefit in
-                        benefitRow(icon: benefit.icon, text: localization.string(benefit.key))
+            VStack(spacing: Theme.Spacing.large) {
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: Theme.Spacing.xLarge) {
+                        PremiumHeaderView(context: context, isPremium: premium.isPremium)
+                        benefitsCard
+                        if context == .gameLimit && !premium.isPremium {
+                            freeHint
+                        }
                     }
+                    .padding(.top, Theme.Spacing.xLarge)
+                    .padding(.bottom, Theme.Spacing.medium)
                 }
 
-                Spacer()
-
-                Text(localization.string(.premiumFreeHint))
-                    .font(.system(size: Theme.FontSize.caption))
-                    .foregroundStyle(theme.secondaryText)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity)
-
-                purchaseButton
-
-                Button {
-                    Task { await premium.restore(); dismissIfPremium() }
-                } label: {
-                    Text(localization.string(.premiumRestore))
-                        .font(.system(size: Theme.FontSize.caption, weight: .medium))
-                        .foregroundStyle(theme.secondaryText)
-                        .frame(maxWidth: .infinity)
-                }
-                .disabled(premium.isPurchasing)
-
-                Button {
-                    dismiss()
-                } label: {
-                    Text(localization.string(.premiumLater))
-                        .font(.system(size: Theme.FontSize.body, weight: .medium))
-                        .foregroundStyle(theme.secondaryText)
-                        .frame(maxWidth: .infinity)
-                }
-            }
-            .padding(Theme.Spacing.xLarge)
-        }
-    }
-
-    private func dismissIfPremium() {
-        if premium.isPremium { dismiss() }
-    }
-
-    // MARK: En-tête
-
-    private var header: some View {
-        VStack(alignment: .leading, spacing: Theme.Spacing.small) {
-            Image(systemName: "crown.fill")
-                .font(.system(size: Theme.FontSize.largeTitle))
-                .foregroundStyle(
-                    LinearGradient(colors: [theme.accent, theme.accentAlt],
-                                   startPoint: .leading, endPoint: .trailing)
-                )
-            Text(localization.string(.premiumTitle))
-                .font(.system(size: Theme.FontSize.largeTitle, weight: .bold))
-                .foregroundStyle(theme.primaryText)
-            Text(localization.string(.premiumLimitReached))
-                .font(.system(size: Theme.FontSize.body))
-                .foregroundStyle(theme.secondaryText)
-        }
-    }
-
-    private func benefitRow(icon: String, text: String) -> some View {
-        HStack(spacing: Theme.Spacing.medium) {
-            Image(systemName: icon)
-                .font(.system(size: Theme.FontSize.body, weight: .semibold))
-                .foregroundStyle(theme.accent)
-                .frame(width: 28)
-            Text(text)
-                .font(.system(size: Theme.FontSize.body))
-                .foregroundStyle(theme.primaryText)
-        }
-    }
-
-    private var purchaseButton: some View {
-        Button {
-            Task {
-                if await premium.purchase() { dismiss() }
-            }
-        } label: {
-            Group {
-                if premium.isPurchasing {
-                    ProgressView().tint(.white)
+                if premium.isPremium {
+                    closeButton
                 } else {
-                    Text(purchaseLabel)
+                    PremiumPurchaseFooter { dismiss() }
                 }
             }
-            .font(.system(size: Theme.FontSize.body, weight: .bold))
-            .foregroundStyle(.white)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, Theme.Spacing.medium)
-            .background(
-                RoundedRectangle(cornerRadius: Theme.Radius.medium, style: .continuous)
-                    .fill(LinearGradient(colors: [theme.accentAlt, theme.brand],
-                                         startPoint: .topLeading, endPoint: .bottomTrailing))
-            )
+            .padding(.horizontal, Theme.Spacing.large)
+            .padding(.bottom, Theme.Spacing.medium)
+
+            dismissButton
         }
-        .disabled(premium.isPurchasing || premium.product == nil)
     }
 
-    /// « Débloquer — 4,99 € » avec le prix localisé StoreKit, sinon « Débloquer ».
-    private var purchaseLabel: String {
-        if let price = premium.displayPrice {
-            return "\(localization.string(.premiumUnlock)) — \(price)"
+    // MARK: Avantages
+
+    private var benefitsCard: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.large) {
+            ForEach(PremiumBenefit.all) { PremiumBenefitRow(benefit: $0) }
         }
-        return localization.string(.premiumUnlock)
+        .padding(Theme.Spacing.medium)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: Theme.Radius.large, style: .continuous)
+                .fill(theme.surface.opacity(0.5))
+                .overlay(
+                    RoundedRectangle(cornerRadius: Theme.Radius.large, style: .continuous)
+                        .stroke(.white.opacity(0.06), lineWidth: 1)
+                )
+        )
     }
+
+    /// Rappelé seulement quand la limite gratuite bloque : il reste une issue sans payer.
+    private var freeHint: some View {
+        Text(localization.string(.premiumFreeHint))
+            .font(.system(size: Theme.FontSize.caption))
+            .foregroundStyle(theme.secondaryText)
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity)
+    }
+
+    // MARK: Fermeture
+
+    private var closeButton: some View {
+        Button {
+            dismiss()
+        } label: {
+            Text(localization.string(.commonClose))
+                .font(.system(size: Theme.FontSize.body, weight: .bold))
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, Theme.Spacing.medium)
+                .background(
+                    RoundedRectangle(cornerRadius: Theme.Radius.large, style: .continuous)
+                        .fill(LinearGradient(colors: [theme.accent, theme.accentAlt],
+                                             startPoint: .topLeading, endPoint: .bottomTrailing))
+                )
+        }
+    }
+
+    private var dismissButton: some View {
+        Button {
+            dismiss()
+        } label: {
+            Image(systemName: "xmark")
+                .font(.system(size: Theme.FontSize.caption, weight: .bold))
+                .foregroundStyle(theme.secondaryText)
+                .padding(Theme.Spacing.small)
+                .background(Circle().fill(theme.surface.opacity(0.6)))
+        }
+        .padding(Theme.Spacing.medium)
+        .accessibilityLabel(localization.string(.commonClose))
+    }
+
+    // MARK: Fond
 
     private var background: some View {
-        LinearGradient(
-            colors: [theme.backgroundDeep, theme.background],
-            startPoint: .top, endPoint: .bottom
-        )
+        ZStack {
+            LinearGradient(
+                colors: [theme.backgroundDeep, theme.background],
+                startPoint: .top, endPoint: .bottom
+            )
+            RadialGradient(
+                colors: [theme.glow.opacity(0.5), .clear],
+                center: UnitPoint(x: 0.5, y: 0.05),
+                startRadius: 4,
+                endRadius: 360
+            )
+        }
         .ignoresSafeArea()
     }
 }
 
-#Preview {
+#Preview("Limite atteinte") {
+    PremiumUpgradeView(context: .gameLimit)
+        .environmentObject(LocalizationManager())
+        .environmentObject(PremiumManager())
+        .environment(\.theme, GrymBlueTheme())
+}
+
+#Preview("Depuis le profil") {
     PremiumUpgradeView()
         .environmentObject(LocalizationManager())
         .environmentObject(PremiumManager())

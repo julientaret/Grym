@@ -80,7 +80,7 @@ struct HomeView: View {
         .sheet(isPresented: $showingGlobalSearch) {
             GlobalSearchView()
         }
-        .sheet(isPresented: $showingPremium) { PremiumUpgradeView() }
+        .sheet(isPresented: $showingPremium) { PremiumUpgradeView(context: .stats) }
     }
 
     // MARK: Actions

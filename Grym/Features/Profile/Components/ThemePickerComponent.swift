@@ -39,7 +39,7 @@ struct ThemePickerComponent: View {
         }
         .animation(.easeInOut(duration: Theme.AnimationDuration.medium), value: themeManager.theme.id)
         .sheet(isPresented: $showingUpgrade) {
-            PremiumUpgradeView()
+            PremiumUpgradeView(context: .theme)
         }
     }
 

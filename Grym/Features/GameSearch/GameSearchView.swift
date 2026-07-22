@@ -45,7 +45,7 @@ struct GameSearchView: View {
             }
         }
         .sheet(isPresented: $showingUpgrade) {
-            PremiumUpgradeView()
+            PremiumUpgradeView(context: .gameLimit)
         }
     }
 

@@ -21,6 +21,8 @@ struct ProfileView: View {
 
                     StudioCreditComponent()
 
+                    premiumSection
+
                     appearanceSection
 
                     languageSection
@@ -40,6 +42,18 @@ struct ProfileView: View {
     }
 
     // MARK: Sections
+
+    private var premiumSection: some View {
+        ProfileSectionCard(
+            systemImage: "crown.fill",
+            title: localization.string(.profilePremiumSection)
+        ) {
+            // La carte porte son propre libellé et son état.
+            ProfileSettingRow(hint: localization.string(.profilePremiumHint)) {
+                PremiumStatusCard()
+            }
+        }
+    }
 
     private var appearanceSection: some View {
         ProfileSectionCard(

@@ -66,6 +66,10 @@ enum Theme {
         static let scoreGauge: CGFloat = 46
         /// Jauge de note de la carte du détail d'un wiki.
         static let scoreGaugeLarge: CGFloat = 78
+        /// Pastille couronne de l'en-tête du paywall.
+        static let premiumCrest: CGFloat = 64
+        /// Pastille d'icône d'un avantage premium.
+        static let premiumBenefitIcon: CGFloat = 40
     }
 
     // MARK: - Seuils d'affichage

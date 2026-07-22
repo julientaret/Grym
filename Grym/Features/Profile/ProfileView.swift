@@ -23,6 +23,8 @@ struct ProfileView: View {
 
                     premiumSection
 
+                    supportSection
+
                     appearanceSection
 
                     languageSection
@@ -51,6 +53,18 @@ struct ProfileView: View {
             // La carte porte son propre libellé et son état.
             ProfileSettingRow(hint: localization.string(.profilePremiumHint)) {
                 PremiumStatusCard()
+            }
+        }
+    }
+
+    private var supportSection: some View {
+        ProfileSectionCard(
+            systemImage: "star.fill",
+            title: localization.string(.profileSupportSection)
+        ) {
+            // L'encart porte son propre libellé.
+            ProfileSettingRow(hint: localization.string(.reviewPromptFooter)) {
+                RateAppCard()
             }
         }
     }

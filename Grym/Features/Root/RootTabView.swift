@@ -14,6 +14,7 @@ import SwiftUI
 struct RootTabView: View {
     @EnvironmentObject private var localization: LocalizationManager
     @EnvironmentObject private var router: AppRouter
+    @EnvironmentObject private var reviewPrompt: ReviewPromptManager
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
 
@@ -37,7 +38,13 @@ struct RootTabView: View {
                 }
                 .tag(RootTab.profile)
         }
-        .task { SpotlightIndexer.reindexAll(context: modelContext) }
+        .task {
+            SpotlightIndexer.reindexAll(context: modelContext)
+            reviewPrompt.evaluateAtLaunch(gameCount: gameCount)
+        }
+        .sheet(isPresented: $reviewPrompt.isPresenting) {
+            ReviewPromptView()
+        }
         // L'index reflète l'état laissé par la session : réindexation à la sortie.
         .onChange(of: scenePhase) { _, phase in
             guard phase == .background else { return }
@@ -50,6 +57,11 @@ struct RootTabView: View {
             router.open(target)
         }
     }
+
+    /// Nombre de jeux enregistrés, base du palier de la demande de note.
+    private var gameCount: Int {
+        (try? modelContext.fetchCount(FetchDescriptor<Game>())) ?? 0
+    }
 }
 
 #Preview {
@@ -60,5 +72,6 @@ struct RootTabView: View {
         .environmentObject(PreferencesManager())
         .environmentObject(PremiumManager())
         .environmentObject(AppRouter())
+        .environmentObject(ReviewPromptManager())
         .environment(\.theme, GrymBlueTheme())
 }

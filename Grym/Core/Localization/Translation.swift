@@ -111,6 +111,15 @@ enum TranslationKey: String {
     case premiumRestore
     case premiumActiveTitle
     case premiumActiveMessage
+    // Demande de note
+    case reviewPromptKicker
+    case reviewPromptTitle
+    case reviewPromptMessage
+    case reviewPromptCTA
+    case reviewPromptFooter
+    case reviewPromptLater
+    case profileSupportSection
+    case profileRateMessage
     case profilePremiumSection
     case profilePremiumHint
     case profilePremiumCTA
@@ -353,6 +362,14 @@ enum Translation {
             .premiumRestore: "Restaurer l'achat",
             .premiumActiveTitle: "Édition Complète débloquée",
             .premiumActiveMessage: "Merci ! Tout est débloqué, sur cet appareil comme sur les suivants.",
+            .reviewPromptKicker: "Succès déverrouillé",
+            .reviewPromptTitle: "Collection lancée",
+            .reviewPromptMessage: "Quatre jeux au compteur : ton carnet prend forme. Si Grym t'aide à t'y retrouver, laisse cinq étoiles sur l'App Store — c'est le meilleur loot pour un studio indé.",
+            .reviewPromptCTA: "Mettre 5 étoiles",
+            .reviewPromptFooter: "Trente secondes, et ça compte vraiment.",
+            .reviewPromptLater: "Plus tard",
+            .profileSupportSection: "Soutenir Grym",
+            .profileRateMessage: "Une note sur l'App Store, c'est le meilleur loot pour un studio indé.",
             .profilePremiumSection: "Premium",
             .profilePremiumHint: "L'achat est lié à votre identifiant Apple : restaurable sur vos autres appareils.",
             .profilePremiumCTA: "Débloquer l'Édition Complète",
@@ -573,6 +590,14 @@ enum Translation {
             .premiumRestore: "Restore purchase",
             .premiumActiveTitle: "Complete Edition unlocked",
             .premiumActiveMessage: "Thank you! Everything is unlocked, on this device and the next ones.",
+            .reviewPromptKicker: "Achievement unlocked",
+            .reviewPromptTitle: "Collection started",
+            .reviewPromptMessage: "Four games on the counter: your notebook is taking shape. If Grym helps you keep track, drop five stars on the App Store — best loot an indie studio can get.",
+            .reviewPromptCTA: "Leave 5 stars",
+            .reviewPromptFooter: "Thirty seconds, and it really counts.",
+            .reviewPromptLater: "Maybe later",
+            .profileSupportSection: "Support Grym",
+            .profileRateMessage: "A rating on the App Store is the best loot an indie studio can get.",
             .profilePremiumSection: "Premium",
             .profilePremiumHint: "The purchase is tied to your Apple ID: restorable on your other devices.",
             .profilePremiumCTA: "Unlock the Complete Edition",

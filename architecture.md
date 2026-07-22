@@ -7,7 +7,7 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu, sta
 
 ## App
 
-- `GrymApp.swift` — Point d'entrée `@main`, injecte `LocalizationManager`/`ThemeManager`/`PremiumManager`/`PreferencesManager`/`AppRouter`, installe le `modelContainer` SwiftData (Game/Wiki/Page/Block/PlaySession) et affiche `RootTabView`.
+- `GrymApp.swift` — Point d'entrée `@main`, injecte `LocalizationManager`/`ThemeManager`/`PremiumManager`/`PreferencesManager`/`AppRouter`/`ReviewPromptManager`, installe le `modelContainer` SwiftData (Game/Wiki/Page/Block/PlaySession) et affiche `RootTabView`.
 
 ## Core/Navigation
 
@@ -29,6 +29,10 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu, sta
 ## Core/Premium
 
 - `PremiumManager.swift` — `ObservableObject` StoreKit 2 : charge le produit (`com.applemousse.grym.premium`, achat unique), achat/restauration, observe les transactions et expose `hasStoreEntitlement` (mis en cache UserDefaults) + `isPremium` effectif (en DEBUG, `debugPremiumOverride` le force) et la limite gratuite (`freeGameLimit = 10`).
+
+## Core/Review
+
+- `ReviewPromptManager.swift` — `ObservableObject` décidant de la demande de note : au lancement, `evaluateAtLaunch(gameCount:)` ouvre la modale si la collection atteint `gameThreshold = 4` et qu'elle n'a jamais été proposée (drapeau `reviewPromptShown` en UserDefaults, posé dès l'affichage).
 
 ## Configuration (hors Swift)
 
@@ -88,7 +92,7 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 
 ## Features/Root
 
-- `RootTabView.swift` — Navigation principale : `TabView` à trois onglets (Accueil, Mes jeux, Profil), sélection pilotée par l'`AppRouter` ; déclenche l'indexation Spotlight et ouvre les résultats de la recherche système (`onContinueUserActivity`).
+- `RootTabView.swift` — Navigation principale : `TabView` à trois onglets (Accueil, Mes jeux, Profil), sélection pilotée par l'`AppRouter` ; déclenche l'indexation Spotlight, ouvre les résultats de la recherche système (`onContinueUserActivity`) et présente `ReviewPromptView` au lancement selon le `ReviewPromptManager`.
 
 ## Features/Search
 
@@ -191,6 +195,14 @@ Paywall : ce que l'achat unique débloque, expliqué avantage par avantage. Ouve
 - `Components/PremiumBenefitRow.swift` — Ligne d'avantage façon succès : pastille d'icône accentuée, intitulé, explication concrète et état cadenas/coche (`isUnlocked`).
 - `Components/PremiumPurchaseFooter.swift` — Pied épinglé : bouton d'achat balayé d'un reflet en boucle (prix localisé StoreKit, `ProgressView` pendant l'achat), mention « achat unique » et restauration ; remonte le déverrouillage via `onUnlocked`.
 
+## Features/ReviewPrompt
+
+Demande de note App Store, présentée une seule fois façon écran de succès.
+
+- `ReviewPromptView.swift` — Modale (sheet depuis `RootTabView`) sur `PremiumBackgroundView` (fond « menu de jeu » partagé avec le paywall) : en-tête, étoiles, bouton « Mettre 5 étoiles » (déclenche la fiche système via `\.requestReview`, fermeture différée) et « Plus tard ».
+- `Components/ReviewPromptHeaderView.swift` — En-tête : médaille de succès (halo + pastille `rosette`), libellé HUD, titre en dégradé et message.
+- `Components/ReviewStarsView.swift` — Cinq étoiles qui s'allument en cascade (instantané si « Réduire les animations »).
+
 ## Features/GameSearch
 
 Ajout d'un jeu : recherche live IGDB, présentée en sheet depuis le bouton « + » de l'accueil.
@@ -201,9 +213,10 @@ Ajout d'un jeu : recherche live IGDB, présentée en sheet depuis le bouton « +
 
 ## Features/Profile
 
-- `ProfileView.swift` — Onglet Profil : fond dégradé Grym et cartes de réglages (Premium : état + accès au paywall ; Apparence : thème ; Langue ; Affichage : mode des wikis ; Développement : simulation du premium, DEBUG seulement).
+- `ProfileView.swift` — Onglet Profil : fond dégradé Grym et cartes de réglages (Premium : état + accès au paywall ; Soutenir Grym : encart de notation ; Apparence : thème ; Langue ; Affichage : mode des wikis ; Développement : simulation du premium, DEBUG seulement).
 - `Components/ProfileHeaderView.swift` — En-tête du profil : bannière illustrée (`BannerHeaderView`, `banner-profile`, hauteur compacte) avec titre et sous-titre superposés.
 - `Components/PremiumStatusCard.swift` — Carte cliquable de l'état premium (couronne / sceau validé, libellé et sous-titre selon `PremiumManager.isPremium`) ; ouvre `PremiumUpgradeView` en sheet.
+- `Components/RateAppCard.swift` — Encart « Mettre 5 étoiles » (même ton que la modale du 4e jeu) : pastille étoile, phrase courte et cinq étoiles décoratives ; ouvre la fiche système d'évaluation (`\.requestReview`).
 - `Components/StudioCreditComponent.swift` — Encart « Une création AppleMousse Studio » : logo, libellé et lien vers https://applemousse-studio.fr.
 - `Components/ProfileSectionCard.swift` — Carte de section générique : `SectionHeaderView` + contenu sur surface translucide.
 - `Components/ProfileSettingRow.swift` — Ligne de réglage : intitulé, contrôle et texte d'aide optionnel.

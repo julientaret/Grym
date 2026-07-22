@@ -72,6 +72,10 @@ enum Theme {
         static let premiumRingWidth: CGFloat = 3
         /// Pastille d'icône d'un avantage premium.
         static let premiumBenefitIcon: CGFloat = 40
+        /// Pastille de succès de la demande de note.
+        static let reviewCrest: CGFloat = 56
+        /// Étoile de la demande de note.
+        static let reviewStar: CGFloat = 28
     }
 
     // MARK: - Interlettrage

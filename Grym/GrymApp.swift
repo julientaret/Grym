@@ -14,6 +14,7 @@ struct GrymApp: App {
     @StateObject private var themeManager = ThemeManager()
     @StateObject private var premium = PremiumManager()
     @StateObject private var preferences = PreferencesManager()
+    @StateObject private var router = AppRouter()
 
     var body: some Scene {
         WindowGroup {
@@ -22,6 +23,7 @@ struct GrymApp: App {
                 .environmentObject(themeManager)
                 .environmentObject(premium)
                 .environmentObject(preferences)
+                .environmentObject(router)
                 .environment(\.theme, themeManager.theme)
                 .tint(themeManager.theme.accent)
                 // Un thème premium ne doit pas survivre à la perte du droit.

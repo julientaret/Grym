@@ -50,6 +50,8 @@ enum Theme {
         static let bannerHeightCompact: CGFloat = 180
         /// Pastille d'humeur d'une ligne de session.
         static let sessionMoodIcon: CGFloat = 36
+        /// Vignette de jaquette d'un résultat de recherche.
+        static let searchThumbnail: CGFloat = 44
     }
 
     // MARK: - Seuils d'affichage

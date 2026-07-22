@@ -12,6 +12,7 @@ import SwiftUI
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @State private var showingGameSearch = false
+    @State private var showingGlobalSearch = false
     /// Destination poussée depuis une entrée d'activité récente.
     @State private var activityTarget: ActivityTarget?
     @EnvironmentObject private var localization: LocalizationManager
@@ -22,7 +23,10 @@ struct HomeView: View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Theme.Spacing.large) {
-                    HomeHeaderView(onAddGame: { showingGameSearch = true })
+                    HomeHeaderView(
+                        onAddGame: { showingGameSearch = true },
+                        onSearch: { showingGlobalSearch = true }
+                    )
 
                     if !viewModel.pinnedWikis.isEmpty {
                         PinnedWikisSection(
@@ -60,6 +64,9 @@ struct HomeView: View {
             viewModel.load(context: modelContext, localization: localization)
         }) {
             GameSearchView { _ in showingGameSearch = false }
+        }
+        .sheet(isPresented: $showingGlobalSearch) {
+            GlobalSearchView()
         }
     }
 

@@ -12,12 +12,13 @@ import SwiftUI
 struct MyGamesView: View {
     @StateObject private var viewModel = MyGamesViewModel()
     @State private var showingGameSearch = false
-    @State private var path: [Wiki] = []
+    @State private var path: [ActivityTarget] = []
     /// Wiki créé depuis la recherche, poussé une fois la sheet refermée.
     @State private var pendingWiki: Wiki?
 
     @EnvironmentObject private var localization: LocalizationManager
     @EnvironmentObject private var premium: PremiumManager
+    @EnvironmentObject private var router: AppRouter
     @Environment(\.theme) private var theme
     @Environment(\.modelContext) private var modelContext
 
@@ -48,7 +49,7 @@ struct MyGamesView: View {
                         LazyVStack(spacing: Theme.Spacing.small) {
                             ForEach(viewModel.wikis) { wiki in
                                 if let summary = WikiSummary(wiki: wiki) {
-                                    NavigationLink(value: wiki) {
+                                    NavigationLink(value: ActivityTarget(wiki: wiki, page: nil)) {
                                         WikiRowView(wiki: summary)
                                     }
                                     .buttonStyle(.plain)
@@ -75,16 +76,22 @@ struct MyGamesView: View {
             }
             .ignoresSafeArea(edges: .top)
             .background(background)
-            .navigationDestination(for: Wiki.self) { wiki in
-                WikiDetailView(wiki: wiki)
+            .navigationDestination(for: ActivityTarget.self) { target in
+                WikiDetailView(wiki: target.wiki, initialPage: target.page)
             }
         }
         .onAppear { viewModel.load(context: modelContext) }
+        // Cible venue de Spotlight : poussée dès que l'onglet est affiché.
+        .onChange(of: router.pendingTarget) { _, target in
+            guard let target else { return }
+            router.pendingTarget = nil
+            path.append(target)
+        }
         .sheet(isPresented: $showingGameSearch, onDismiss: {
             viewModel.load(context: modelContext)
             if let wiki = pendingWiki {
                 pendingWiki = nil
-                path.append(wiki)
+                path.append(ActivityTarget(wiki: wiki, page: nil))
             }
         }) {
             GameSearchView { wiki in
@@ -173,5 +180,6 @@ struct MyGamesView: View {
         .modelContainer(PreviewSampleData.container)
         .environmentObject(LocalizationManager())
         .environmentObject(PremiumManager())
+        .environmentObject(AppRouter())
         .environment(\.theme, GrymBlueTheme())
 }

@@ -7,7 +7,11 @@ checklists, cartes annotées). Note personnelle privée de 0 à 100 par jeu, sta
 
 ## App
 
-- `GrymApp.swift` — Point d'entrée `@main`, injecte `LocalizationManager`/`ThemeManager`/`PremiumManager`/`PreferencesManager`, installe le `modelContainer` SwiftData (Game/Wiki/Page/Block/PlaySession) et affiche `RootTabView`.
+- `GrymApp.swift` — Point d'entrée `@main`, injecte `LocalizationManager`/`ThemeManager`/`PremiumManager`/`PreferencesManager`/`AppRouter`, installe le `modelContainer` SwiftData (Game/Wiki/Page/Block/PlaySession) et affiche `RootTabView`.
+
+## Core/Navigation
+
+- `AppRouter.swift` — `ObservableObject` transverse : onglet actif (`RootTab`) et cible en attente (`pendingTarget`) demandée depuis l'extérieur (résultat Spotlight) ; `open(_:)` bascule sur « Mes jeux ».
 
 ## Core/Components
 
@@ -77,20 +81,30 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 ## Core/Services
 
 - `CoverStore.swift` — Stockage local des jaquettes (offline-first) : téléchargement à l'ajout, rangées dans Application Support (exclu du backup), nommées par `image_id`.
+- `SpotlightIndexer.swift` — Indexation CoreSpotlight des jeux et des wikis (identifiants lisibles `game:<igdbId>` / `page:<igdbId>:<titre>`), réindexation complète au lancement et au passage en arrière-plan ; `target(for:context:)` résout un résultat système en destination applicative.
 - `ImageStore.swift` — Stockage local des images de blocs photo : ré-encodage JPEG downscalé (max 1600 px), rangées dans Application Support (exclu du backup).
 
 ## Features/Root
 
-- `RootTabView.swift` — Navigation principale : `TabView` à trois onglets (Accueil, Mes jeux, Profil).
+- `RootTabView.swift` — Navigation principale : `TabView` à trois onglets (Accueil, Mes jeux, Profil), sélection pilotée par l'`AppRouter` ; déclenche l'indexation Spotlight et ouvre les résultats de la recherche système (`onContinueUserActivity`).
+
+## Features/Search
+
+Recherche globale hors ligne dans toute la collection, présentée en sheet depuis l'accueil.
+
+- `GlobalSearchView.swift` — `NavigationStack` + `.searchable` : résultats groupés par section, états invite / vide, ouverture directe du wiki ou de la page trouvée.
+- `GlobalSearchViewModel.swift` — `ObservableObject` : parcours en mémoire des wikis (titres de jeu, titres de page, notes, items de checklist, repères de carte), extraits centrés sur l'occurrence, plafond de résultats, groupement par `SearchResultKind` et résolution de la destination.
+- `Models/SearchResult.swift` — `SearchResultKind` (jeu / wiki / note / checklist / repère) et `SearchResult` (extrait, contexte, jaquette, identifiants wiki/page).
+- `Components/SearchResultRow.swift` — Ligne d'un résultat : vignette de jaquette, extrait, contexte et icône de nature.
 
 ## Features/Home
 
 Écran d'accueil (onglet Wikis) — **dashboard** : épinglés et activité récente. La liste complète vit dans « Mes jeux ».
 
-- `HomeView.swift` — Vue principale : en-tête, épinglés, activité récente, sur fond dégradé. Deux états vides via `EmptyStateView` (onboarding + ajout de jeu si aucun jeu, explication de l'épinglage sinon).
+- `HomeView.swift` — Vue principale : en-tête (ajout de jeu + recherche globale en sheet), épinglés, activité récente, sur fond dégradé. Deux états vides via `EmptyStateView` (onboarding + ajout de jeu si aucun jeu, explication de l'épinglage sinon).
 - `HomeViewModel.swift` — `ObservableObject` : charge épinglés + total depuis SwiftData (`load(context:localization:)`) et construit le flux d'activité récente (wikis créés, notes modifiées, sessions consignées et changements de statut, fusionnés et triés, 10 max) ; `isDashboardEmpty` ; `target(for:context:)` résout la destination d'une entrée d'activité.
 - `Models/HomeModel.swift` — Modèles de présentation : `WikiSummary` (mapping depuis `Wiki`, statut et temps de jeu inclus), `ActivityEntry` (jaquette + identifiants wiki/page cibles), `ActivityKind` (page/note/session/statut…), `ActivityTarget` (destination de navigation).
-- `Components/HomeHeaderView.swift` — Bannière illustrée (`banner-home`) avec overlay dégradé, titre « Grym », tagline et bouton d'ajout superposés.
+- `Components/HomeHeaderView.swift` — Bannière illustrée (`banner-home`) avec overlay dégradé, titre « Grym », tagline, bouton d'ajout et accès à la recherche globale superposés.
 - `Components/HomeSearchBar.swift` — Barre de recherche locale (actuellement masquée, conservée pour plus tard).
 - `Components/SectionHeaderView.swift` — En-tête de section réutilisable (icône + titre + compteur).
 - `Components/WikiCoverView.swift` — Cover d'un wiki : jaquette locale (offline) sinon CDN IGDB sinon dégradé teinté. Prend un `image_id`.
@@ -106,7 +120,7 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 
 Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
-- `MyGamesView.swift` — `NavigationStack` : bannière d'en-tête (`BannerHeaderView`, `banner-my-games`), barre tri + filtre, liste des wikis (`WikiRowView`), compteur (toujours sur la collection entière), état vide illustré (`EmptyStateView` + CTA d'ajout, mention du palier gratuit hors premium), suppression par menu contextuel, navigation vers `WikiDetailView` (le wiki créé depuis la recherche est poussé automatiquement à la fermeture de la sheet).
+- `MyGamesView.swift` — `NavigationStack` : bannière d'en-tête (`BannerHeaderView`, `banner-my-games`), barre tri + filtre, liste des wikis (`WikiRowView`), compteur (toujours sur la collection entière), état vide illustré (`EmptyStateView` + CTA d'ajout, mention du palier gratuit hors premium), suppression par menu contextuel, navigation vers `WikiDetailView` via une pile d'`ActivityTarget` (le wiki créé depuis la recherche est poussé automatiquement à la fermeture de la sheet, et la cible en attente de l'`AppRouter` — venue de Spotlight — est consommée à l'affichage).
 - `MyGamesViewModel.swift` — `ObservableObject` : charge les wikis (`load` → `allWikis`), suppression via `WikiRepository` (`delete`), tri en mémoire selon `sortOption` et filtre par `statusFilter` (les deux persistés dans les UserDefaults) ; `wikis` expose la liste affichée, `hasNoGame` distingue collection vide et filtre sans résultat.
 - `Components/GameSortMenu.swift` — Menu capsule de choix du critère de tri (`GameSortOption`).
 - `Components/GameStatusFilterMenu.swift` — Menu capsule de filtrage par statut (`GameStatus`), « Tous » quand la sélection est `nil`.

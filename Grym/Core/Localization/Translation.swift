@@ -156,6 +156,16 @@ enum TranslationKey: String {
     case checklistTitlePlaceholder
     case checklistAddItem
     case checklistItemPlaceholder
+    // Recherche globale
+    case searchTitle
+    case searchPlaceholder
+    case searchPrompt
+    case searchEmpty
+    case searchSectionGames
+    case searchSectionPages
+    case searchSectionNotes
+    case searchSectionChecklists
+    case searchSectionPins
     // Liens internes entre pages
     case linkPickerTitle
     case linkPickerEmpty
@@ -327,6 +337,15 @@ enum Translation {
             .checklistTitlePlaceholder: "Titre de la liste",
             .checklistAddItem: "Ajouter un élément",
             .checklistItemPlaceholder: "Élément",
+            .searchTitle: "Rechercher",
+            .searchPlaceholder: "Jeux, wikis, notes, checklists…",
+            .searchPrompt: "Cherche dans tous tes jeux : titres, wikis, notes, checklists et repères de carte.",
+            .searchEmpty: "Aucun résultat.",
+            .searchSectionGames: "Jeux",
+            .searchSectionPages: "Wikis",
+            .searchSectionNotes: "Notes",
+            .searchSectionChecklists: "Checklists",
+            .searchSectionPins: "Repères",
             .linkPickerTitle: "Lier un wiki",
             .linkPickerEmpty: "Ce jeu n'a qu'un seul wiki. Crées-en un autre pour pouvoir le lier.",
             .backlinksTitle: "Cité par",
@@ -483,6 +502,15 @@ enum Translation {
             .checklistTitlePlaceholder: "List title",
             .checklistAddItem: "Add an item",
             .checklistItemPlaceholder: "Item",
+            .searchTitle: "Search",
+            .searchPlaceholder: "Games, wikis, notes, checklists…",
+            .searchPrompt: "Search across all your games: titles, wikis, notes, checklists and map pins.",
+            .searchEmpty: "No result.",
+            .searchSectionGames: "Games",
+            .searchSectionPages: "Wikis",
+            .searchSectionNotes: "Notes",
+            .searchSectionChecklists: "Checklists",
+            .searchSectionPins: "Pins",
             .linkPickerTitle: "Link a wiki",
             .linkPickerEmpty: "This game has a single wiki. Create another one to link it.",
             .backlinksTitle: "Referenced by",

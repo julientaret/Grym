@@ -2,8 +2,9 @@
 //  HomeView.swift
 //  Grym
 //
-//  Écran d'accueil (onglet Wikis) — dashboard : en-tête, wikis épinglés
-//  et activité récente. La liste complète des jeux vit dans « Mes jeux ».
+//  Écran d'accueil (onglet Wikis) — dashboard : en-tête, wikis épinglés,
+//  activité récente (5 entrées) et bilan de la collection.
+//  La liste complète des jeux vit dans « Mes jeux ».
 //
 
 import SwiftData
@@ -11,11 +12,15 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
+    @StateObject private var statsViewModel = StatsViewModel()
     @State private var showingGameSearch = false
     @State private var showingGlobalSearch = false
+    @State private var showingStats = false
+    @State private var showingPremium = false
     /// Destination poussée depuis une entrée d'activité récente.
     @State private var activityTarget: ActivityTarget?
     @EnvironmentObject private var localization: LocalizationManager
+    @EnvironmentObject private var premium: PremiumManager
     @Environment(\.theme) private var theme
     @Environment(\.modelContext) private var modelContext
 
@@ -44,6 +49,14 @@ struct HomeView: View {
                         )
                     }
 
+                    if !statsViewModel.stats.isEmpty {
+                        HomeStatsSection(
+                            stats: statsViewModel.stats,
+                            isDetailUnlocked: premium.isPremium,
+                            onOpenDetail: openStatsDetail
+                        )
+                    }
+
                     if viewModel.isDashboardEmpty {
                         dashboardEmptyState
                     }
@@ -58,15 +71,32 @@ struct HomeView: View {
             .navigationDestination(item: $activityTarget) { target in
                 WikiDetailView(wiki: target.wiki, initialPage: target.page)
             }
+            .navigationDestination(isPresented: $showingStats) { StatsView() }
         }
-        .onAppear { viewModel.load(context: modelContext, localization: localization) }
-        .sheet(isPresented: $showingGameSearch, onDismiss: {
-            viewModel.load(context: modelContext, localization: localization)
-        }) {
+        .onAppear { reload() }
+        .sheet(isPresented: $showingGameSearch, onDismiss: reload) {
             GameSearchView { _ in showingGameSearch = false }
         }
         .sheet(isPresented: $showingGlobalSearch) {
             GlobalSearchView()
+        }
+        .sheet(isPresented: $showingPremium) { PremiumUpgradeView() }
+    }
+
+    // MARK: Actions
+
+    private func reload() {
+        viewModel.load(context: modelContext, localization: localization)
+        statsViewModel.load(context: modelContext, localization: localization)
+    }
+
+    /// Le bilan détaillé reste un avantage premium ; le résumé, lui, est visible
+    /// de tous (cf. `PremiumUpgradeView`).
+    private func openStatsDetail() {
+        if premium.isPremium {
+            showingStats = true
+        } else {
+            showingPremium = true
         }
     }
 

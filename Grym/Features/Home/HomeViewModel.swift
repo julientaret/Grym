@@ -130,6 +130,7 @@ final class HomeViewModel: ObservableObject {
         return Array(entries.sorted { $0.date > $1.date }.prefix(activityLimit))
     }
 
-    /// Nombre maximal d'entrées affichées dans le flux.
-    private static let activityLimit = 10
+    /// Nombre maximal d'entrées affichées dans le flux. Volontairement court :
+    /// le dashboard enchaîne ensuite sur le bilan.
+    private static let activityLimit = 5
 }

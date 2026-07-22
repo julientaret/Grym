@@ -2,7 +2,8 @@
 //  StatsBreakdownView.swift
 //  Grym
 //
-//  Répartition en barre empilée (statuts, paliers de note) avec légende.
+//  Carte de répartition du bilan : barre empilée + légende détaillée
+//  (une ligne par part, avec son compte).
 //
 
 import SwiftUI
@@ -23,7 +24,7 @@ struct StatsBreakdownView: View {
                 .foregroundStyle(theme.secondaryText)
                 .tracking(1)
 
-            bar
+            BreakdownBarView(slices: slices)
 
             legend
         }
@@ -31,44 +32,39 @@ struct StatsBreakdownView: View {
         .background(
             RoundedRectangle(cornerRadius: Theme.Radius.large, style: .continuous)
                 .fill(theme.surface.opacity(0.5))
+                .overlay(
+                    RoundedRectangle(cornerRadius: Theme.Radius.large, style: .continuous)
+                        .stroke(.white.opacity(0.06), lineWidth: 1)
+                )
         )
     }
 
-    private var bar: some View {
-        GeometryReader { geo in
-            HStack(spacing: 2) {
-                ForEach(slices) { slice in
-                    Capsule()
-                        .fill(slice.color)
-                        .frame(width: width(for: slice, in: geo.size.width))
-                }
-            }
-        }
-        .frame(height: Theme.Size.breakdownBarHeight)
-    }
-
     private var legend: some View {
-        VStack(alignment: .leading, spacing: Theme.Spacing.xSmall) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.small) {
             ForEach(slices) { slice in
                 HStack(spacing: Theme.Spacing.small) {
                     Circle().fill(slice.color).frame(width: 8, height: 8)
                     Text(localization.string(slice.nameKey))
                         .font(.system(size: Theme.FontSize.caption))
                         .foregroundStyle(theme.primaryText)
+
                     Spacer()
-                    Text("\(slice.count)")
-                        .font(.system(size: Theme.FontSize.caption, weight: .semibold))
+
+                    Text(percentage(of: slice))
+                        .font(.system(size: Theme.FontSize.caption))
                         .foregroundStyle(theme.secondaryText)
+                    Text("\(slice.count)")
+                        .font(.system(size: Theme.FontSize.caption, weight: .bold))
+                        .foregroundStyle(slice.color)
+                        .frame(minWidth: Theme.Spacing.large, alignment: .trailing)
                 }
             }
         }
     }
 
-    /// Largeur proportionnelle, en retirant les séparateurs de 2 pt.
-    private func width(for slice: BreakdownSlice, in available: CGFloat) -> CGFloat {
-        guard total > 0 else { return 0 }
-        let spacing = CGFloat(max(slices.count - 1, 0)) * 2
-        return max((available - spacing) * CGFloat(slice.count) / CGFloat(total), 2)
+    private func percentage(of slice: BreakdownSlice) -> String {
+        guard total > 0 else { return "" }
+        return "\(Int((Double(slice.count) / Double(total) * 100).rounded())) %"
     }
 }
 

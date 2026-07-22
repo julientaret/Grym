@@ -31,6 +31,8 @@ enum Theme {
         static let body: CGFloat = 16
         static let title: CGFloat = 22
         static let largeTitle: CGFloat = 34
+        /// Chiffre mis en avant (temps de jeu du bilan).
+        static let hero: CGFloat = 44
     }
 
     // MARK: - Radius
@@ -56,6 +58,8 @@ enum Theme {
         static let breakdownBarHeight: CGFloat = 14
         /// Vignette de jaquette d'une ligne de classement.
         static let rankingThumbnail: CGFloat = 40
+        /// Pastille d'icône de l'en-tête du bilan.
+        static let statsHeroIcon: CGFloat = 52
     }
 
     // MARK: - Seuils d'affichage

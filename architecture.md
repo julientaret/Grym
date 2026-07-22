@@ -102,12 +102,13 @@ Recherche globale hors ligne dans toute la collection, présentée en sheet depu
 
 Écran d'accueil (onglet Wikis) — **dashboard** : épinglés et activité récente. La liste complète vit dans « Mes jeux ».
 
-- `HomeView.swift` — Vue principale : en-tête (ajout de jeu + recherche globale en sheet), épinglés, activité récente, sur fond dégradé. Deux états vides via `EmptyStateView` (onboarding + ajout de jeu si aucun jeu, explication de l'épinglage sinon).
-- `HomeViewModel.swift` — `ObservableObject` : charge épinglés + total depuis SwiftData (`load(context:localization:)`) et construit le flux d'activité récente (wikis créés, notes modifiées, sessions consignées et changements de statut, fusionnés et triés, 10 max) ; `isDashboardEmpty` ; `target(for:context:)` résout la destination d'une entrée d'activité.
+- `HomeView.swift` — Vue principale : en-tête (ajout de jeu + recherche globale en sheet), épinglés, activité récente (5 entrées) et bilan de la collection, sur fond dégradé. Le résumé du bilan est visible de tous ; « Voir le bilan complet » pousse `StatsView` en premium, ouvre `PremiumUpgradeView` sinon. Deux états vides via `EmptyStateView` (onboarding + ajout de jeu si aucun jeu, explication de l'épinglage sinon).
+- `HomeViewModel.swift` — `ObservableObject` : charge épinglés + total depuis SwiftData (`load(context:localization:)`) et construit le flux d'activité récente (wikis créés, notes modifiées, sessions consignées et changements de statut, fusionnés et triés, 5 max) ; `isDashboardEmpty` ; `target(for:context:)` résout la destination d'une entrée d'activité.
 - `Models/HomeModel.swift` — Modèles de présentation : `WikiSummary` (mapping depuis `Wiki`, statut et temps de jeu inclus), `ActivityEntry` (jaquette + identifiants wiki/page cibles), `ActivityKind` (page/note/session/statut…), `ActivityTarget` (destination de navigation).
 - `Components/HomeHeaderView.swift` — Bannière illustrée (`banner-home`) avec overlay dégradé, titre « Grym », tagline, bouton d'ajout et accès à la recherche globale superposés.
 - `Components/HomeSearchBar.swift` — Barre de recherche locale (actuellement masquée, conservée pour plus tard).
 - `Components/SectionHeaderView.swift` — En-tête de section réutilisable (icône + titre + compteur).
+- `Components/HomeStatsSection.swift` — Résumé du bilan sur le dashboard : en-tête temps de jeu (`PlaytimeHeroView`), répartition par statut (barre + pastilles), trois chiffres clés (jeux, note moyenne, wikis) et accès au bilan complet (badge « Premium » si verrouillé).
 - `Components/WikiCoverView.swift` — Cover d'un wiki : jaquette locale (offline) sinon CDN IGDB sinon dégradé teinté. Prend un `image_id`.
 - `Components/ScoreBadgeView.swift` — Pastille de note 0–100 colorée selon le tier du thème.
 - `Components/PinnedWikiCard.swift` — Carte d'un wiki épinglé.
@@ -164,13 +165,16 @@ Détail d'un wiki : édition directe du modèle via `@Bindable` (écart MVVM jus
 
 ## Features/Stats
 
-Bilan personnel de la collection (avantage premium), poussé depuis le Profil.
+Bilan personnel de la collection. Le résumé vit sur l'accueil (`HomeStatsSection`) ; l'écran détaillé reste un avantage premium.
 
-- `StatsView.swift` — Écran du bilan : chiffres clés (jeux, temps de jeu, note moyenne, sessions), répartitions par statut et par palier, classements de tête, volumes de contenu créé ; état vide si la collection est vide.
+- `StatsView.swift` — Écran du bilan : en-tête temps de jeu, chiffres clés (jeux, wikis, note moyenne, sessions), répartitions par statut et par palier, classements de tête, volumes de contenu créé (3 par ligne) ; état vide si la collection est vide.
 - `StatsViewModel.swift` — `ObservableObject` : agrège les wikis en mémoire (`load(context:localization:)`), exclut les jeux non notés de la moyenne et construit les répartitions et classements (5 entrées).
 - `Models/StatsModel.swift` — `LibraryStats` (tous les compteurs et dérivés), `BreakdownSlice` (part d'une répartition) et `RankedGame` (entrée de classement).
 - `Components/StatTileView.swift` — Tuile d'une statistique (icône, valeur, libellé).
-- `Components/StatsBreakdownView.swift` — Barre empilée proportionnelle + légende chiffrée.
+- `Components/PlaytimeHeroView.swift` — En-tête du bilan : temps de jeu cumulé en dégradé d'accent, résumé des sessions (ou invitation à en consigner une) et pastille d'icône. Partagé accueil / écran complet.
+- `Components/BreakdownBarView.swift` — Barre empilée proportionnelle d'une répartition.
+- `Components/BreakdownChipsView.swift` — Légende compacte en pastilles défilables (accueil).
+- `Components/StatsBreakdownView.swift` — Carte de répartition : `BreakdownBarView` + légende détaillée avec pourcentage et compte.
 - `Components/RankingSection.swift` — Classement de tête : rang, jaquette, titre, valeur.
 
 ## Features/Premium
@@ -187,8 +191,7 @@ Ajout d'un jeu : recherche live IGDB, présentée en sheet depuis le bouton « +
 
 ## Features/Profile
 
-- `ProfileView.swift` — Onglet Profil : fond dégradé Grym et cartes de réglages (Bilan : accès aux statistiques ; Apparence : thème ; Langue ; Affichage : mode des wikis ; Développement : simulation du premium, DEBUG seulement).
-- `Components/StatsEntryRow.swift` — Ligne d'accès au bilan : pousse `StatsView` en premium, ouvre `PremiumUpgradeView` sinon (badge « Premium »).
+- `ProfileView.swift` — Onglet Profil : fond dégradé Grym et cartes de réglages (Apparence : thème ; Langue ; Affichage : mode des wikis ; Développement : simulation du premium, DEBUG seulement).
 - `Components/ProfileHeaderView.swift` — En-tête du profil : bannière illustrée (`BannerHeaderView`, `banner-profile`, hauteur compacte) avec titre et sous-titre superposés.
 - `Components/StudioCreditComponent.swift` — Encart « Une création AppleMousse Studio » : logo, libellé et lien vers https://applemousse-studio.fr.
 - `Components/ProfileSectionCard.swift` — Carte de section générique : `SectionHeaderView` + contenu sur surface translucide.

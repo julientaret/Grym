@@ -20,6 +20,11 @@ struct StatsView: View {
         GridItem(.flexible(), spacing: Theme.Spacing.medium),
         GridItem(.flexible(), spacing: Theme.Spacing.medium)
     ]
+    /// Les volumes de contenu sont plus courts : trois par ligne.
+    private let contentColumns = Array(
+        repeating: GridItem(.flexible(), spacing: Theme.Spacing.small),
+        count: 3
+    )
 
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -27,6 +32,7 @@ struct StatsView: View {
                 if viewModel.stats.isEmpty {
                     emptyState
                 } else {
+                    hero
                     keyFigures
                     breakdowns
                     rankings
@@ -42,6 +48,25 @@ struct StatsView: View {
         .onAppear { viewModel.load(context: modelContext, localization: localization) }
     }
 
+    // MARK: En-tête
+
+    private var hero: some View {
+        PlaytimeHeroView(
+            totalMinutes: viewModel.stats.totalPlayMinutes,
+            sessionCount: viewModel.stats.sessionCount,
+            averageMinutes: viewModel.stats.averageSessionMinutes
+        )
+        .padding(Theme.Spacing.large)
+        .background(
+            RoundedRectangle(cornerRadius: Theme.Radius.large, style: .continuous)
+                .fill(theme.surface.opacity(0.5))
+                .overlay(
+                    RoundedRectangle(cornerRadius: Theme.Radius.large, style: .continuous)
+                        .stroke(.white.opacity(0.06), lineWidth: 1)
+                )
+        )
+    }
+
     // MARK: Chiffres clés
 
     private var keyFigures: some View {
@@ -52,9 +77,9 @@ struct StatsView: View {
                 label: localization.string(.statsGames)
             )
             StatTileView(
-                systemImage: "hourglass",
-                value: playtime(viewModel.stats.totalPlayMinutes),
-                label: localization.string(.statsPlaytime)
+                systemImage: "book.pages",
+                value: "\(viewModel.stats.pageCount)",
+                label: localization.string(.statsPages)
             )
             StatTileView(
                 systemImage: "star.fill",
@@ -109,13 +134,7 @@ struct StatsView: View {
     // MARK: Contenus créés
 
     private var contentFigures: some View {
-        LazyVGrid(columns: columns, spacing: Theme.Spacing.medium) {
-            StatTileView(
-                systemImage: "book.pages",
-                value: "\(viewModel.stats.pageCount)",
-                label: localization.string(.statsPages),
-                accent: theme.accentAlt
-            )
+        LazyVGrid(columns: contentColumns, spacing: Theme.Spacing.medium) {
             StatTileView(
                 systemImage: "square.stack",
                 value: "\(viewModel.stats.blockCount)",
@@ -145,13 +164,6 @@ struct StatsView: View {
             title: localization.string(.statsEmptyTitle),
             message: localization.string(.statsEmptyMessage),
             steps: []
-        )
-    }
-
-    private func playtime(_ minutes: Int) -> String {
-        minutes.playtimeLabel(
-            hourUnit: localization.string(.durationHourUnit),
-            minuteUnit: localization.string(.durationMinuteUnit)
         )
     }
 

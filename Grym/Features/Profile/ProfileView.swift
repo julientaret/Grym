@@ -13,9 +13,6 @@ struct ProfileView: View {
     @EnvironmentObject private var localization: LocalizationManager
     @Environment(\.theme) private var theme
 
-    @State private var showingStats = false
-    @State private var showingPremium = false
-
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
@@ -23,8 +20,6 @@ struct ProfileView: View {
                     ProfileHeaderView()
 
                     StudioCreditComponent()
-
-                    statsSection
 
                     appearanceSection
 
@@ -41,24 +36,10 @@ struct ProfileView: View {
             .ignoresSafeArea(edges: .top)
             .background(background)
             .navigationBarHidden(true)
-            .navigationDestination(isPresented: $showingStats) { StatsView() }
         }
-        .sheet(isPresented: $showingPremium) { PremiumUpgradeView() }
     }
 
     // MARK: Sections
-
-    private var statsSection: some View {
-        ProfileSectionCard(
-            systemImage: "chart.bar.fill",
-            title: localization.string(.statsSection)
-        ) {
-            StatsEntryRow(
-                onOpen: { showingStats = true },
-                onLocked: { showingPremium = true }
-            )
-        }
-    }
 
     private var appearanceSection: some View {
         ProfileSectionCard(

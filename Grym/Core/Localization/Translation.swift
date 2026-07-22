@@ -184,7 +184,9 @@ enum TranslationKey: String {
     // Bilan personnel
     case statsSection
     case statsTitle
-    case statsHint
+    case statsSeeAll
+    case statsOnAverage
+    case statsNoSessionHint
     case statsGames
     case statsPlaytime
     case statsAverageScore
@@ -403,7 +405,9 @@ enum Translation {
             .templatePageStrategies: "Stratégies",
             .statsSection: "Bilan",
             .statsTitle: "Mes statistiques",
-            .statsHint: "Temps de jeu, notes et répartition de ta collection.",
+            .statsSeeAll: "Voir le bilan complet",
+            .statsOnAverage: "en moyenne",
+            .statsNoSessionHint: "Consigne une session sur un jeu pour suivre ton temps.",
             .statsGames: "Jeux",
             .statsPlaytime: "Temps de jeu",
             .statsAverageScore: "Note moyenne",
@@ -606,7 +610,9 @@ enum Translation {
             .templatePageStrategies: "Strategies",
             .statsSection: "Insights",
             .statsTitle: "My stats",
-            .statsHint: "Playtime, scores and the shape of your collection.",
+            .statsSeeAll: "See the full breakdown",
+            .statsOnAverage: "on average",
+            .statsNoSessionHint: "Log a session on a game to start tracking your time.",
             .statsGames: "Games",
             .statsPlaytime: "Playtime",
             .statsAverageScore: "Average score",

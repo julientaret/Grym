@@ -12,7 +12,7 @@
 |---|---|
 | UI | SwiftUI |
 | Persistance locale | SwiftData (offline-first) |
-| Backend / Auth | Appwrite |
+| Backend / Auth | Supabase (Phase 2) |
 | Metadata jeux | IGDB API |
 | Caméra / Photos | PhotosUI + AVFoundation |
 | Navigation | NavigationStack + TabView |
@@ -35,7 +35,7 @@
 ```
 TabView
 ├── Wikis (home)
-├── Explorer (Phase 2)
+├── Contacts (Phase 2)
 └── Profil
 ```
 
@@ -58,7 +58,7 @@ TabView
 
 ### 3. Wiki d'un jeu
 - Header : cover IGDB + titre du jeu
-- Note personnelle : slider 0–100 (privé, jamais partagé)
+- Note personnelle : slider 0–100 (privée par défaut ; partageable aux contacts en Phase 2, sur activation explicite)
 - Pages : liste de sections nommées par l'utilisateur
 - Tap sur une page → ouvre le flux de blocs
 
@@ -72,7 +72,7 @@ TabView
 - Réorganisation par drag & drop
 
 ### 5. Profil / Auth
-- Connexion / inscription via Appwrite
+- Connexion via Sign in with Apple / Supabase (Phase 2, optionnelle)
 - Statut free / premium
 - Bouton d'achat premium (StoreKit 2)
 - Restauration d'achat
@@ -92,7 +92,7 @@ Game
 Wiki
 ├── game: Game
 ├── userId: String
-├── score: Int        // 0–100, strictement privé
+├── score: Int        // 0–100, privé par défaut
 ├── isPublic: Bool
 ├── createdAt: Date
 ├── updatedAt: Date
@@ -136,22 +136,59 @@ Prix de lancement à **4,99€** pour les premières semaines, puis passage à *
 
 ---
 
-## Phase 2 — Partage communautaire
+## Phase 2 — Synchro iCloud et couche sociale
 
-> Déployé uniquement quand la base d'utilisateurs le justifie.
+> Plan détaillé : **`phase2-social.md`**.
+> Le partage se fait dans un **cercle privé et choisi**, pas en public.
 
-- Un wiki peut être rendu public
-- Les wikis publics sont consultables via l'onglet "Explorer"
-- Système de pertinence (upvote) pour remonter les meilleurs wikis par jeu
-- Téléchargement/fork d'un wiki public : crée une copie locale éditable, l'original n'est pas modifié
-- Le score (0–100) est toujours privé, même sur les wikis partagés
-- Le partage reste **gratuit** pour favoriser l'acquisition organique
+### 1. Synchro iCloud (prérequis à tout le reste)
+
+- SwiftData adossé à CloudKit : les wikis suivent sur tous les appareils de l'utilisateur
+- Impose de reprendre chaque `@Model` (valeurs par défaut) et de migrer le stockage des photos
+- Livrable et utile seul, sans une ligne de social
+
+### 2. Compte
+
+- Sign in with Apple, via **Supabase**
+- Le compte reste **optionnel** : l'app fonctionne intégralement sans
+- Suppression du compte dans l'app (obligation App Store)
+
+### 3. Contacts
+
+- Ajout par **code ami** unique, avec acceptation des deux côtés
+- Blocage d'un utilisateur
+
+### 4. Visibilité
+
+- L'utilisateur choisit ce que ses contacts voient : ludothèque, statuts, temps de jeu,
+  notes, wikis — **tout désactivé par défaut**
+- La visibilité s'applique à la publication : un champ non partagé n'est pas envoyé
+- Publication en tâche de fond, à la modification
+
+### 5. Wikis partagés
+
+- Un wiki publié est transporté en **snapshot autonome**, médias compris
+- Le télécharger crée une **copie figée** : elle m'appartient, elle n'est plus liée à l'original
+- Le même format servira l'export de fichier (AirDrop, Markdown)
+
+### 6. Envoi ciblé
+
+- Envoi d'un wiki à un contact ; le destinataire accepte avant tout téléchargement
+
+### Principes
+
+- **Le local reste maître** : aucune fonctionnalité existante ne devient dépendante du réseau
+- **Aucune synchro bidirectionnelle** avec le serveur : publication sortante, import ponctuel
+- Signalement, blocage et contact éditeur sont livrés **avec** le social, pas après
+  (Guideline App Store 1.2 sur le contenu utilisateur)
+- Le partage reste **gratuit** pour favoriser l'acquisition organique ; le premium porte
+  sur les quotas
 
 ---
 
 ## Contraintes importantes
 
-- **Score toujours privé** : jamais visible des autres utilisateurs
+- **Score privé par défaut** : jamais publié tant que l'utilisateur ne l'active pas explicitement (Phase 2)
 - **Offline-first** : tout le contenu est accessible sans connexion via SwiftData
-- **Wiki partagé immuable** : le fork crée une copie, l'original reste intact
+- **Wiki partagé immuable** : le téléchargement crée une copie figée, l'original reste intact
 - **Achat via StoreKit 2** : paiement unique, restauration d'achat obligatoire

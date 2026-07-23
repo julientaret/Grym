@@ -2,13 +2,17 @@
 //  EmptyBlocksPlaceholder.swift
 //  Grym
 //
-//  Placeholder affiché dans un wiki sans bloc : présente chaque type de bloc
-//  disponible (icône, nom, rôle) pour guider la première création.
+//  Placeholder affiché dans un wiki sans bloc : chaque type de bloc y est
+//  présenté (icône, nom, rôle) et se crée directement au tap.
 //
 
 import SwiftUI
 
 struct EmptyBlocksPlaceholder: View {
+    /// Création du bloc choisi : la carte est un vrai point d'entrée,
+    /// pas une simple explication.
+    let onAdd: (BlockType) -> Void
+
     @EnvironmentObject private var localization: LocalizationManager
     @Environment(\.theme) private var theme
 
@@ -51,35 +55,42 @@ struct EmptyBlocksPlaceholder: View {
 
     private var cards: some View {
         VStack(spacing: Theme.Spacing.small) {
-            ForEach(Array(BlockType.allCases.enumerated()), id: \.element) { index, type in
-                card(for: type, accent: accent(at: index))
+            ForEach(BlockType.allCases, id: \.self) { type in
+                Button { onAdd(type) } label: { card(for: type) }
+                    .buttonStyle(.plain)
             }
         }
     }
 
-    private func card(for type: BlockType, accent: Color) -> some View {
-        HStack(spacing: Theme.Spacing.medium) {
+    private func card(for type: BlockType) -> some View {
+        let accent = type.accent(in: theme)
+        return HStack(spacing: Theme.Spacing.medium) {
             Image(systemName: type.systemImage)
                 .font(.system(size: Theme.FontSize.body, weight: .semibold))
                 .foregroundStyle(accent)
-                .frame(width: 36, height: 36)
+                .frame(width: Theme.Size.blockTypeTile, height: Theme.Size.blockTypeTile)
                 .background(
                     RoundedRectangle(cornerRadius: Theme.Radius.small, style: .continuous)
                         .fill(accent.opacity(0.15))
                 )
 
             VStack(alignment: .leading, spacing: Theme.Spacing.xSmall / 2) {
-                Text(localization.string(title(for: type)))
+                Text(localization.string(type.nameKey))
                     .font(.system(size: Theme.FontSize.body - 1, weight: .semibold))
                     .foregroundStyle(theme.primaryText)
 
-                Text(localization.string(hint(for: type)))
+                Text(localization.string(type.hintKey))
                     .font(.system(size: Theme.FontSize.caption))
                     .foregroundStyle(theme.secondaryText)
                     .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(.leading)
             }
 
             Spacer(minLength: 0)
+
+            Image(systemName: "plus.circle.fill")
+                .font(.system(size: Theme.FontSize.body))
+                .foregroundStyle(accent)
         }
         .padding(Theme.Spacing.medium)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -88,38 +99,15 @@ struct EmptyBlocksPlaceholder: View {
                 .fill(theme.surface.opacity(0.45))
                 .overlay(
                     RoundedRectangle(cornerRadius: Theme.Radius.large, style: .continuous)
-                        .stroke(.white.opacity(0.06), lineWidth: 1)
+                        .stroke(accent.opacity(0.18), lineWidth: 1)
                 )
         )
-    }
-
-    private func accent(at index: Int) -> Color {
-        let accents = theme.pageAccents
-        return accents[index % accents.count]
-    }
-
-    private func title(for type: BlockType) -> TranslationKey {
-        switch type {
-        case .text:      .blockTypeText
-        case .photo:     .blockTypePhoto
-        case .checklist: .blockTypeChecklist
-        case .map:       .blockTypeMap
-        }
-    }
-
-    private func hint(for type: BlockType) -> TranslationKey {
-        switch type {
-        case .text:      .blockTypeTextHint
-        case .photo:     .blockTypePhotoHint
-        case .checklist: .blockTypeChecklistHint
-        case .map:       .blockTypeMapHint
-        }
     }
 }
 
 #Preview {
     ScrollView {
-        EmptyBlocksPlaceholder()
+        EmptyBlocksPlaceholder { _ in }
             .padding(.horizontal, Theme.Spacing.medium)
     }
     .background(Color.grymBgDark)

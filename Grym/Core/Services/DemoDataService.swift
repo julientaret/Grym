@@ -168,9 +168,13 @@ private enum DemoBlock {
             return Block(type: .text, content: text.value(language), order: order)
 
         case .checklist(let title, let items):
-            let block = Block(type: .checklist, content: "", order: order)
-            block.checklist = ChecklistContent(
+            let block = Block(
+                type: .checklist,
                 title: title.value(language),
+                content: "",
+                order: order
+            )
+            block.checklist = ChecklistContent(
                 items: items.map { ChecklistItem(text: $0.0.value(language), done: $0.1) }
             )
             return block

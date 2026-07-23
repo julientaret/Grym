@@ -106,22 +106,28 @@ struct PageTabsView: View {
         }
     }
 
+    /// Le nom du bloc prime ; sans nom, on retombe sur un résumé du contenu.
     private func summaryText(_ block: Block) -> String {
         switch block.type {
         case .text:
+            if !block.title.isEmpty { return block.title }
             let line = block.content
                 .split(separator: "\n")
                 .first
                 .map(String.init) ?? ""
             return line.isEmpty ? localization.string(.blockTypeText) : line
         case .checklist:
-            let c = block.checklist
-            let title = c.title.isEmpty ? localization.string(.blockTypeChecklist) : c.title
-            return "\(title) · \(c.doneCount)/\(c.items.count)"
+            let checklist = block.checklist
+            let name = block.title.isEmpty
+                ? localization.string(.blockTypeChecklist)
+                : block.title
+            return "\(name) · \(checklist.doneCount)/\(checklist.items.count)"
         case .photo:
+            if !block.title.isEmpty { return block.title }
             return "\(block.photos.fileNames.count) \(localization.string(.statPhotos))"
         case .map:
-            return "\(localization.string(.blockTypeMap)) · \(block.map.pins.count)"
+            let name = block.title.isEmpty ? localization.string(.blockTypeMap) : block.title
+            return "\(name) · \(block.map.pins.count)"
         }
     }
 }

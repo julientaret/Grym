@@ -179,9 +179,15 @@ enum TranslationKey: String {
     case mapExitFullScreen
     case commonDone
     case textBlockPlaceholder
-    case checklistTitlePlaceholder
     case checklistAddItem
     case checklistItemPlaceholder
+    case textBlockInsertLink
+    case blockName
+    case blockRename
+    case blockActions
+    case blockMoveUp
+    case blockMoveDown
+    case commonEdit
     // Modèles de démarrage
     case templateSectionTitle
     case templateSectionHint
@@ -406,7 +412,7 @@ enum Translation {
             .tierTopTier: "TOP TIER",
             .tierGoty: "GOTY",
             .pageTitlePlaceholder: "Titre du wiki",
-            .pageEmptyBlocks: "Compose-le en empilant des blocs. Voici ceux disponibles :",
+            .pageEmptyBlocks: "Compose-le en empilant des blocs. Touche un type pour l'ajouter :",
             .addBlock: "Ajouter un bloc",
             .blockTypeText: "Texte",
             .blockTypeChecklist: "Checklist",
@@ -427,9 +433,15 @@ enum Translation {
             .mapExitFullScreen: "Fermer le plein écran",
             .commonDone: "Terminé",
             .textBlockPlaceholder: "Écris ici…",
-            .checklistTitlePlaceholder: "Titre de la liste",
             .checklistAddItem: "Ajouter un élément",
             .checklistItemPlaceholder: "Élément",
+            .textBlockInsertLink: "Insérer un lien",
+            .blockName: "Nom du bloc",
+            .blockRename: "Renommer",
+            .blockActions: "Actions du bloc",
+            .blockMoveUp: "Monter",
+            .blockMoveDown: "Descendre",
+            .commonEdit: "Modifier",
             .templateSectionTitle: "Démarrer avec un modèle",
             .templateSectionHint: "Un modèle crée d'un coup les wikis adaptés au genre du jeu. Tu peux les renommer ensuite.",
             .templateRPG: "RPG",
@@ -636,7 +648,7 @@ enum Translation {
             .tierTopTier: "TOP TIER",
             .tierGoty: "GOTY",
             .pageTitlePlaceholder: "Wiki title",
-            .pageEmptyBlocks: "Build it by stacking blocks. Here are the ones available:",
+            .pageEmptyBlocks: "Build it by stacking blocks. Tap a type to add it:",
             .addBlock: "Add a block",
             .blockTypeText: "Text",
             .blockTypeChecklist: "Checklist",
@@ -657,9 +669,15 @@ enum Translation {
             .mapExitFullScreen: "Close full screen",
             .commonDone: "Done",
             .textBlockPlaceholder: "Write here…",
-            .checklistTitlePlaceholder: "List title",
             .checklistAddItem: "Add an item",
             .checklistItemPlaceholder: "Item",
+            .textBlockInsertLink: "Insert a link",
+            .blockName: "Block name",
+            .blockRename: "Rename",
+            .blockActions: "Block actions",
+            .blockMoveUp: "Move up",
+            .blockMoveDown: "Move down",
+            .commonEdit: "Edit",
             .templateSectionTitle: "Start from a template",
             .templateSectionHint: "A template creates the wikis that fit the game's genre in one tap. You can rename them afterwards.",
             .templateRPG: "RPG",

@@ -2,9 +2,9 @@
 //  PageDetailView.swift
 //  Grym
 //
-//  Éditeur d'une page : titre éditable, flux de blocs (texte, checklist,
-//  photo, carte) et rétroliens. Édition directe du modèle via `@Bindable` ;
-//  structure via `WikiRepository`.
+//  Éditeur d'une page : en-tête (titre + contexte), flux de blocs (texte,
+//  checklist, photo, carte), palette d'ajout et rétroliens. Édition directe
+//  du modèle via `@Bindable` ; structure via `WikiRepository`.
 //
 
 import SwiftData
@@ -23,9 +23,9 @@ struct PageDetailView: View {
     /// Armé juste avant la prise de focus du titre, pour n'en sélectionner
     /// le contenu qu'à ce moment-là (et pas sur les champs des blocs).
     @State private var shouldSelectTitle = false
-    /// Bloc photo/carte tout juste ajouté : sa vue ouvre directement le
-    /// sélecteur d'images, puis remet cette valeur à `nil`.
-    @State private var pendingPickerBlockID: PersistentIdentifier?
+    /// Bloc tout juste ajouté : sa vue met le focus sur le nom — première
+    /// chose à saisir — puis remet cette valeur à `nil`.
+    @State private var pendingTitleBlockID: PersistentIdentifier?
     /// Page ouverte par un lien interne ou un rétrolien.
     @State private var linkedPage: Page?
 
@@ -37,30 +37,25 @@ struct PageDetailView: View {
 
     var body: some View {
         List {
-            TextField(localization.string(.pageTitlePlaceholder), text: $page.title)
-                .font(.system(size: Theme.FontSize.title, weight: .bold))
-                .foregroundStyle(theme.primaryText)
-                .focused($isTitleFocused)
-                .submitLabel(.done)
-                .grymBlockRow()
+            PageEditorHeader(
+                title: $page.title,
+                gameTitle: page.wiki?.game?.title,
+                blockCount: page.blocks.count,
+                titleFocus: $isTitleFocused
+            )
+            .grymBlockRow()
 
             if sortedBlocks.isEmpty {
-                EmptyBlocksPlaceholder().grymBlockRow()
+                EmptyBlocksPlaceholder(onAdd: addBlock).grymBlockRow()
             } else {
-                ForEach(sortedBlocks) { block in
-                    blockView(block).grymBlockRow()
+                ForEach(Array(sortedBlocks.enumerated()), id: \.element.persistentModelID) { index, block in
+                    blockView(block, at: index).grymBlockRow()
                 }
                 .onMove(perform: moveBlocks)
                 .onDelete(perform: deleteBlocks)
-            }
 
-            AddBlockButton { type in
-                guard let block = try? repository.addBlock(to: page, type: type) else { return }
-                if type == .photo || type == .map {
-                    pendingPickerBlockID = block.persistentModelID
-                }
+                BlockPaletteView(onAdd: addBlock).grymBlockRow()
             }
-            .grymBlockRow()
 
             if !backlinks.isEmpty {
                 PageBacklinksSection(pages: backlinks) { linkedPage = $0 }
@@ -91,7 +86,12 @@ struct PageDetailView: View {
         .selectAllOnFocus(isArmed: $shouldSelectTitle)
     }
 
-    // MARK: Réorganisation / suppression
+    // MARK: Ajout / réorganisation / suppression
+
+    private func addBlock(_ type: BlockType) {
+        guard let block = try? repository.addBlock(to: page, type: type) else { return }
+        pendingTitleBlockID = block.persistentModelID
+    }
 
     private func moveBlocks(from source: IndexSet, to destination: Int) {
         var blocks = sortedBlocks
@@ -102,6 +102,19 @@ struct PageDetailView: View {
 
     private func deleteBlocks(at offsets: IndexSet) {
         for index in offsets { try? repository.delete(sortedBlocks[index]) }
+    }
+
+    /// Actions du menu d'un bloc : déplacement d'un cran et suppression.
+    private func actions(at index: Int) -> BlockActions {
+        BlockActions(
+            canMoveUp: index > 0,
+            canMoveDown: index < sortedBlocks.count - 1,
+            onMoveUp: { moveBlocks(from: [index], to: index - 1) },
+            // `move(fromOffsets:toOffset:)` attend l'index d'insertion,
+            // soit deux crans plus loin pour descendre d'une position.
+            onMoveDown: { moveBlocks(from: [index], to: index + 2) },
+            onDelete: { deleteBlocks(at: [index]) }
+        )
     }
 
     // MARK: Liens internes
@@ -123,29 +136,43 @@ struct PageDetailView: View {
     // MARK: Rendu d'un bloc
 
     @ViewBuilder
-    private func blockView(_ block: Block) -> some View {
+    private func blockView(_ block: Block, at index: Int) -> some View {
+        let blockActions = actions(at: index)
+        let autofocus = block.persistentModelID == pendingTitleBlockID
+        let clearPending = { pendingTitleBlockID = nil }
+
         switch block.type {
         case .text:
-            TextBlockView(block: block, wiki: page.wiki, onOpenLink: openLink)
+            TextBlockView(
+                block: block,
+                wiki: page.wiki,
+                onOpenLink: openLink,
+                autofocusTitle: autofocus,
+                onTitleFocused: clearPending,
+                actions: blockActions
+            )
         case .checklist:
-            ChecklistBlockView(block: block)
+            ChecklistBlockView(
+                block: block,
+                autofocusTitle: autofocus,
+                onTitleFocused: clearPending,
+                actions: blockActions
+            )
         case .photo:
             PhotoBlockView(
                 block: block,
-                autoPresentPicker: isPendingPicker(block),
-                onPickerPresented: { pendingPickerBlockID = nil }
+                autofocusTitle: autofocus,
+                onTitleFocused: clearPending,
+                actions: blockActions
             )
         case .map:
             MapBlockView(
                 block: block,
-                autoPresentPicker: isPendingPicker(block),
-                onPickerPresented: { pendingPickerBlockID = nil }
+                autofocusTitle: autofocus,
+                onTitleFocused: clearPending,
+                actions: blockActions
             )
         }
-    }
-
-    private func isPendingPicker(_ block: Block) -> Bool {
-        block.persistentModelID == pendingPickerBlockID
     }
 
     // MARK: Fond

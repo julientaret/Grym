@@ -76,6 +76,16 @@ enum Theme {
         static let reviewCrest: CGFloat = 56
         /// Étoile de la demande de note.
         static let reviewStar: CGFloat = 28
+        /// Pastille d'icône du bandeau de type d'un bloc (et boutons associés).
+        static let blockTypeBadge: CGFloat = 28
+        /// Pastille d'icône d'un type de bloc dans l'état vide d'un wiki.
+        static let blockTypeTile: CGFloat = 36
+        /// Miniature d'une photo dans un bloc photo.
+        static let photoThumbnail: CGFloat = 90
+        /// Barre de progression d'un bloc checklist.
+        static let checklistProgressHeight: CGFloat = 4
+        /// Zone tactile des boutons d'une ligne de checklist.
+        static let checklistTapTarget: CGFloat = 28
     }
 
     // MARK: - Interlettrage

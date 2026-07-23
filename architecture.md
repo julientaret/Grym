@@ -51,7 +51,7 @@ Couche de données locale (SwiftData, offline-first).
 - `WikiTemplate.swift` — Modèles de démarrage d'un carnet (RPG, souls-like, monde ouvert, roguelike) : nom, description, icône et pages à créer avec leurs blocs d'amorce.
 - `WikiLink.swift` — Liens internes `[[Titre de page]]` : analyse du balisage, rendu en `AttributedString` cliquable (URL interne `grym://page?title=`), et extensions `Wiki.page(titled:)` / `Page.linkedTitles` / `Page.backlinks`.
 - `Page.swift` — `@Model` page nommée d'un wiki (« wiki » côté UI), contenant des blocs ordonnés ; `createdAt` alimente le flux d'activité de l'accueil.
-- `Block.swift` — `@Model` bloc de contenu (type persisté en `String`, exposé via `BlockType`).
+- `Block.swift` — `@Model` bloc de contenu (type persisté en `String`, exposé via `BlockType`) ; `title` porte le nom donné par l'utilisateur (vide = repli sur le nom du type, valeur par défaut pour la migration légère).
 - `BlockType.swift` — Enum des types de bloc (text/photo/checklist/map).
 - `BlockContent.swift` — Encodage du contenu des blocs : texte brut (`.text`), JSON `ChecklistContent` (`.checklist`), `PhotoContent` (`.photo`) ou `MapContent` (`.map`, image + pins) ; accès via `Block.checklist` / `Block.photos` / `Block.map`.
 - `WikiRepository.swift` — Écritures autour d'un `ModelContext` : création (dé-doublonnée) et suppression de wikis ; `updateScore` date les changements de note, `updateStatus` ceux de statut, `addSession`/`delete(_ session:)` gèrent le journal, `apply(template:to:titleFor:)` déroule un modèle de démarrage, `touch` marque une simple modification.
@@ -74,6 +74,7 @@ Couche de données locale (SwiftData, offline-first).
 - `Core/Extensions/Int+Playtime.swift` — Formate une durée en minutes en libellé lisible (« 2 h 30 », « 45 min »), unités fournies par l'appelant (localisées).
 - `Core/Extensions/View+SelectAllOnFocus.swift` — Modifieur `selectAllOnFocus(isArmed:)` : sélectionne le texte du prochain champ prenant le focus (via la notification UIKit d'entrée en édition), pour écraser une valeur par défaut.
 - `Core/Extensions/View+GrymListRow.swift` — Style de ligne de `List` transparent (`grymBlockRow`, et `grymFullWidthRow` pour les contenus bord à bord) pour garder l'apparence carte avec le drag & drop natif.
+- `Core/Extensions/BlockType+Presentation.swift` — Habillage d'un type de bloc : clés de traduction (nom, rôle) et couleur d'accent prise dans `pageAccents` du thème, partagées par l'éditeur, la palette et l'état vide.
 
 ## Core/Services/IGDB
 
@@ -136,18 +137,20 @@ Onglet « Mes jeux » : liste complète des jeux ajoutés.
 
 Éditeur d'une page : titre éditable et flux de blocs (texte, checklist ; photo/carte à venir).
 
-- `PageDetailView.swift` — `List` : titre, blocs et rétroliens ; ajout (menu de type), réorganisation (drag & drop via EditButton) et suppression de blocs ; sauvegarde à la sortie. Un lien `[[Titre]]` pousse la page ciblée, et la crée à la volée si elle n'existe pas. Un bloc photo/carte fraîchement ajouté ouvre directement le sélecteur d'images (`pendingPickerBlockID`). `autofocusTitle` place le focus dans le titre à l'ouverture d'une page fraîchement créée, texte présélectionné (`selectAllOnFocus`).
-- `Components/TextBlockView.swift` — Bloc texte libre, lié à `Block.content`. Hors édition, les liens `[[Titre]]` sont rendus cliquables (couleur d'accent, gris si la page cible n'existe pas) et remontés via `onOpenLink` ; deux pastilles d'action : insertion d'un lien (en édition) et reprise de l'édition (hors édition). Le texte rendu ne porte aucun geste, pour ne pas avaler les taps sur les liens.
+- `PageDetailView.swift` — `List` : en-tête, blocs, palette d'ajout et rétroliens ; ajout en un tap (`BlockPaletteView`), réorganisation (drag & drop via EditButton, ou menu du bloc) et suppression ; sauvegarde à la sortie. Un lien `[[Titre]]` pousse la page ciblée, et la crée à la volée si elle n'existe pas. Le bloc fraîchement ajouté prend le focus sur son nom (`pendingTitleBlockID`). `autofocusTitle` place le focus dans le titre à l'ouverture d'une page fraîchement créée, texte présélectionné (`selectAllOnFocus`).
+- `Components/PageEditorHeader.swift` — En-tête de l'éditeur : surtitre (jeu d'appartenance), titre éditable en grand et nombre de blocs, séparé du flux par un filet.
+- `Components/BlockCardView.swift` — Habillage commun à tous les blocs : bandeau (icône colorée par type + nom éditable, le nom du type servant de texte d'invite), emplacement d'accessoire, menu d'actions (`BlockActions` : renommer / monter / descendre / supprimer) et zone de contenu à marges paramétrables. `autofocusTitle` donne le focus au nom d'un bloc tout juste créé ; `onTitleSubmitted` remonte la fin de ce nommage (validation clavier ou sortie du champ), une seule fois, pour que photo et carte enchaînent sur leur sélecteur. Inclut `BlockHeaderButton`, bouton d'action du bandeau.
+- `Components/BlockPaletteView.swift` — Palette d'ajout : un bouton par type de bloc, création en un seul tap (remplace l'ancien menu déroulant).
+- `Components/TextBlockView.swift` — Bloc texte libre, lié à `Block.content`. Hors édition, les liens `[[Titre]]` sont rendus cliquables (couleur d'accent, gris si la page cible n'existe pas) et remontés via `onOpenLink` ; deux actions dans le bandeau : insertion d'un lien (en édition) et reprise de l'édition (hors édition). Le texte rendu ne porte aucun geste, pour ne pas avaler les taps sur les liens.
 - `Components/PageLinkPickerView.swift` — Sheet listant les autres pages du wiki ; le titre choisi est inséré en `[[Titre]]`.
 - `Components/PageBacklinksSection.swift` — Section « Cité par » : pages du wiki qui référencent la page courante.
-- `Components/ChecklistBlockView.swift` — Bloc checklist : titre, items cochables, progression.
-- `Components/PhotoBlockView.swift` — Bloc photo : galerie de miniatures locales, ajout via PhotosPicker (ouvert d'office sur un bloc tout juste créé, `autoPresentPicker`), suppression, ouverture plein écran au tap via QuickLook natif (`.quickLookPreview`, zoom/pan/partage/swipe).
+- `Components/ChecklistBlockView.swift` — Bloc checklist : barre de progression et items cochables (pastille ronde, zones tactiles élargies) ; compteur `fait/total` dans le bandeau. Le nom vit sur `Block.title` ; les listes antérieures voient leur titre JSON remonté sur le bloc à la première apparition.
+- `Components/PhotoBlockView.swift` — Bloc photo : grille de miniatures locales terminée par une tuile « + » (zone d'ajout pleine largeur si le bloc est vide), ajout via PhotosPicker (ouvert d'office à la validation du nom d'un bloc encore vide), suppression, ouverture plein écran au tap via QuickLook natif (`.quickLookPreview`, zoom/pan/partage/swipe).
 - `MapEditorView.swift` — Éditeur plein écran d'une carte : image + pins (ajout au tap, drag, renommage/suppression) ; `autoPresentPicker` ouvre le sélecteur d'images à l'arrivée.
 - `MapFullScreenView.swift` — Visionneuse plein écran d'une carte (lecture seule) : image bord à bord, safe areas ignorées, rotation paysage ; fermeture par la croix ou au tap.
-- `Components/MapBlockView.swift` — Bloc carte : aperçu (image + pins) ou invite d'ajout ; ouvre l'éditeur au tap, ou d'office sur un bloc tout juste créé (`autoPresentPicker`). Deux pastilles d'action sur l'aperçu : plein écran (`MapFullScreenView`) et édition.
+- `Components/MapBlockView.swift` — Bloc carte : aperçu bord à bord (image + pins) ou invite d'ajout ; le tap ouvre le plein écran (`MapFullScreenView`), le crayon du bandeau l'éditeur — également ouvert d'office à la validation du nom d'un bloc encore vide, et proposant alors directement le sélecteur d'images. Nombre de repères affiché dans le bandeau.
 - `Components/AnnotatedMapView.swift` — Affichage image + pins (coordonnées relatives) ; mode lecture seule ou édition. Inclut `MapPinMarker`.
-- `Components/AddBlockButton.swift` — Bouton + menu de choix du type de bloc (texte / checklist / photo / carte).
-- `Components/EmptyBlocksPlaceholder.swift` — Placeholder d'un wiki sans bloc : en-tête illustré et une carte par type de bloc (icône, nom, rôle) pour guider la première création.
+- `Components/EmptyBlocksPlaceholder.swift` — Placeholder d'un wiki sans bloc : en-tête illustré et une carte par type de bloc (icône, nom, rôle), chacune créant le bloc au tap.
 
 ## Features/WikiDetail
 

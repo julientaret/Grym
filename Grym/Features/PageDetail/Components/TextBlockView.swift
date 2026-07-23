@@ -16,6 +16,10 @@ struct TextBlockView: View {
     var wiki: Wiki?
     /// Titre de page demandé par un lien touché.
     var onOpenLink: (String) -> Void = { _ in }
+    /// Bloc tout juste créé : son nom prend le focus à l'apparition.
+    var autofocusTitle: Bool = false
+    var onTitleFocused: () -> Void = {}
+    var actions: BlockActions?
 
     @EnvironmentObject private var localization: LocalizationManager
     @Environment(\.theme) private var theme
@@ -24,6 +28,30 @@ struct TextBlockView: View {
     @State private var showingLinkPicker = false
 
     var body: some View {
+        BlockCardView(
+            type: .text,
+            title: $block.title,
+            autofocusTitle: autofocusTitle,
+            onTitleFocused: onTitleFocused,
+            actions: actions,
+            accessory: { headerActions },
+            content: { editor }
+        )
+        .environment(\.openURL, OpenURLAction { url in
+            guard let title = WikiLink.title(from: url) else { return .systemAction }
+            onOpenLink(title)
+            return .handled
+        })
+        .sheet(isPresented: $showingLinkPicker) {
+            PageLinkPickerView(pages: linkablePages) { title in
+                appendLink(to: title)
+            }
+        }
+    }
+
+    // MARK: Zone d'édition
+
+    private var editor: some View {
         ZStack(alignment: .topLeading) {
             TextField(
                 localization.string(.textBlockPlaceholder),
@@ -36,7 +64,7 @@ struct TextBlockView: View {
             .opacity(showsRenderedText ? 0 : 1)
 
             // Aucun geste sur ce texte : les taps doivent atteindre les liens.
-            // L'édition se reprend via le bouton crayon de l'overlay.
+            // L'édition se reprend via le bouton crayon du bandeau.
             if showsRenderedText {
                 Text(renderedText)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -44,26 +72,28 @@ struct TextBlockView: View {
         }
         .font(.system(size: Theme.FontSize.body))
         .foregroundStyle(theme.primaryText)
-        .padding(Theme.Spacing.medium)
-        .background(
-            RoundedRectangle(cornerRadius: Theme.Radius.medium, style: .continuous)
-                .fill(theme.surface.opacity(0.4))
-        )
-        .overlay(alignment: .bottomTrailing) {
-            if isFocused {
-                circularButton(systemImage: "link") { showingLinkPicker = true }
-            } else if showsRenderedText {
-                circularButton(systemImage: "pencil") { isFocused = true }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    // MARK: Actions du bandeau
+
+    /// En édition : insertion de lien. Hors édition avec liens rendus :
+    /// reprise de l'édition (le texte rendu n'accepte pas le focus).
+    @ViewBuilder
+    private var headerActions: some View {
+        if isFocused {
+            BlockHeaderButton(
+                systemImage: "link",
+                label: localization.string(.textBlockInsertLink)
+            ) {
+                showingLinkPicker = true
             }
-        }
-        .environment(\.openURL, OpenURLAction { url in
-            guard let title = WikiLink.title(from: url) else { return .systemAction }
-            onOpenLink(title)
-            return .handled
-        })
-        .sheet(isPresented: $showingLinkPicker) {
-            PageLinkPickerView(pages: linkablePages) { title in
-                appendLink(to: title)
+        } else if showsRenderedText {
+            BlockHeaderButton(
+                systemImage: "pencil",
+                label: localization.string(.commonEdit)
+            ) {
+                isFocused = true
             }
         }
     }
@@ -92,22 +122,6 @@ struct TextBlockView: View {
         return wiki.pages
             .filter { $0.persistentModelID != block.page?.persistentModelID }
             .sorted { $0.order < $1.order }
-    }
-
-    /// Pastille d'action posée sur le bloc (insertion de lien / reprise d'édition).
-    private func circularButton(
-        systemImage: String,
-        action: @escaping () -> Void
-    ) -> some View {
-        Button(action: action) {
-            Image(systemName: systemImage)
-                .font(.system(size: Theme.FontSize.caption, weight: .bold))
-                .foregroundStyle(theme.accent)
-                .padding(Theme.Spacing.small)
-                .background(Circle().fill(theme.surface))
-        }
-        .buttonStyle(.plain)
-        .padding(Theme.Spacing.small)
     }
 
     private func appendLink(to title: String) {

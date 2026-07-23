@@ -3,7 +3,8 @@
 //  Grym
 //
 //  Bloc carte annotée dans l'éditeur de page : aperçu (image + pins)
-//  ou invite d'ajout ; ouvre l'éditeur plein écran au tap.
+//  ou invite d'ajout. Le tap sur l'image l'ouvre en plein écran ;
+//  l'édition passe par le crayon du bandeau.
 //
 
 import SwiftUI
@@ -11,9 +12,10 @@ import UIKit
 
 struct MapBlockView: View {
     @Bindable var block: Block
-    /// Bloc tout juste créé : l'éditeur s'ouvre et propose l'image directement.
-    var autoPresentPicker: Bool = false
-    var onPickerPresented: () -> Void = {}
+    /// Bloc tout juste créé : son nom prend le focus à l'apparition.
+    var autofocusTitle: Bool = false
+    var onTitleFocused: () -> Void = {}
+    var actions: BlockActions?
 
     @EnvironmentObject private var localization: LocalizationManager
     @Environment(\.theme) private var theme
@@ -22,25 +24,32 @@ struct MapBlockView: View {
     @State private var image: UIImage?
     @State private var showingEditor = false
     @State private var showingFullScreen = false
-    /// Transmis à l'éditeur pour qu'il ouvre son sélecteur d'images.
-    @State private var editorAutoPresentsPicker = false
+
+    private var accent: Color { BlockType.map.accent(in: theme) }
 
     var body: some View {
-        preview
+        BlockCardView(
+            type: .map,
+            title: $block.title,
+            autofocusTitle: autofocusTitle,
+            onTitleFocused: onTitleFocused,
+            onTitleSubmitted: presentEditorIfEmpty,
+            contentPadding: image == nil ? Theme.Spacing.medium : 0,
+            actions: actions,
+            accessory: { headerActions },
+            content: { preview }
+        )
         .onAppear {
             content = block.map
             loadImage()
-            guard autoPresentPicker else { return }
-            onPickerPresented()
-            editorAutoPresentsPicker = true
-            showingEditor = true
         }
         .fullScreenCover(isPresented: $showingEditor, onDismiss: {
-            editorAutoPresentsPicker = false
             content = block.map
             loadImage()
         }) {
-            MapEditorView(block: block, autoPresentPicker: editorAutoPresentsPicker)
+            // Sans image, l'éditeur propose directement le sélecteur :
+            // c'est la seule action possible à ce stade.
+            MapEditorView(block: block, autoPresentPicker: content.imageFileName == nil)
         }
         .fullScreenCover(isPresented: $showingFullScreen) {
             if let image {
@@ -49,63 +58,61 @@ struct MapBlockView: View {
         }
     }
 
-    /// L'aperçu porte deux actions distinctes (éditer / plein écran) : les
-    /// pastilles doivent donc être de vrais boutons, hors d'un bouton parent.
+    /// Enchaîne sur l'éditeur une fois le bloc nommé, tant qu'il n'a pas
+    /// d'image : l'éditeur ouvre alors son sélecteur de lui-même.
+    private func presentEditorIfEmpty() {
+        guard content.imageFileName == nil else { return }
+        showingEditor = true
+    }
+
+    // MARK: Actions du bandeau
+
+    @ViewBuilder
+    private var headerActions: some View {
+        if image != nil {
+            if !content.pins.isEmpty {
+                Label("\(content.pins.count)", systemImage: "mappin")
+                    .font(.system(size: Theme.FontSize.caption, weight: .bold))
+                    .foregroundStyle(theme.secondaryText)
+            }
+
+            BlockHeaderButton(
+                systemImage: "pencil",
+                label: localization.string(.commonEdit)
+            ) {
+                showingEditor = true
+            }
+        }
+    }
+
+    // MARK: Aperçu
+
     @ViewBuilder
     private var preview: some View {
         if let image {
             AnnotatedMapView(image: image, pins: .constant(content.pins))
                 .contentShape(Rectangle())
-                .onTapGesture { showingEditor = true }
-                .overlay(alignment: .bottomTrailing) { chips(for: image) }
+                .onTapGesture { showingFullScreen = true }
+                .accessibilityLabel(localization.string(.mapFullScreen))
         } else {
             Button { showingEditor = true } label: { placeholder }
                 .buttonStyle(.plain)
         }
     }
 
-    private func chips(for image: UIImage) -> some View {
-        HStack(spacing: Theme.Spacing.small) {
-            chip(systemImage: "arrow.up.left.and.arrow.down.right",
-                 label: localization.string(.mapFullScreen)) {
-                showingFullScreen = true
-            }
-            chip(systemImage: "pencil",
-                 label: localization.string(.blockTypeMap)) {
-                showingEditor = true
-            }
-        }
-        .padding(Theme.Spacing.small)
-    }
-
-    private func chip(systemImage: String,
-                      label: String,
-                      action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Image(systemName: systemImage)
-                .font(.system(size: Theme.FontSize.caption, weight: .bold))
-                .foregroundStyle(.white)
-                .padding(Theme.Spacing.small)
-                .background(Circle().fill(.black.opacity(0.5)))
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(label)
-    }
-
     private var placeholder: some View {
         VStack(spacing: Theme.Spacing.small) {
             Image(systemName: "map")
                 .font(.system(size: Theme.FontSize.title))
-                .foregroundStyle(theme.accent)
             Text(localization.string(.mapAddImage))
                 .font(.system(size: Theme.FontSize.caption, weight: .semibold))
-                .foregroundStyle(theme.accent)
         }
+        .foregroundStyle(accent)
         .frame(maxWidth: .infinity)
-        .padding(.vertical, Theme.Spacing.xLarge)
+        .padding(.vertical, Theme.Spacing.large)
         .background(
             RoundedRectangle(cornerRadius: Theme.Radius.medium, style: .continuous)
-                .fill(theme.surface.opacity(0.4))
+                .strokeBorder(accent.opacity(0.35), style: StrokeStyle(lineWidth: 1, dash: [4, 4]))
         )
     }
 
@@ -113,4 +120,12 @@ struct MapBlockView: View {
         guard let name = content.imageFileName else { image = nil; return }
         image = UIImage(contentsOfFile: ImageStore.url(for: name).path)
     }
+}
+
+#Preview {
+    MapBlockView(block: Block(type: .map, content: "", order: 0))
+        .padding()
+        .background(Color.grymBgDark)
+        .environmentObject(LocalizationManager())
+        .environment(\.theme, GrymBlueTheme())
 }

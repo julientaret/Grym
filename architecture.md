@@ -89,6 +89,7 @@ Accès à l'API IGDB (metadata jeux), authentifiée via l'OAuth « client creden
 - `CoverStore.swift` — Stockage local des jaquettes (offline-first) : téléchargement à l'ajout, rangées dans Application Support (exclu du backup), nommées par `image_id`.
 - `SpotlightIndexer.swift` — Indexation CoreSpotlight des jeux et des wikis (identifiants lisibles `game:<igdbId>` / `page:<igdbId>:<titre>`), réindexation complète au lancement et au passage en arrière-plan ; `target(for:context:)` résout un résultat système en destination applicative.
 - `ImageStore.swift` — Stockage local des images de blocs photo : ré-encodage JPEG downscalé (max 1600 px), rangées dans Application Support (exclu du backup).
+- `DemoDataService.swift` — Peuple / nettoie une bibliothèque fictive pour les démos et captures (DEBUG uniquement) : jeux marqués par un `igdbId` négatif (suppression sans risque pour les données réelles), jaquettes et captures récupérées sur IGDB avec repli hors ligne, contenus FR/EN.
 
 ## Features/Root
 
@@ -213,7 +214,7 @@ Ajout d'un jeu : recherche live IGDB, présentée en sheet depuis le bouton « +
 
 ## Features/Profile
 
-- `ProfileView.swift` — Onglet Profil : fond dégradé Grym et cartes de réglages (Premium : état + accès au paywall ; Soutenir Grym : encart de notation ; Apparence : thème ; Langue ; Affichage : mode des wikis ; Développement : simulation du premium, DEBUG seulement).
+- `ProfileView.swift` — Onglet Profil : fond dégradé Grym et cartes de réglages (Premium : état + accès au paywall ; Soutenir Grym : encart de notation ; Apparence : thème ; Langue ; Affichage : mode des wikis ; Développement : simulation du premium et données de démo, DEBUG seulement).
 - `Components/ProfileHeaderView.swift` — En-tête du profil : bannière illustrée (`BannerHeaderView`, `banner-profile`, hauteur compacte) avec titre et sous-titre superposés.
 - `Components/PremiumStatusCard.swift` — Carte cliquable de l'état premium (couronne / sceau validé, libellé et sous-titre selon `PremiumManager.isPremium`) ; ouvre `PremiumUpgradeView` en sheet.
 - `Components/RateAppCard.swift` — Encart « Mettre 5 étoiles » (même ton que la modale du 4e jeu) : pastille étoile, phrase courte et cinq étoiles décoratives ; ouvre la fiche système d'évaluation (`\.requestReview`).
@@ -223,6 +224,7 @@ Ajout d'un jeu : recherche live IGDB, présentée en sheet depuis le bouton « +
 - `Components/ThemePickerComponent.swift` — Grille de vignettes de thèmes (calées en haut de ligne, retour tactile à l'appui) ; applique le thème via le `ThemeManager`, ou ouvre `PremiumUpgradeView` si le thème est verrouillé.
 - `Components/ThemeSwatchView.swift` — Vignette d'un thème : mini-maquette de l'app (bandeau, ligne de jeu avec jaquette et pastille de note, palette d'accents) sur le fond et le halo du thème, nom et punchline ; sélection soulignée par un liseré et un halo d'accent, verrou premium en badge de coin sur voile léger.
 - `Components/DebugPremiumToggle.swift` — Interrupteur de simulation du premium, compilé uniquement en DEBUG (`#if DEBUG`).
+- `Components/DebugDemoDataToggle.swift` — Interrupteur d'insertion/suppression des données de démo via `DemoDataService` (indicateur d'activité pendant l'opération), compilé uniquement en DEBUG (`#if DEBUG`).
 - `Components/LanguagePickerComponent.swift` — Sélecteur segmenté qui bascule la langue via le `LocalizationManager`.
 - `Components/WikiModePickerComponent.swift` — Sélecteur segmenté du mode d'affichage des wikis via le `PreferencesManager`, suivi de l'aperçu du rendu.
 - `Components/WikiModePreviewComponent.swift` — Aperçu miniature schématique du mode choisi (deux wikis factices), en Liste / Onglets / Cartes.

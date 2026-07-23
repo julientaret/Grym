@@ -24,6 +24,8 @@ struct WikiScoreCard: View {
     @State private var isExpanded = false
 
     private var tier: ScoreTier { ScoreTier.tier(for: score) }
+    /// Une note à 0 correspond à un wiki non noté (cf. `ScoreGaugeView`).
+    private var isRated: Bool { score > 0 }
     private let thumbSize: CGFloat = 26
 
     var body: some View {
@@ -70,13 +72,16 @@ struct WikiScoreCard: View {
                     .foregroundStyle(theme.secondaryText)
                     .tracking(1)
 
-                Text(localization.string(tier.nameKey))
-                    .font(.system(size: Theme.FontSize.title, weight: .bold))
-                    .foregroundStyle(tier.color)
+                // Sans note, aucun palier n'a de sens : rien n'est affiché.
+                if isRated {
+                    Text(localization.string(tier.nameKey))
+                        .font(.system(size: Theme.FontSize.title, weight: .bold))
+                        .foregroundStyle(tier.color)
 
-                Text("\(localization.string(.wikiTierLabel)) \(tier.rank) / \(ScoreTier.count)")
-                    .font(.system(size: Theme.FontSize.caption, weight: .medium))
-                    .foregroundStyle(theme.secondaryText)
+                    Text("\(localization.string(.wikiTierLabel)) \(tier.rank) / \(ScoreTier.count)")
+                        .font(.system(size: Theme.FontSize.caption, weight: .medium))
+                        .foregroundStyle(theme.secondaryText)
+                }
             }
 
             Spacer(minLength: 0)

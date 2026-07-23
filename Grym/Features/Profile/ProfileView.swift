@@ -116,9 +116,13 @@ struct ProfileView: View {
             systemImage: "hammer.fill",
             title: localization.string(.profileDebugSection)
         ) {
-            // Le toggle porte son propre libellé.
+            // Les toggles portent leur propre libellé.
             ProfileSettingRow(hint: localization.string(.profileDebugHint)) {
                 DebugPremiumToggle()
+            }
+
+            ProfileSettingRow(hint: localization.string(.profileDebugDemoDataHint)) {
+                DebugDemoDataToggle()
             }
         }
     }

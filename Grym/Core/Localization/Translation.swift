@@ -53,6 +53,8 @@ enum TranslationKey: String {
     case profileThemePremium
     case profileDebugSection
     case profileDebugPremium
+    case profileDebugDemoData
+    case profileDebugDemoDataHint
     case profileDebugHint
     case profileStudioCreditPrefix
     case profileStudioCreditName
@@ -307,6 +309,8 @@ enum Translation {
             .profileThemePremium: "Premium",
             .profileDebugSection: "Développement",
             .profileDebugPremium: "Simuler le premium",
+            .profileDebugDemoData: "Données de démo",
+            .profileDebugDemoDataHint: "Remplit la bibliothèque de jeux fictifs pour les captures d'écran. Désactiver ne supprime que ces données.",
             .profileDebugHint: "Réglage de debug : absent des builds App Store.",
             .profileStudioCreditPrefix: "Une création",
             .profileStudioCreditName: "AppleMousse Studio",
@@ -535,6 +539,8 @@ enum Translation {
             .profileThemePremium: "Premium",
             .profileDebugSection: "Development",
             .profileDebugPremium: "Simulate premium",
+            .profileDebugDemoData: "Demo data",
+            .profileDebugDemoDataHint: "Fills the library with fictional games for screenshots. Turning it off only removes that data.",
             .profileDebugHint: "Debug setting: not shipped in App Store builds.",
             .profileStudioCreditPrefix: "Made by",
             .profileStudioCreditName: "AppleMousse Studio",
